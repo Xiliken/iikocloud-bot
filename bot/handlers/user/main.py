@@ -1,34 +1,32 @@
 from pprint import pprint
 
+from aiogram.fsm.state import default_state
 from aiogram.types import *
-from aiogram import Router, F, Bot, Dispatcher
+from aiogram import Router, F, Bot
 from aiogram.filters import *
-from pyiikocloudapi import IikoTransport
-from tqdm import tqdm
-
+from aiogram.utils.formatting import Text
 from bot.database.connect import DBManager
-from bot.keyboards import main_kb, auth_kb
+from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
-from bot.keyboards.reply import register_kb
-from bot.mics.helpers.Config import Config
-from bot.mics.iikoapi import get_organizations_ids
+from bot.keyboards.inline import chat_inline_kb
 
-router = Router()
+router: Router = Router()
 db = DBManager()
-dp = Dispatcher()
 
-@router.message(CommandStart())
+
+# Обработчик команды "/start"
+@router.message(CommandStart(), StateFilter(default_state))
 async def __start(msg: Message) -> None:
     bot: Bot = msg.bot
     user_id = msg.from_user.id
     user = msg.from_user
 
-
     # Регистрация пользователя
     if not db.user_exists(user_id):
         # Делаем регистрацию через IikoCloud и добавляем пользователя в БД
         db.add_user(user_id, msg.from_user.username)
-        print(f"Пользователь {user.first_name} {user.last_name if user.last_name is not None else ''} (id: {user_id}) был добавлен в базу данных!")
+        print(
+            f"Пользователь {user.first_name} {user.last_name if user.last_name is not None else ''} (id: {user_id}) был добавлен в базу данных!")
         await msg.answer(f"Добро пожаловать, <b>{user.first_name}</b>!\n"
                          "Это официальный бот компании <a href='https://doners-club.ru/'>Домерс</a>\n"
                          f"Для дальнейшей работы с ботом, пожалуйста, войдите или создайте аккаунт Донерс!",
@@ -42,21 +40,37 @@ async def __start(msg: Message) -> None:
                          reply_markup=cabinet_main_kb(), parse_mode='HTML')
 
 
-@router.message(Command(commands=['reg', 'register']))
-@router.message(F.text == '🔐 Регистрация')
-async def registration_handler_stage1(msg: Message) -> None:
-    await msg.answer("Пожалуйста, выберите способ регистрации.", reply_markup=register_kb())
+# # Обработчик кнопки и команды "Регистрация"
+# @router.message(Command(commands=['reg', 'register']))
+# @router.message(F.text == '🔐 Регистрация')
+# async def registration_handler_stage1(msg: Message) -> None:
+#     await msg.answer("Пожалуйста, выберите способ регистрации.", reply_markup=register_kb())
+#
+#
+# # Обработчик кнопки и команды "Авторизация"
+# @router.message(Command(commands=['login', 'auth']))
+# @router.message(F.text == '🔑 Авторизация')
+# async def login_handler(msg: Message) -> None:
+#     await msg.answer('Пожалуйста, введите номер телефона для авторизации')
+#     pass
 
 
-@router.message(Command(commands=['login', 'auth']))
-@router.message(F.text == '🔑 Авторизация')
-async def login_handler(msg: Message) -> None:
-    await msg.answer('Пожалуйста, введите номер телефона для авторизации')
+# Обработчик кнопки и команды "Меню"
+@router.message(F.text == '👨🏻‍🍳 Меню')
+async def menu_handler(message: Message):
     pass
 
 
-@router.message()
-async def send_message(msg: Message) -> None:
-    await msg.answer(f"Простите, но мой интеллект еще не настолько умен, чтобы общаться с вами на любые темы! ☹️\n"
-                     f"Пожалуйста, для общения со мной, используйте команды или меню ниже! 🤗")
+# Обработчик кнопки и команды "Чат"
+@router.message(F.text == '💬 Чат')
+@router.message(Command(commands=['chat']))
+async def chat_handler(msg: Message) -> None:
+    await msg.answer('Нажми на кнопку и напиши свой вопрос', reply_markup=chat_inline_kb())
 
+
+# Обработчик остальных сообщений
+# TODO: Нужно сделать так, чтобы он всегда шел последним хендлером, тогда только вернуть его в работу
+# @router.message()
+# async def send_message(msg: Message) -> None:
+#     await msg.answer(f"Простите, но мой интеллект еще не настолько умен, чтобы общаться с вами на любые темы! ☹️\n"
+#                      f"Пожалуйста, для общения со мной, используйте команды или меню ниже! 🤗")
