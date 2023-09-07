@@ -1,1 +1,1 @@
-from .iIkoCloud import IiKoCloud
+from .iIkoCloud import BaseAPI

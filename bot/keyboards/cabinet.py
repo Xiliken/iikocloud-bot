@@ -7,16 +7,14 @@ def cabinet_main_kb() -> ReplyKeyboardMarkup:
         keyboard=
         [
             [
-                KeyboardButton(text='🎁 Бонусы'),
-                KeyboardButton(text='💬 Чат')
+                KeyboardButton(text='Бонусная карта'),
+                KeyboardButton(text='Чат')
             ],
             [
-                KeyboardButton(text='👨🏻‍🍳 Меню', web_app=WebAppInfo(url='https://doners-club.ru/')),
-                KeyboardButton(text='🔥 Акции', web_app=WebAppInfo(url='https://doners-club.ru/promotions')),
+                KeyboardButton(text='Меню', web_app=WebAppInfo(url='https://doners-club.ru/')),
+                KeyboardButton(text='Акции', web_app=WebAppInfo(url='https://doners-club.ru/promotions')),
+                KeyboardButton(text='Контакты')
             ],
-            [
-                KeyboardButton(text='👤 Контакты')
-            ]
         ],
         resize_keyboard=True,
         input_field_placeholder='Выберите пункт меню для работы с ботом'

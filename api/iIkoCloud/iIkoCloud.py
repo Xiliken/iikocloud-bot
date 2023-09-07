@@ -6,25 +6,26 @@ import json
 
 from requests import Response
 
+from api.iIkoCloud.enums import TypeRCI
 from api.iIkoCloud.exceptions import CheckTimeToken, SetSession, TokenException
-from api.iIkoCloud.models import CustomErrorModel, BaseOrganizationsModel
+from api.iIkoCloud.models import CustomErrorModel
 
 
-class IiKoCloud:
+class BaseAPI:
     """Класс для работы с API IikoCloud"""
 
     DEFAULT_TIMEOUT = 15
 
     # __BASE_URL = "https://api-ru.iiko.services"
 
-    def __int__(self,
-                api_login: str,
-                session: Optional[requests.Session] = None,
-                debug: bool = False,
-                base_url: str = None,
-                working_token: str = None,
-                base_headers: dict = None,
-                ):
+    def __init__(self,
+                 api_login: str,
+                 session: Optional[requests.Session] = None,
+                 debug: bool = False,
+                 base_url: str = None,
+                 working_token: str = None,
+                 base_headers: dict = None,
+                 ):
 
         """
             :param api_login: Логин авторизации
@@ -54,6 +55,7 @@ class IiKoCloud:
                 "Timeout": "45"
             } if base_headers is None else base_headers
         self.__set_token(working_token) if working_token is not None else self.__get_access_token()
+        self.__last_data = None
 
     def check_status_code_token(self, code: Union[str, int]):
         if str(code) == "401":
@@ -138,6 +140,18 @@ class IiKoCloud:
     def headers(self, value: str):
         self.__headers = value
 
+    @property
+    def timeout(self):
+        return self.__headers.get("Timeout")
+
+    @timeout.setter
+    def timeout(self, value: int):
+        self.__headers.update({"Timeout": str(value)})
+
+    @timeout.deleter
+    def timeout(self):
+        self.__headers.update({"Timeout": str(self.DEFAULT_TIMEOUT)})
+
     def get_token(self) -> str:
         pass
 
@@ -145,7 +159,8 @@ class IiKoCloud:
         """Получить токен доступа"""
         data = json.dumps({"apiLogin": self.api_login})
         try:
-            result = requests.post(f'{self.__base_url}/api/1/access_token', json=data)
+            result = self.session_s.post(f'{self.__base_url}/api/1/access_token', json=data)
+            # result = requests.post(f'{self.__base_url}/api/1/access_token', json=data)
 
             response_data: dict = json.loads(result.content)
 
@@ -176,9 +191,29 @@ class IiKoCloud:
         self.__headers["Authorization"] = f"Bearer {self.token}"
         self.__time_token = datetime.now()
 
-    def organizations(self, organizations_ids: list[str] = None, timeout=DEFAULT_TIMEOUT) -> Response:
+    def _post_request(self, url: str, data: dict = None, timeout=DEFAULT_TIMEOUT):
+        if data is None:
+            data = {}
+        if timeout != self.DEFAULT_TIMEOUT:
+            self.timeout = timeout
+
+        response = self.session_s.post(url=f'{self.base_url}{url}', data=json.dumps(data), headers=self.headers)
+
+        if response.status_code == 401:
+            self.__get_access_token()
+            return self._post_request(url=url, data=data, timeout=timeout)
+
+        response_data: dict = json.loads(response.content)
+        self.__last_data = response_data
+        del self.timeout
+        return response_data
+
+    def organizations(self, organizations_ids: list[str] = None, return_additional_info: bool = False,
+                      includeDisabled: bool = False, timeout=DEFAULT_TIMEOUT) -> Response:
         """
         Возвращает список организаций
+        :param includeDisabled:
+        :param return_additional_info:
         :param organizations_ids:
         :param timeout:
         :return:
@@ -188,11 +223,16 @@ class IiKoCloud:
 
         if organizations_ids is not None:
             data['organizationIds'] = organizations_ids
+        if return_additional_info:
+            data["returnAdditionalInfo"] = return_additional_info
+        if includeDisabled:
+            data['includeDisabled'] = includeDisabled
 
         try:
-            response_data = requests.post(
-                url=f"{self.__base_url}/api/1/organizations",
-                data=json.dumps(data)
+            response_data = self._post_request(
+                url=f"/api/1/organizations",
+                data=data,
+                timeout=timeout
             )
 
             return response_data
@@ -207,3 +247,131 @@ class IiKoCloud:
                             f"Не удалось получить организации: \n{err}")
 
 
+class Customers(BaseAPI):
+    def customer_info(self, organization_id: str, type: TypeRCI, identifier: str, timeout=BaseAPI.DEFAULT_TIMEOUT):
+
+        """
+        Получить информацию о пользователе
+        :param organization_id:  id орагнизации
+        :param type: тип получения информации (телефон, почта и т.д)
+        :param identifier: идентификатор
+        :param timeout:
+        :return:
+        """
+
+        data = {
+            "organizationId": organization_id,
+            "type": type.value,
+        }
+
+        if type == TypeRCI.phone:
+            data[TypeRCI.phone.value] = identifier
+        elif type == TypeRCI.card_track:
+            data[TypeRCI.card_track.value] = identifier
+        elif type == TypeRCI.card_number:
+            data[TypeRCI.card_number.value] = identifier
+        elif type == TypeRCI.email:
+            data[TypeRCI.email.value] = identifier
+        elif type == TypeRCI.id:
+            data[TypeRCI.id.value] = identifier
+
+        try:
+            response_data = self._post_request(
+                url=f"/api/1/loyalty/iiko/customer/info",
+                data=data,
+                timeout=timeout
+            )
+
+            return response_data
+
+        except requests.exceptions.RequestException as err:
+            raise Exception(f'Ошибка получения информации о пользователе!\n\n\n{err}')
+        except TypeError as err:
+            raise TypeError(f'{err}')
+
+    def create_or_update_customer(
+            self,
+            organization_id: str,
+            phone: Optional = None,
+            email: Optional[str] = None,
+            card_track: Optional[str] = None,
+            card_number: Optional[str] = None,
+            name: Optional[str] = None,
+            middle_name: Optional[str] = None,
+            sur_name: Optional[str] = None,
+            birthday: Optional[str] = None,
+            sex: Optional[str] = None,
+            consent_status: Optional[str] = None,
+            should_receive_promo_actions_info: Optional[bool] = None,
+            referrer_id: Optional[str] = None,
+            user_data: Optional[str] = None,
+            id: str = None,
+            timeout=BaseAPI.DEFAULT_TIMEOUT):
+
+        data = {
+            "organizationId": organization_id,
+        }
+
+        if id is not None:
+            data['id'] = id
+        if phone is not None:
+            data['phone'] = phone
+        if card_track is not None:
+            data['cardTrack'] = card_track
+        if card_number is not None:
+            data['cardNumber'] = card_number
+        if name is not None:
+            data['name'] = name
+        if middle_name is not None:
+            data['middleName'] = middle_name
+        if sur_name is not None:
+            data['surName'] = sur_name
+        if birthday is not None:
+            data['birthday'] = birthday
+        if email is not None:
+            data['email'] = email
+        if sex is not None:
+            data['sex'] = sex
+        if consent_status is not None:
+            data['consentStatus'] = consent_status
+        if should_receive_promo_actions_info is not None:
+            data['shouldReceivePromoActionsInfo'] = should_receive_promo_actions_info
+        if referrer_id is not None:
+            data['referrerId'] = referrer_id
+        if user_data is not None:
+            data['userData'] = user_data
+
+        try:
+            return self._post_request(
+                url="/api/1/loyalty/iiko/customer/create_or_update",
+                data=data,
+                timeout=timeout
+            )
+        except requests.exceptions.RequestException as err:
+            raise requests.exceptions.RequestException(f"Не удалось создать или обновить клиента: \n{err}")
+        except TypeError as err:
+            raise TypeError(f"Не удалось: \n{err}")
+
+
+    def refill_customer_balance(
+            self,
+            organization_id: str,
+            customer_id: str = None,
+            wallet_id: Optional[str] = None,
+            sum: float = None,
+            comment: Optional[str] = None):
+
+        """
+        Начислить пользователю средств на баланс
+        :param organization_id: id организации
+        :param customer_id: id пользователя
+        :param wallet_id: id кошелька
+        :param sum: Сумма (только положительное число)
+        :param comment: Комментарий к платежу
+        :return:
+        """
+        pass
+
+
+class IikoCloudAPI(Customers):
+    pass

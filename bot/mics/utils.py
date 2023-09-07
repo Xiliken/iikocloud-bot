@@ -26,3 +26,9 @@ def check_phone_number(phone: str) -> bool:
 def registration(phone_number: str):
 
     pass
+
+
+def log(message) -> None:
+    import logging
+    logging.basicConfig(filename='errors.log', level=logging.ERROR)
+    logging.error(message)

@@ -66,3 +66,4 @@ class BaseOrganizationsModel(BaseResponseModel):
 
     def __list_id__(self):
         return [org.id for org in self.organizations]
+
