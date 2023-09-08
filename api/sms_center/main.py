@@ -102,7 +102,7 @@ class SMSC(object):
 
         arg_dict = dict(item.split("=") for item in arg.split("&"))
 
-        res = params.update(arg_dict)
+        params.update(arg_dict)
 
         ret = ""
         max_attempts = 5

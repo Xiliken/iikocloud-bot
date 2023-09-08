@@ -28,7 +28,6 @@ res = iiko.customer_info(
 
 
 
-
 # Обработка выбора ввода номера телефона от пользователя
 @router.message(Command(commands=['register', 'reg', 'registration']), StateFilter(default_state))
 @router.message(F.text == '🔐 Регистрация', StateFilter(default_state))
@@ -36,7 +35,7 @@ async def registration_step_regtype(msg: Message, state: FSMContext) -> None:
     await msg.answer(text=
                      'Пожалуйста, выберите способ регистрации в системе.',
                      parse_mode='HTML',
-                     reply_markup=register_kb()
+                     reply_markup=register_kb(),
                      )
     # Устанавливаем состояния ожидания выбора регистрации в системе
     await state.set_state(RegistrationStates.register_method)
