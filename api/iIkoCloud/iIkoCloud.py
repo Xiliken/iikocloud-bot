@@ -352,14 +352,14 @@ class Customers(BaseAPI):
         except TypeError as err:
             raise TypeError(f"Не удалось: \n{err}")
 
-
     def refill_customer_balance(
             self,
             organization_id: str,
             customer_id: str = None,
             wallet_id: Optional[str] = None,
             sum: float = None,
-            comment: Optional[str] = None):
+            comment: Optional[str] = None,
+            timeout=BaseAPI.DEFAULT_TIMEOUT):
 
         """
         Начислить пользователю средств на баланс
@@ -370,6 +370,28 @@ class Customers(BaseAPI):
         :param comment: Комментарий к платежу
         :return:
         """
+
+        data = {
+            "organizationId": organization_id,
+        }
+
+        if customer_id is not None:
+            data['customerId'] = customer_id,
+        if wallet_id is not None:
+            data['walletId'] = wallet_id
+        if sum is not None:
+            data['sum'] = abs(sum)
+        if comment is not None:
+            data['comment'] = comment
+
+        try:
+            return self._post_request(
+                url="/api/1/loyalty/iiko/customer/wallet/topup/",
+                data=data,
+                timeout=timeout
+            )
+        except:
+            pass
         pass
 
 

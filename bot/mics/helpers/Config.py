@@ -18,7 +18,7 @@ class Config:
             if value_type == 'str':
                 return str(value)
             elif value_type == 'bool':
-                return bool(value)
+                return value.lower() == 'true'
             elif value_type == 'list':
                 return ast.literal_eval(value)
             elif value_type == 'dict':

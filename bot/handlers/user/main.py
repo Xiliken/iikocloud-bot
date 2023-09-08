@@ -11,7 +11,7 @@ from bot.keyboards.cabinet import cabinet_main_kb
 from bot.keyboards.inline import chat_inline_kb
 
 router: Router = Router()
-db = DBManager()
+#db = DBManager()
 
 
 # Обработчик команды "/start"
@@ -22,22 +22,22 @@ async def __start(msg: Message) -> None:
     user = msg.from_user
 
     # Регистрация пользователя
-    if not db.user_exists(user_id):
-        # Делаем регистрацию через IikoCloud и добавляем пользователя в БД
-        db.add_user(user_id, msg.from_user.username)
-        print(
-            f"Пользователь {user.first_name} {user.last_name if user.last_name is not None else ''} (id: {user_id}) был добавлен в базу данных!")
-        await msg.answer(f"Привет! Я чат-тот стрит фуд ресторана <b><a href='https://doners-club.ru'>Донерс</a></b>.\n"
-                         "Со мной тебя ждут скидки и специальные цены на продукцию, кэшбэк с каждой покупки, бонусы за отзывы и оценку заказов.\n\n"
-                         f"Авторизуйся 1 раз и получай все преимущества \"DonersClub\" 😎",
-                         parse_mode='HTML', disable_web_page_preview=True, reply_markup=auth_kb()
-                         )
-
-    elif db.user_exists(user_id):
-        await msg.answer(f"С возвращением, <b>{user.first_name}</b>\n"
-                         f"✅ Вы уже авторизованы в системе!\n"
-                         f"Продолжайте работу с ботом 😄",
-                         reply_markup=cabinet_main_kb(), parse_mode='HTML')
+    # if not db.user_exists(user_id):
+    #     # Делаем регистрацию через IikoCloud и добавляем пользователя в БД
+    #     db.add_user(user_id, msg.from_user.username)
+    #     print(
+    #         f"Пользователь {user.first_name} {user.last_name if user.last_name is not None else ''} (id: {user_id}) был добавлен в базу данных!")
+    #     await msg.answer(f"Привет! Я чат-тот стрит фуд ресторана <b><a href='https://doners-club.ru'>Донерс</a></b>.\n"
+    #                      "Со мной тебя ждут скидки и специальные цены на продукцию, кэшбэк с каждой покупки, бонусы за отзывы и оценку заказов.\n\n"
+    #                      f"Авторизуйся 1 раз и получай все преимущества \"DonersClub\" 😎",
+    #                      parse_mode='HTML', disable_web_page_preview=True, reply_markup=auth_kb()
+    #                      )
+    #
+    # elif db.user_exists(user_id):
+    #     await msg.answer(f"С возвращением, <b>{user.first_name}</b>\n"
+    #                      f"✅ Вы уже авторизованы в системе!\n"
+    #                      f"Продолжайте работу с ботом 😄",
+    #                      reply_markup=cabinet_main_kb(), parse_mode='HTML')
 
 
 # # Обработчик кнопки и команды "Регистрация"
