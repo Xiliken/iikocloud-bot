@@ -1,3 +1,4 @@
+import aiogram
 from aiogram import Router
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
@@ -13,7 +14,7 @@ router: Router = Router()
 @router.message(Command(commands=['cancel']), StateFilter(default_state))
 @router.message(F.text == '❌ Отмена', StateFilter(default_state))
 async def cancel_handler_default_state(msg: Message) -> None:
-    await msg.answer(text='Нечего отменять')
+    await msg.answer(text='Нечего отменять', reply_markup=aiogram.types.ReplyKeyboardRemove())
 
 
 # Этот хэндлер будет срабатывать на команду "/cancel" в любых состояниях,
@@ -21,6 +22,6 @@ async def cancel_handler_default_state(msg: Message) -> None:
 @router.message(Command(commands=['cancel']), ~StateFilter(default_state))
 @router.message(F.text == '❌ Отмена', ~StateFilter(default_state))
 async def cancel_handler(msg: Message, state: FSMContext) -> None:
-    await msg.answer(text='Действите успешно отменено')
+    await msg.answer(text='Действите успешно отменено', reply_markup=aiogram.types.ReplyKeyboardRemove())
     # Сбрасываем состояние и очищаем данные, полученные внутри состояний
     await state.clear()

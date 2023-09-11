@@ -1,12 +1,16 @@
 import json
 import os
 
+from PIL import Image
 from aiogram import Router, F
 from aiogram.types import Message, FSInputFile
 
+
 from api.iIkoCloud.enums import TypeRCI
 from api.iIkoCloud.iIkoCloud import IikoCloudAPI
+from bot.keyboards.inline import sell_inline_kb
 from bot.mics.helpers.Config import Config
+from utils.main import generate_qr
 
 router: Router = Router()
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get('IIKOCLOUD_LOGIN'))
@@ -27,33 +31,14 @@ async def profile_handler(msg: Message):
 
     bot = msg.bot
 
-    import qrcode
+    generate_qr(text='79130478769', use_logo=False)
+
+    photo = FSInputFile('qr_code.png')
 
     info = (f'Номер бонусной карты: {profile_info["phone"]}\n\n'
             f'Бонусов: {round(profile_info["walletBalances"][0]["balance"])}')
 
-    text = "79130478769"
-
-    # Создание QR-кода
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-
-    qr.add_data(text)
-    qr.make(fit=True)
-
-    img = qr.make_image(fill_color="black", back_color="white")
-    img.save("qr_code.png")
-
-    photo = FSInputFile('qr_code.png')
-
-    await msg.answer(info)
-    await bot.send_photo(chat_id=msg.chat.id, photo=photo, caption=info)
+    await bot.send_photo(chat_id=msg.chat.id, photo=photo, caption=info, reply_markup=sell_inline_kb())
 
     os.remove('qr_code.png')
-
-    await msg.answer(text='Успей потратить!')
 
