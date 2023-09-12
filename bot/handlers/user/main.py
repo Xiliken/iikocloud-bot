@@ -9,10 +9,11 @@ from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.connect import DBManager
+from bot.database.methods.user_exists import user_exists
 from bot.database.models.User import User
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
-from bot.keyboards.inline import chat_inline_kb
+from bot.keyboards.inline import chat_inline_kb, contacts_ikb
 
 router: Router = Router()
 
@@ -58,6 +59,13 @@ async def menu_handler(message: Message):
 @router.message(Command(commands=['chat']))
 async def chat_handler(msg: Message) -> None:
     await msg.answer('Нажми на кнопку и напиши свой вопрос', reply_markup=chat_inline_kb())
+
+
+# Обработчик кнопки и команды "Контакты"
+@router.message(F.text == 'Контакты')
+@router.message(Command(commands=['contacts', 'contact']))
+async def chat_handler(msg: Message) -> None:
+    await msg.answer('Выбери площадку', reply_markup=contacts_ikb())
 
 # Обработчик остальных сообщений
 # TODO: Нужно сделать так, чтобы он всегда шел последним хендлером, тогда только вернуть его в работу

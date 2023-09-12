@@ -1,15 +1,11 @@
 import random
-from enum import Enum
-
-import aiogram_i18n.types
 from aiogram import Router
-from aiogram.enums import ContentType, content_type
+from aiogram.enums import ContentType
 from aiogram.filters import *
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import Message, ChatMemberUpdated, ReplyKeyboardRemove
+from aiogram.types import Message
 from aiogram import F
-from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.iIkoCloud.enums import TypeRCI
@@ -19,7 +15,6 @@ from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
 from bot.keyboards import register_kb, cabinet_main_kb, auth_kb
 from bot.keyboards.reply import cancel_kb
-from bot.mics import check_phone_number, log
 from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import check_user_exists
 from bot.states.user import RegistrationStates
@@ -67,7 +62,6 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
                                      reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)
-            log(ex)
 
 
 # region Регистрация с другого номера
@@ -106,7 +100,6 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
                                          reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)
-            log(ex)
 
 
 # @router.message(StateFilter(RegistrationStates.phone_number))

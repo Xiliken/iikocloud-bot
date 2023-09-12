@@ -7,7 +7,7 @@ from aiogram.fsm.strategy import FSMStrategy
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from bot.database.base import Base
-from bot.handlers.user import registration_handlers, other_handlers, cabinet_handlers
+from bot.handlers.user import registration_handlers, other_handlers, cabinet_handlers, login_handlers
 from bot.mics.commands import set_commands
 from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import get_organizations_ids
@@ -61,6 +61,7 @@ async def start_bot() -> None:
     dp.include_routers(other_handlers.router)
     dp.include_routers(user.router)
     dp.include_routers(registration_handlers.router)
+    dp.include_routers(login_handlers.router)
     dp.include_routers(cabinet_handlers.router)
     # dp.include_routers()
     #endregion
