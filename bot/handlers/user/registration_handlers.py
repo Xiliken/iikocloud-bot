@@ -60,15 +60,61 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
     else:
         # Устанавливаем состояния ожидания введения смс
         try:
-            #SMSC().send_sms(phones=f'{msg.contact.phone_number}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
+            SMSC().send_sms(phones=f'{msg.contact.phone_number}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
             await state.update_data(phone_number=msg.contact.phone_number)
             await state.set_state(RegistrationStates.sms_code)
             await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{msg.contact.phone_number}',
-                                 reply_markup=cancel_kb())
+                                     reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)
             log(ex)
 
+
+# region Регистрация с другого номера
+
+# Обработка хендлера, если регистрация происходит с другого номера телефона
+@router.message(StateFilter(RegistrationStates.register_method), F.text == 'Другой номер')
+async def registration_step_other_phone(msg: Message, state: FSMContext):
+    await msg.answer(text='Пожалуйста, введите номер телефона для регистрации')
+
+
+# Если пользователь выбрал способ регистрации с другим номером
+# То проверяем данный номер и продолжаем регистрацию
+@router.message(StateFilter(RegistrationStates.register_method), IsPhoneNumber())
+async def check_phone_number_handler(msg: Message, state: FSMContext):
+    await state.update_data(phone_number=msg.text)
+
+    state_data = await state.get_data()
+
+    iko_user = iiko.customer_info(
+        organization_id=Config.get('IIKOCLOUD_ORGANIZATIONS_IDS', 'list')[0],
+        type=TypeRCI.phone,
+        identifier=state_data.get('phone_number')
+    )
+
+    if check_user_exists(iko_user):
+        await msg.answer(f'Извините, но пользователь, с номером +{state_data.get("phone_number")} уже существует!\n\n'
+                         f'Пожалуйста, повторите регистрацию с <b>другим номером</b>, или войдите с уже <u>существуещим номером</u>!')
+        return
+    else:
+        # Устанавливаем состояния ожидания ввода смс
+        try:
+            print(verification_code)
+            SMSC().send_sms(phones=f'{msg.contact.phone_number}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
+            await state.set_state(RegistrationStates.sms_code)
+            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{msg.text}',
+                                         reply_markup=cancel_kb())
+        except Exception as ex:
+            print(ex)
+            log(ex)
+
+
+# @router.message(StateFilter(RegistrationStates.phone_number))
+# async def registration_step_phone_number(msg: Message, state: FSMContext) -> None:
+#     await msg.answer('Ты прошел')
+
+
+# endregion
 
 # region Обработка ввода СМС кода
 
@@ -126,27 +172,4 @@ async def warning_sms_handler(msg: Message):
 
 # endregion
 
-# region Регистрация с другого номера
-
-# Обработка хендлера, если регистрация происходит с другого номера телефона
-@router.message(StateFilter(RegistrationStates.register_method), F.text == 'Другой номер')
-async def registration_step_other_phone(msg: Message):
-    await msg.answer(text='Пожалуйста, введите номер телефона для регистрации')
-    # Устанавливаем состояния ожидания введения смс
-
-
-# Если пользователь выбрал способ регистрации с другим номером
-# То проверяем данный номер и продолжаем регистрацию
-@router.message(StateFilter(RegistrationStates.register_method), IsPhoneNumber())
-async def check_phone_number_handler(msg: Message, state: FSMContext):
-    await state.set_state(RegistrationStates.sms_code)
-    await msg.answer(f"Вы ввели номер телефона {msg.text}")
-    pass
-
-# @router.message(StateFilter(RegistrationStates.phone_number))
-# async def registration_step_phone_number(msg: Message, state: FSMContext) -> None:
-#     await msg.answer('Ты прошел')
-
-
-# endregion
 

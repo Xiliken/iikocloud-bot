@@ -22,7 +22,6 @@ iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get('IIKOCLOUD_LOGIN'))
 @router.message(F.text == 'Бонусная карта')
 async def profile_handler(msg: Message, session: AsyncSession):
     # TODO: Сделать dataclass с парамтерами профиля
-    # TODO: Получить с БД номер телефона пользователя
     bot = msg.bot
 
     if await session.scalar(exists().where(User.user_id == msg.from_user.id).select()):
@@ -45,4 +44,3 @@ async def profile_handler(msg: Message, session: AsyncSession):
         await bot.send_photo(chat_id=msg.chat.id, photo=photo, caption=info, reply_markup=sell_inline_kb())
 
         os.remove('qr_code.png')
-
