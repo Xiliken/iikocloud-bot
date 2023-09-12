@@ -17,3 +17,16 @@ def get_organizations_ids() -> list[str]:
     organizations = __api.organizations(return_additional_info=True).organizations
 
     return [item.id for item in organizations]
+
+
+def check_user_exists(data) -> bool:
+    if 'errorDescription' in data:
+        error_description = data['errorDescription']
+        if "There is no user with phone" in error_description:
+            # Пользователя не существует
+            return False
+        else:
+            return False
+    elif 'id' in data:
+        # Если есть поле id, то пользователь явно существует
+        return True

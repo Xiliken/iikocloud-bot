@@ -32,3 +32,4 @@ def log(message) -> None:
     import logging
     logging.basicConfig(filename='errors.log', level=logging.ERROR)
     logging.error(message)
+

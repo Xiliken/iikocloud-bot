@@ -58,10 +58,10 @@ async def start_bot() -> None:
     #endregion
 
     #region Регистрация роутов
+    dp.include_routers(other_handlers.router)
     dp.include_routers(user.router)
     dp.include_routers(registration_handlers.router)
     dp.include_routers(cabinet_handlers.router)
-    dp.include_routers(other_handlers.router)
     # dp.include_routers()
     #endregion
 
