@@ -44,24 +44,26 @@ async def login_step_phone_number(msg: Message, state: FSMContext, session: Asyn
                                    )
 
     if bot.mics.iikoapi.check_user_exists(iiko_user):
+        # TODO: ПОПРАВИТЬ ПРОВЕКРУ СУЩЕСТВОВАНИЯ В TELEGRAM
+
         # Пользователь существует в iko, но проверяем на то, что пользователь с таким ID в Telegram не зарегистрирован на другой номер
         sql = await session.execute(select(User).where(User.user_id == msg.from_user.id and normalize_phone_number(User.phone_number) != normalize_phone_number(msg.text)))
 
-        if sql.scalar():
-            await msg.answer('Извините, но данный аккаунт Telegram привязан к другому номеру телефона!', reply_markup=auth_kb())
-            await state.clear()
-            return
-        else:
-            # Добавляем пользователя в бд
-            try:
-                await session.merge(User(user_id=msg.from_user.id, phone_number=normalize_phone_number(msg.text), is_admin=False))
-                SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
-                                message=f'Код для подтверждения авторизации: {str(verification_code)}')
-                await state.set_state(LoginStates.sms_code)
-                await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
+        # if sql.scalar():
+        #     await msg.answer('Извините, но данный аккаунт Telegram привязан к другому номеру телефона!', reply_markup=auth_kb())
+        #     await state.clear()
+        #     return
+        # else:
+        # Добавляем пользователя в бд
+        try:
+            await session.merge(User(user_id=msg.from_user.id, phone_number=normalize_phone_number(msg.text), is_admin=False))
+            SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
+                                message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД')
+            await state.set_state(LoginStates.sms_code)
+            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
                                  reply_markup=cancel_kb())
-            except Exception as ex:
-                print(ex)
+        except Exception as ex:
+            print(ex)
         await session.commit()
     else:
         # Пользователя не существует

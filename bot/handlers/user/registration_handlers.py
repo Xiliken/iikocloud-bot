@@ -1,4 +1,6 @@
 import random
+from datetime import datetime
+
 from aiogram import Router
 from aiogram.enums import ContentType
 from aiogram.filters import *
@@ -13,6 +15,7 @@ from api.iIkoCloud.iIkoCloud import IikoCloudAPI
 from api.sms_center import SMSC
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
+from bot.fitlers.CheckDateFilter import CheckDateFilter
 from bot.keyboards import register_kb, cabinet_main_kb, auth_kb
 from bot.keyboards.reply import cancel_kb
 from bot.mics import normalize_phone_number
@@ -56,11 +59,12 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
     else:
         # Устанавливаем состояния ожидания введения смс
         try:
-            SMSC().send_sms(phones=f'{msg.contact.phone_number}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
+            SMSC().send_sms(phones=f'{msg.contact.phone_number}',
+                            message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД.')
             await state.update_data(phone_number=msg.contact.phone_number)
             await state.set_state(RegistrationStates.sms_code)
             await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: {msg.contact.phone_number}',
-                                     reply_markup=cancel_kb())
+                             reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)
 
@@ -95,10 +99,13 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
         # Устанавливаем состояния ожидания ввода смс
         try:
             print(verification_code)
-            SMSC().send_sms(phones=f'{state_data.get("phone_number")}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
+            SMSC().send_sms(phones=f'{state_data.get("phone_number")}',
+                            message=f'Код:{str(verification_code)}\n'
+                                    f'Вводя его вы даете согласие на обработку ПД')
             await state.set_state(RegistrationStates.sms_code)
-            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
-                                         reply_markup=cancel_kb())
+            await msg.answer(
+                f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
+                reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)
 
@@ -122,29 +129,10 @@ async def registration_step_sms(msg: Message, state: FSMContext, session: AsyncS
 
     if msg.text == str(verification_code):
         # Код верен, выполните необходимые действия
-        state_data = await state.get_data()
-
         await msg.answer("🟢 Код успешно подтвержден!")
-        attempts[user_id] = None # Сброс количества попыток
-        # Регистрация в IikoCloud и добавление в БД
-        try:
-            iiko.create_or_update_customer(
-                organization_id=Config.get('IIKOCLOUD_ORGANIZATIONS_IDS', 'list')[0],
-                phone=state_data.get('phone_number')
-            )
-            print('Добавлен в Iiko')
-            try:
-                await session.merge(User(user_id=msg.from_user.id, is_admin=False, phone_number=state_data['phone_number']))
-                print('Добавлен в БД')
-            except:
-                print('Не удалось добавить пользователя в базу данных!')
-        except Exception as ex:
-            print('Ошибка регистрации нового пользователя!')
-        await session.commit()
-        await msg.answer('Регистрация успешно завершена!', reply_markup=cabinet_main_kb())
-
-        # Сброс состояния
-        await state.clear()
+        attempts[user_id] = None  # Сброс количества попыток
+        await state.set_state(RegistrationStates.birthday) # Установка состояния - ввод даты рождения
+        await msg.answer('Пожалуйста, укажите вашу дату рождения в формате: <b>дд.мм.гггг</b>')
     else:
         # Код неверен
         if current_attempts is not None and int(current_attempts) > 0:
@@ -164,6 +152,38 @@ async def warning_sms_handler(msg: Message):
                      'Если Вы хотите прервать регистрацию - отправьте команду /cancel')
 
 
+# Обработка ввода даты рождения пользователем
+@router.message(StateFilter(RegistrationStates.birthday), CheckDateFilter())
+async def registration_step_birthday_handler(msg: Message, state: FSMContext, session: AsyncSession):
+    state_data = await state.get_data()
+    # Регистрация в IikoCloud и добавление в БД
+    try:
+        iiko.create_or_update_customer(
+            organization_id=Config.get('IIKOCLOUD_ORGANIZATIONS_IDS', 'list')[0],
+            phone=state_data.get('phone_number'),
+            name=msg.from_user.first_name,
+            sur_name=msg.from_user.last_name,
+            birthday=datetime.strptime(msg.text, "%d.%m.%Y").strftime("%Y-%m-%d 00:00:00.000")
+        )
+        print('Добавлен в Iiko')
+        try:
+            await session.merge(
+                User(user_id=msg.from_user.id, is_admin=False, phone_number=state_data['phone_number']))
+            print('Добавлен в БД')
+        except:
+            print('Не удалось добавить пользователя в базу данных!')
+    except Exception as ex:
+        print('Ошибка регистрации нового пользователя!')
+    await session.commit()
+    await msg.answer('Регистрация успешно завершена!', reply_markup=cabinet_main_kb())
+
+    # Сброс состояния
+    await state.clear()
+
+
+@router.message(StateFilter(RegistrationStates.birthday))
+async def warning_birthday_handler(msg: Message):
+    await msg.answer('Пожалуйста, введите дату рождения в формате: <b>дд.мм.гггг</b>\n\n'
+                     'Если Вы хотите прервать регистрацию - отправьте команду /cancel')
+
 # endregion
-
-

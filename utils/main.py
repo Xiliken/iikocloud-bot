@@ -1,3 +1,5 @@
+import re
+from datetime import datetime
 from typing import Optional
 
 from qrcode.image.styledpil import StyledPilImage
@@ -40,3 +42,16 @@ def generate_qr(text: str, use_logo: Optional[bool] = False) -> None:
         img = qr.make_image(fill_color="black", back_color="white")
         img.save('qr_code.png')
 
+
+def is_valid_date(date_str):
+    # Проверяем формат даты с использованием регулярного выражения
+    date_pattern = r'^\d{2}\.\d{2}.\d{4}$'
+    if not re.match(date_pattern, date_str):
+        return False
+
+    # Пытаемся преобразовать строку в объект datetime
+    try:
+        datetime.strptime(date_str, '%d.%m.%Y')
+        return True
+    except ValueError:
+        return False

@@ -65,7 +65,7 @@ async def chat_handler(msg: Message) -> None:
 @router.message(F.text == 'Контакты')
 @router.message(Command(commands=['contacts', 'contact']))
 async def chat_handler(msg: Message) -> None:
-    await msg.answer('Выбери площадку', reply_markup=contacts_ikb())
+    await msg.answer('Выбери ресторан:', reply_markup=contacts_ikb())
 
 # Обработчик остальных сообщений
 # TODO: Нужно сделать так, чтобы он всегда шел последним хендлером, тогда только вернуть его в работу
