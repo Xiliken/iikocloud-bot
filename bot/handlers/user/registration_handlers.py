@@ -15,6 +15,7 @@ from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
 from bot.keyboards import register_kb, cabinet_main_kb, auth_kb
 from bot.keyboards.reply import cancel_kb
+from bot.mics import normalize_phone_number
 from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import check_user_exists
 from bot.states.user import RegistrationStates
@@ -58,7 +59,7 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
             SMSC().send_sms(phones=f'{msg.contact.phone_number}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
             await state.update_data(phone_number=msg.contact.phone_number)
             await state.set_state(RegistrationStates.sms_code)
-            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{msg.contact.phone_number}',
+            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: {msg.contact.phone_number}',
                                      reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)
@@ -69,14 +70,14 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
 # Обработка хендлера, если регистрация происходит с другого номера телефона
 @router.message(StateFilter(RegistrationStates.register_method), F.text == 'Другой номер')
 async def registration_step_other_phone(msg: Message, state: FSMContext):
-    await msg.answer(text='Пожалуйста, введите номер телефона для регистрации')
+    await msg.answer(text='Пожалуйста, введите номер телефона для регистрации', reply_markup=cancel_kb())
 
 
 # Если пользователь выбрал способ регистрации с другим номером
 # То проверяем данный номер и продолжаем регистрацию
 @router.message(StateFilter(RegistrationStates.register_method), IsPhoneNumber())
 async def check_phone_number_handler(msg: Message, state: FSMContext):
-    await state.update_data(phone_number=msg.text)
+    await state.update_data(phone_number=normalize_phone_number(msg.text))
 
     state_data = await state.get_data()
 
@@ -94,9 +95,9 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
         # Устанавливаем состояния ожидания ввода смс
         try:
             print(verification_code)
-            SMSC().send_sms(phones=f'{msg.contact.phone_number}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
+            SMSC().send_sms(phones=f'{state_data.get("phone_number")}', message=f'Код для подтверждения регистрации: {str(verification_code)}')
             await state.set_state(RegistrationStates.sms_code)
-            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{msg.text}',
+            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
                                          reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)

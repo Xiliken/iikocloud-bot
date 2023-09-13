@@ -16,6 +16,7 @@ from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
 from bot.keyboards import cabinet_main_kb
 from bot.keyboards.reply import cancel_kb, auth_kb
+from bot.mics import normalize_phone_number
 from bot.mics.helpers.Config import Config
 from bot.states.user.LoginStates import LoginStates
 
@@ -39,12 +40,12 @@ async def login_step_phone_number(msg: Message, state: FSMContext, session: Asyn
     # Проверить, есть ли такой номер в iko
     iiko_user = iiko.customer_info(organization_id=Config.get('IIKOCLOUD_ORGANIZATIONS_IDS', 'list')[0],
                                    type=TypeRCI.phone,
-                                   identifier=msg.text,
+                                   identifier=normalize_phone_number(msg.text),
                                    )
 
     if bot.mics.iikoapi.check_user_exists(iiko_user):
         # Пользователь существует в iko, но проверяем на то, что пользователь с таким ID в Telegram не зарегистрирован на другой номер
-        sql = await session.execute(select(User).where(User.user_id == msg.from_user.id and User.phone_number != msg.text))
+        sql = await session.execute(select(User).where(User.user_id == msg.from_user.id and normalize_phone_number(User.phone_number) != normalize_phone_number(msg.text)))
 
         if sql.scalar():
             await msg.answer('Извините, но данный аккаунт Telegram привязан к другому номеру телефона!', reply_markup=auth_kb())
@@ -53,11 +54,11 @@ async def login_step_phone_number(msg: Message, state: FSMContext, session: Asyn
         else:
             # Добавляем пользователя в бд
             try:
-                await session.merge(User(user_id=msg.from_user.id, phone_number=msg.text, is_admin=False))
-                SMSC().send_sms(phones=f'{msg.text}',
+                await session.merge(User(user_id=msg.from_user.id, phone_number=normalize_phone_number(msg.text), is_admin=False))
+                SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
                                 message=f'Код для подтверждения авторизации: {str(verification_code)}')
                 await state.set_state(LoginStates.sms_code)
-                await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{msg.text}',
+                await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
                                  reply_markup=cancel_kb())
             except Exception as ex:
                 print(ex)
@@ -65,7 +66,7 @@ async def login_step_phone_number(msg: Message, state: FSMContext, session: Asyn
     else:
         # Пользователя не существует
         await state.clear()
-        await msg.answer(f'Извините, не удалось найти пользователя с номером +{msg.text}\n\n'
+        await msg.answer(f'Извините, не удалось найти пользователя с номером +{normalize_phone_number(msg.text)}\n\n'
                          f'Пожалуйста, проверьте корректность введенного номера, или зарегистрируйте новый аккаунт!',
                          reply_markup=auth_kb())
         return
