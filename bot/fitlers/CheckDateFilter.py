@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
@@ -10,9 +10,9 @@ class CheckDateFilter(BaseFilter):
         pass
 
     async def __call__(self, message: Message) -> bool:
-        return self.is_valid_date(message)
+        return await self.is_valid_date(message)
 
-    def is_valid_date(self, msg: Message):
+    async def is_valid_date(self, msg: Message):
         # Проверяем формат даты с использованием регулярного выражения
         date_pattern = r'^\d{2}\.\d{2}.\d{4}$'
         if not re.match(date_pattern, msg.text):
@@ -20,7 +20,19 @@ class CheckDateFilter(BaseFilter):
 
         # Пытаемся преобразовать строку в объект datetime
         try:
-            datetime.strptime(msg.text, '%d.%m.%Y')
+            date = datetime.strptime(msg.text, '%d.%m.%Y')
+
+            # Получаем текущую дату
+            current_date = datetime.now()
+
+            # Вычисляем дату, которая находится на 7 лет раньше от текущей
+            seven_years_ago = current_date - timedelta(days=7 * 365)
+
+            # Проверяем, соответствует ли дата условиям
+            if date <= seven_years_ago or date >= current_date:
+                await msg.answer(f'Вы не можете ввести дату, которая меньше {seven_years_ago.strftime("%d.%m.%Y")}, либо больше или равна текущей дате, то есть {current_date.strftime("%d.%m.%Y")}')
+                return False
+
             return True
         except ValueError:
             return False
