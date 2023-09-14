@@ -6,9 +6,9 @@ import json
 
 from requests import Response
 
-from api.iIkoCloud.enums import TypeRCI
-from api.iIkoCloud.exceptions import CheckTimeToken, SetSession, TokenException
-from api.iIkoCloud.models import CustomErrorModel
+from api.iikocloud.enums import TypeRCI
+from api.iikocloud.exceptions import CheckTimeToken, SetSession, TokenException
+from api.iikocloud.models import CustomErrorModel
 
 
 class BaseAPI:

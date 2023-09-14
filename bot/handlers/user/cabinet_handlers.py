@@ -7,9 +7,10 @@ from aiogram.types import Message, FSInputFile
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.iIkoCloud.enums import TypeRCI
-from api.iIkoCloud.iIkoCloud import IikoCloudAPI
+from api.iikocloud.enums import TypeRCI
+from api.iikocloud.iIkoCloud import IikoCloudAPI
 from bot.database.models.User import User
+from bot.fitlers import IsAuth
 from bot.keyboards.inline import sell_inline_kb
 from bot.mics.helpers.Config import Config
 from utils.main import generate_qr
@@ -17,6 +18,8 @@ from utils.main import generate_qr
 router: Router = Router()
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get('IIKOCLOUD_LOGIN'))
 
+
+#router.message.filter(IsAuth)
 
 # TODO: Проверить, что пользователь авторизован
 @router.message(F.text == 'Бонусная карта')

@@ -1,12 +1,15 @@
 import asyncio
+import datetime
 import logging
+import pathlib
 
 from aiogram import Bot, F, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from bot.database.base import Base
+import utils
+from bot.database.models.Base import Base
 from bot.handlers.user import registration_handlers, other_handlers, cabinet_handlers, login_handlers
 from bot.mics.commands import set_commands
 from bot.mics.helpers.Config import Config
@@ -38,9 +41,9 @@ async def start_bot() -> None:
 
 
     # Дебаг
-    logging.basicConfig(level=logging.INFO,
-                        format="%(asctime)s - [%(levelname)s] -  %(name)s - "
-                               "(%(filename)s).%(funcName)s(%(lineno)d) - %(message)s")
+    utils.logger.setup_loger("INFO")
+    # Дебаг в файл
+    utils.logger.setup_logger_file(log_file=pathlib.Path(pathlib.Path().cwd(), 'logs', f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'))
 
     #region Инициализация бота и Redis
     bot: Bot = Bot(token=Config.get('TELEGRAM_BOT_API_KEY'), parse_mode='HTML')

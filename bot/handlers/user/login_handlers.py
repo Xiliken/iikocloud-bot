@@ -9,8 +9,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import bot.mics.iikoapi
-from api.iIkoCloud.enums import TypeRCI
-from api.iIkoCloud.iIkoCloud import IikoCloudAPI
+from api.iikocloud.enums import TypeRCI
+from api.iikocloud.iIkoCloud import IikoCloudAPI
 from api.sms_center import SMSC
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber

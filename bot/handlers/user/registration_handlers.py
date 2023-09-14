@@ -10,8 +10,8 @@ from aiogram.types import Message
 from aiogram import F
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.iIkoCloud.enums import TypeRCI
-from api.iIkoCloud.iIkoCloud import IikoCloudAPI
+from api.iikocloud.enums import TypeRCI
+from api.iikocloud.iIkoCloud import IikoCloudAPI
 from api.sms_center import SMSC
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
@@ -100,7 +100,7 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
         try:
             print(verification_code)
             SMSC().send_sms(phones=f'{state_data.get("phone_number")}',
-                            message=f'Код:{str(verification_code)}\n'
+                            message=f'Код: {str(verification_code)}\n'
                                      f'Вводя его вы даете согласие на обработку ПД')
             await state.set_state(RegistrationStates.sms_code)
             await msg.answer(
