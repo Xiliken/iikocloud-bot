@@ -8,7 +8,6 @@ from aiogram.utils.formatting import Text
 from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.database.connect import DBManager
 from bot.database.methods.user_exists import user_exists
 from bot.database.models.User import User
 from bot.keyboards import auth_kb
@@ -18,7 +17,6 @@ from bot.keyboards.inline import chat_inline_kb, contacts_ikb
 router: Router = Router()
 
 
-# db = DBManager()
 
 
 # Обработчик команды "/start"

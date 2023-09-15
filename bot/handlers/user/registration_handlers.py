@@ -16,6 +16,7 @@ from api.sms_center import SMSC
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
 from bot.fitlers.CheckDateFilter import CheckDateFilter
+from bot.fitlers.IsAuth import IsAuth
 from bot.keyboards import register_kb, cabinet_main_kb, auth_kb
 from bot.keyboards.reply import cancel_kb
 from bot.mics import normalize_phone_number
@@ -60,7 +61,7 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
         # Устанавливаем состояния ожидания введения смс
         try:
             SMSC().send_sms(phones=f'{msg.contact.phone_number}',
-                             message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД.')
+                            message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД.')
             await state.update_data(phone_number=msg.contact.phone_number)
             await state.set_state(RegistrationStates.sms_code)
             await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: {msg.contact.phone_number}',
@@ -101,7 +102,7 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
             print(verification_code)
             SMSC().send_sms(phones=f'{state_data.get("phone_number")}',
                             message=f'Код: {str(verification_code)}\n'
-                                     f'Вводя его вы даете согласие на обработку ПД')
+                                    f'Вводя его вы даете согласие на обработку ПД')
             await state.set_state(RegistrationStates.sms_code)
             await msg.answer(
                 f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
@@ -131,7 +132,7 @@ async def registration_step_sms(msg: Message, state: FSMContext, session: AsyncS
         # Код верен, выполните необходимые действия
         await msg.answer("🟢 Код успешно подтвержден!")
         attempts[user_id] = None  # Сброс количества попыток
-        await state.set_state(RegistrationStates.birthday) # Установка состояния - ввод даты рождения
+        await state.set_state(RegistrationStates.birthday)  # Установка состояния - ввод даты рождения
         await msg.answer('Пожалуйста, укажите вашу дату рождения в формате: <b>дд.мм.гггг</b>')
     else:
         # Код неверен
@@ -185,5 +186,6 @@ async def registration_step_birthday_handler(msg: Message, state: FSMContext, se
 async def warning_birthday_handler(msg: Message):
     await msg.answer('Пожалуйста, введите дату рождения в формате: <b>дд.мм.гггг</b>\n\n'
                      'Если Вы хотите прервать регистрацию - отправьте команду /cancel')
+
 
 # endregion

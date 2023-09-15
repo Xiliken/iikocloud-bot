@@ -57,9 +57,9 @@ async def login_step_phone_number(msg: Message, state: FSMContext, session: Asyn
         # Добавляем пользователя в бд
         try:
             await session.merge(User(user_id=msg.from_user.id, phone_number=normalize_phone_number(msg.text), is_admin=False))
-            SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
-                                message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД')
-            await state.set_state(LoginStates.sms_code)
+            # SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
+            #                     message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД')
+            # await state.set_state(LoginStates.sms_code)
             await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
                                  reply_markup=cancel_kb())
         except Exception as ex:

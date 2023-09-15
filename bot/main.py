@@ -6,9 +6,11 @@ import pathlib
 from aiogram import Bot, F, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from loguru import logger
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 import utils
+from bot.database import create_async_engine, init_models, get_async_session_maker
 from bot.database.models.Base import Base
 from bot.handlers.user import registration_handlers, other_handlers, cabinet_handlers, login_handlers
 from bot.mics.commands import set_commands
@@ -27,48 +29,52 @@ async def __on_startup(bot: Bot) -> None:
 
     Config.set('IIKOCLOUD_ORGANIZATIONS_IDS', org_ids)
 
+    # # БД
+    # engine = await create_async_engine(url=Config.get('DATABASE_URL'))
+    # await init_models(engine)
+    # session_maker = get_async_session_maker(engine)
+    # dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
+
 
 async def start_bot() -> None:
-
-    # Инициализация базы данных
-    engine = create_async_engine(url=Config.get('DATABASE_URL'), echo=Config.get('DATABASE_DEBUG', 'bool'))
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-    sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
-
-
+    # БД
+    engine = await create_async_engine(url=Config.get('DATABASE_URL'))
+    await init_models(engine)
+    session_maker = get_async_session_maker(engine)
 
     # Дебаг
-    utils.logger.setup_loger("INFO")
+    utils.logger.setup_loger("DEBUG")
     # Дебаг в файл
-    utils.logger.setup_logger_file(log_file=pathlib.Path(pathlib.Path().cwd(), 'logs', f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'))
+    utils.logger.setup_logger_file(log_file=pathlib.Path(pathlib.Path().cwd(), 'logs',
+                                                         f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'))
 
-    #region Инициализация бота и Redis
+    # region Инициализация бота и Redis
     bot: Bot = Bot(token=Config.get('TELEGRAM_BOT_API_KEY'), parse_mode='HTML')
     redis: Redis = Redis(host=Config.get('REDIS_HOST'))
     dp: Dispatcher = Dispatcher(storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT)
-    #endregion
+    # endregion
 
-    #region Регистрация MiddleWares
-    dp.update.middleware(DbSessionMiddleware(session_pool=sessionmaker))
-    #endregion
+    # region Регистрация MiddleWares
+    dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
+    # endregion
 
-
-    #region Регистрация дополнительного функционала перед запуском бота
+    # region Регистрация дополнительного функционала перед запуском бота
     dp.startup.register(__on_startup)
-    #endregion
+    # endregion
 
-    #region Регистрация роутов
+    # region Регистрация роутов
     dp.include_routers(other_handlers.router)
     dp.include_routers(user.router)
     dp.include_routers(registration_handlers.router)
     dp.include_routers(login_handlers.router)
     dp.include_routers(cabinet_handlers.router)
     # dp.include_routers()
-    #endregion
+    # endregion
 
     # Запускаем бота и пропускаем все накопленные входящие
-    await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    try:
+        logger.warning('Bot polling is starting...')
+        await bot.delete_webhook(drop_pending_updates=True)
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    finally:
+        logger.warning('Bot polling is stopped.')

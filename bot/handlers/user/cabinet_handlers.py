@@ -3,6 +3,8 @@ import os
 
 from PIL import Image
 from aiogram import Router, F
+from aiogram.filters import StateFilter, Command
+from aiogram.fsm.state import default_state
 from aiogram.types import Message, FSInputFile
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,19 +12,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.iikocloud.enums import TypeRCI
 from api.iikocloud.iIkoCloud import IikoCloudAPI
 from bot.database.models.User import User
-from bot.fitlers import IsAuth
+from bot.fitlers.IsAuth import IsAuth
+from bot.keyboards import auth_kb
 from bot.keyboards.inline import sell_inline_kb
 from bot.mics.helpers.Config import Config
 from utils.main import generate_qr
 
 router: Router = Router()
+auth_router: Router = Router()
+
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get('IIKOCLOUD_LOGIN'))
 
-
-#router.message.filter(IsAuth)
-
 # TODO: Проверить, что пользователь авторизован
-@router.message(F.text == 'Бонусная карта')
+
+
+@router.message(F.text == 'Бонусная карта', IsAuth())
 async def profile_handler(msg: Message, session: AsyncSession):
     # TODO: Сделать dataclass с парамтерами профиля
     bot = msg.bot
@@ -47,3 +51,12 @@ async def profile_handler(msg: Message, session: AsyncSession):
         await bot.send_photo(chat_id=msg.chat.id, photo=photo, caption=info, reply_markup=sell_inline_kb())
 
         os.remove('qr_code.png')
+
+
+# Обработка неавторизованных пользователей
+@router.message(F.text.in_(['Бонусная карта']), ~IsAuth(), StateFilter(default_state))
+async def na_profile_handler(msg: Message):
+    await msg.answer('❗Извините, но данное действие доступно только <u>авторизованным</u> пользователям! Пожалуйста, '
+                     '<b>войдите</b> или <b>создайте</b> аккаунт.',
+                     reply_markup=auth_kb()
+                     )
