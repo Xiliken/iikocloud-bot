@@ -8,6 +8,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import Message
 from aiogram import F
+from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.iikocloud.enums import TypeRCI
@@ -19,9 +20,9 @@ from bot.fitlers.CheckDateFilter import CheckDateFilter
 from bot.fitlers.IsAuth import IsAuth
 from bot.keyboards import register_kb, cabinet_main_kb, auth_kb
 from bot.keyboards.reply import cancel_kb
-from bot.mics import normalize_phone_number
+from bot.mics import normalize_phone_number, check_telegram_account_exists
 from bot.mics.helpers.Config import Config
-from bot.mics.iikoapi import check_user_exists
+from bot.mics.iikoapi import check_iiko_user_exists
 from bot.states.user import RegistrationStates
 
 router: Router = Router()
@@ -33,8 +34,8 @@ verification_code = random.randint(1000, 9999)
 
 
 # Обработка регистрации
-@router.message(Command(commands=['register', 'reg', 'registration']), StateFilter(default_state))
-@router.message(F.text == '🔐 Регистрация', StateFilter(default_state))
+@router.message(Command(commands=['register', 'reg', 'registration']), StateFilter(default_state), ~IsAuth())
+@router.message(F.text == '🔐 Регистрация', StateFilter(default_state), ~IsAuth())
 async def registration_step_regtype(msg: Message, state: FSMContext) -> None:
     await msg.answer(text=
                      'Пожалуйста, выберите способ регистрации в системе.',
@@ -47,27 +48,33 @@ async def registration_step_regtype(msg: Message, state: FSMContext) -> None:
 
 @router.message(F.content_type == ContentType.CONTACT, StateFilter(RegistrationStates.register_method))
 async def registration_step_telegram(msg: Message, state: FSMContext):
+    if await check_telegram_account_exists(msg):
+        await msg.answer('❗Извините, но данный номер телефона зарегистрирован на другую учетную запись!')
+        return
+
     iko_user = iiko.customer_info(
         organization_id=Config.get('IIKOCLOUD_ORGANIZATIONS_IDS', 'list')[0],
         type=TypeRCI.phone,
         identifier=msg.contact.phone_number
     )
 
-    if check_user_exists(iko_user):
+    if check_iiko_user_exists(iko_user):
         await msg.answer(f'Извините, но пользователь, с номером +{msg.contact.phone_number} уже существует!\n\n'
                          f'Пожалуйста, повторите регистрацию с <b>другим номером</b>, или войдите с уже <u>существуещим номером</u>!')
         return
-    else:
-        # Устанавливаем состояния ожидания введения смс
-        try:
-            SMSC().send_sms(phones=f'{msg.contact.phone_number}',
+
+
+
+    # Устанавливаем состояния ожидания введения смс
+    try:
+        SMSC().send_sms(phones=f'{msg.contact.phone_number}',
                             message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД.')
-            await state.update_data(phone_number=msg.contact.phone_number)
-            await state.set_state(RegistrationStates.sms_code)
-            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: {msg.contact.phone_number}',
+        await state.update_data(phone_number=msg.contact.phone_number)
+        await state.set_state(RegistrationStates.sms_code)
+        await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: {msg.contact.phone_number}',
                              reply_markup=cancel_kb())
-        except Exception as ex:
-            print(ex)
+    except Exception as ex:
+        print(ex)
 
 
 # region Регистрация с другого номера
@@ -86,20 +93,27 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
 
     state_data = await state.get_data()
 
+    if await check_telegram_account_exists(msg):
+        await msg.answer('❗Извините, но данный номер телефона зарегистрирован на другую учетную запись!')
+        return
+
     iko_user = iiko.customer_info(
         organization_id=Config.get('IIKOCLOUD_ORGANIZATIONS_IDS', 'list')[0],
         type=TypeRCI.phone,
         identifier=state_data.get('phone_number')
     )
 
-    if check_user_exists(iko_user):
+    if check_iiko_user_exists(iko_user):
         await msg.answer(f'Извините, но пользователь, с номером +{state_data.get("phone_number")} уже существует!\n\n'
                          f'Пожалуйста, повторите регистрацию с <b>другим номером</b>, или войдите с уже <u>существуещим номером</u>!')
         return
     else:
         # Устанавливаем состояния ожидания ввода смс
         try:
-            print(verification_code)
+            # Вывод кода подтверждения в дебаге
+            if Config.get('DEBUG', 'bool'):
+                logger.debug(f'Код подтверждения: {verification_code}')
+
             SMSC().send_sms(phones=f'{state_data.get("phone_number")}',
                             message=f'Код: {str(verification_code)}\n'
                                     f'Вводя его вы даете согласие на обработку ПД')
@@ -111,13 +125,6 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
             print(ex)
 
 
-# @router.message(StateFilter(RegistrationStates.phone_number))
-# async def registration_step_phone_number(msg: Message, state: FSMContext) -> None:
-#     await msg.answer('Ты прошел')
-
-
-# endregion
-
 # region Обработка ввода СМС кода
 
 @router.message(StateFilter(RegistrationStates.sms_code), F.text.isdigit())
@@ -126,7 +133,10 @@ async def registration_step_sms(msg: Message, state: FSMContext, session: AsyncS
 
     # Получаем текущее количество попыток из базы данных или переменной
     current_attempts = attempts.get(user_id, MAX_SMS_ATTEMPTS - 1)
-    print(verification_code)
+
+    # Вывод кода подтверждения в дебаге
+    if Config.get('DEBUG', 'bool'):
+        logger.debug(f'Код подтверждения: {verification_code}')
 
     if msg.text == str(verification_code):
         # Код верен, выполните необходимые действия
@@ -189,3 +199,9 @@ async def warning_birthday_handler(msg: Message):
 
 
 # endregion
+
+
+@router.message(Command(commands=['register', 'reg', 'registration']), StateFilter(default_state), IsAuth())
+@router.message(F.text == '🔐 Регистрация', StateFilter(default_state), IsAuth())
+async def auth_registration_step_regtype(msg: Message, state: FSMContext) -> None:
+    await msg.answer(text='❗Вы уже авторизованы!', reply_markup=cabinet_main_kb())

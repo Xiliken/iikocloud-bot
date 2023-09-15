@@ -5,6 +5,7 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import Message
+from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,9 +15,10 @@ from api.iikocloud.iIkoCloud import IikoCloudAPI
 from api.sms_center import SMSC
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
+from bot.fitlers.IsAuth import IsAuth
 from bot.keyboards import cabinet_main_kb
 from bot.keyboards.reply import cancel_kb, auth_kb
-from bot.mics import normalize_phone_number
+from bot.mics import normalize_phone_number, check_telegram_account_exists
 from bot.mics.helpers.Config import Config
 from bot.states.user.LoginStates import LoginStates
 
@@ -28,8 +30,8 @@ attempts = {}  # Количество попыток ввода кода
 verification_code = random.randint(1000, 9999)
 
 
-@router.message(Command(commands=['login']), StateFilter(default_state))
-@router.message(F.text == '🔑 Авторизация', StateFilter(default_state))
+@router.message(Command(commands=['login']), StateFilter(default_state), ~IsAuth())
+@router.message(F.text == '🔑 Авторизация', StateFilter(default_state), ~IsAuth())
 async def login_step_one(msg: Message, state: FSMContext) -> None:
     await msg.answer(text='Пожалуйста, введите номер телефона', reply_markup=cancel_kb())
     await state.set_state(LoginStates.phone_number)
@@ -37,33 +39,28 @@ async def login_step_one(msg: Message, state: FSMContext) -> None:
 
 @router.message(StateFilter(LoginStates.phone_number), IsPhoneNumber())
 async def login_step_phone_number(msg: Message, state: FSMContext, session: AsyncSession) -> None:
+
+    # Проверка номера в Telegram
+    if await check_telegram_account_exists(msg):
+        await msg.answer('❗Извините, но данный номер телефона зарегистрирован на другую учетную запись!')
+        return
+
     # Проверить, есть ли такой номер в iko
     iiko_user = iiko.customer_info(organization_id=Config.get('IIKOCLOUD_ORGANIZATIONS_IDS', 'list')[0],
                                    type=TypeRCI.phone,
                                    identifier=normalize_phone_number(msg.text),
                                    )
 
-    if bot.mics.iikoapi.check_user_exists(iiko_user):
-        # TODO: ПОПРАВИТЬ ПРОВЕКРУ СУЩЕСТВОВАНИЯ В TELEGRAM
-
-        # Пользователь существует в iko, но проверяем на то, что пользователь с таким ID в Telegram не зарегистрирован на другой номер
-        sql = await session.execute(select(User).where(User.user_id == msg.from_user.id and normalize_phone_number(User.phone_number) != normalize_phone_number(msg.text)))
-
-        # if sql.scalar():
-        #     await msg.answer('Извините, но данный аккаунт Telegram привязан к другому номеру телефона!', reply_markup=auth_kb())
-        #     await state.clear()
-        #     return
-        # else:
-        # Добавляем пользователя в бд
+    if bot.mics.iikoapi.check_iiko_user_exists(iiko_user):
         try:
             await session.merge(User(user_id=msg.from_user.id, phone_number=normalize_phone_number(msg.text), is_admin=False))
-            # SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
-            #                     message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД')
-            # await state.set_state(LoginStates.sms_code)
+            SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
+                                 message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД')
+            await state.set_state(LoginStates.sms_code)
             await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
                                  reply_markup=cancel_kb())
         except Exception as ex:
-            print(ex)
+            logger.error(ex)
         await session.commit()
     else:
         # Пользователя не существует
@@ -80,7 +77,10 @@ async def login_step_sms(msg: Message, state: FSMContext, session: AsyncSession)
 
     # Получаем текущее количество попыток из базы данных или переменной
     current_attempts = attempts.get(user_id, MAX_SMS_ATTEMPTS - 1)
-    print(verification_code)
+
+    # Вывод кода подтверждения в дебаге
+    if Config.get('DEBUG', 'bool'):
+        logger.debug(f'Код подтверждения: {verification_code}')
 
     if msg.text == str(verification_code):
         # Код верен, выполните необходимые действия
@@ -110,3 +110,9 @@ async def login_step_sms(msg: Message, state: FSMContext, session: AsyncSession)
 async def warning_sms_handler(msg: Message):
     await msg.answer('Пожалуйста, введите 4х значный код, отправленный на ваш номер, указанный при регистрации!\n\n'
                      'Если Вы хотите прервать авторизацию - отправьте команду /cancel')
+
+
+@router.message(Command(commands=['login']), StateFilter(default_state), IsAuth())
+@router.message(F.text == '🔑 Авторизация', StateFilter(default_state), IsAuth())
+async def auth_registration_step_regtype(msg: Message, state: FSMContext) -> None:
+    await msg.answer(text='Вы уже авторизованы!', reply_markup=cabinet_main_kb())

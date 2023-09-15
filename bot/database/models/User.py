@@ -12,7 +12,7 @@ class User(Base):
     phone_number: Mapped[str] = mapped_column(nullable=False, unique=True)
 
     def __repr__(self):
-        return f"User(id={self.user_id!r}, phone={self.phone_number!r} admin={self.is_admin!r})"
+        return f"User(user_id={self.user_id!r}, phone_number={self.phone_number!r} is_admin={self.is_admin!r})"
 
 
 

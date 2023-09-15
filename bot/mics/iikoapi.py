@@ -19,7 +19,7 @@ def get_organizations_ids() -> list[str]:
     return [item.id for item in organizations]
 
 
-def check_user_exists(data) -> bool:
+def check_iiko_user_exists(data) -> bool:
     if 'errorDescription' in data:
         error_description = data['errorDescription']
         if "There is no user with phone" in error_description:

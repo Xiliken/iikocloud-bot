@@ -43,10 +43,13 @@ async def start_bot() -> None:
     session_maker = get_async_session_maker(engine)
 
     # Дебаг
-    utils.logger.setup_loger("DEBUG")
-    # Дебаг в файл
-    utils.logger.setup_logger_file(log_file=pathlib.Path(pathlib.Path().cwd(), 'logs',
-                                                         f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'))
+    if Config.get('DEBUG', 'bool'):
+        match str(Config.get('LOG_TYPE')).lower() or 'console':
+            case 'console':
+                utils.logger.setup_loger("DEBUG")
+            case 'file':
+                utils.logger.setup_logger_file(log_file=pathlib.Path(pathlib.Path().cwd(), 'logs',
+                                                             f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'))
 
     # region Инициализация бота и Redis
     bot: Bot = Bot(token=Config.get('TELEGRAM_BOT_API_KEY'), parse_mode='HTML')

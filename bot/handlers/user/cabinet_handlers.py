@@ -54,7 +54,7 @@ async def profile_handler(msg: Message, session: AsyncSession):
 
 
 # Обработка неавторизованных пользователей
-@router.message(F.text.in_(['Бонусная карта']), ~IsAuth(), StateFilter(default_state))
+@router.message(F.text.in_(['Бонусная карта']), ~IsAuth())
 async def na_profile_handler(msg: Message):
     await msg.answer('❗Извините, но данное действие доступно только <u>авторизованным</u> пользователям! Пожалуйста, '
                      '<b>войдите</b> или <b>создайте</b> аккаунт.',

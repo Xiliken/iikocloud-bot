@@ -1,7 +1,17 @@
 import re
 
+from aiogram.types import Message
+
+from bot.mics.helpers.Config import Config
+
 
 def normalize_phone_number(phone: str) -> str:
+    """
+    Нормализация телефонного номера
+    :param phone: Номер телефона
+    :return: Нормализованный номер телефона в формате 7xxxxxxxxxx
+    """
+
     # Удалить все символы, кроме цифр
     cleaned_phone = re.sub(r'\D', '', phone)
 
@@ -14,4 +24,33 @@ def normalize_phone_number(phone: str) -> str:
         cleaned_phone = '7' + cleaned_phone
 
     return cleaned_phone
+
+
+async def check_telegram_account_exists(message: Message = Message) -> bool:
+    """
+    Проверка, зарегистрирован ли такой пользователь уже в боте
+    :param message: Объект сообщения aiogram
+    :return: bool
+    """
+    from bot.database import create_async_engine, get_async_session_maker
+
+    engine = await create_async_engine(url=Config.get('DATABASE_URL'))
+    session_maker = get_async_session_maker(engine)
+
+    async with session_maker.begin() as conn:
+        phone = message.text or message.contact.phone_number
+
+        from sqlalchemy import select
+        from bot.database.models import User
+        user = await conn.scalars(
+            select(User)
+            .where(User.phone_number == normalize_phone_number(phone) )
+            .where(User.user_id != message.from_user.id)
+        )
+        user = user.first()
+
+        return bool(user)
+
+
+
 
