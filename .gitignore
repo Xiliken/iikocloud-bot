@@ -1,6 +1,7 @@
 venv/
 .idea
 .vscode
+.secrets.toml
 .env
 __pycache__/
 .mypy_cache/

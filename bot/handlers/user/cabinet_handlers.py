@@ -17,6 +17,7 @@ from bot.keyboards import auth_kb
 from bot.keyboards.inline import sell_inline_kb
 from bot.mics.helpers.Config import Config
 from utils.main import generate_qr
+from aiogram.utils.i18n import lazy_gettext as __
 
 router: Router = Router()
 auth_router: Router = Router()
@@ -26,7 +27,7 @@ iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get('IIKOCLOUD_LOGIN'))
 # TODO: Проверить, что пользователь авторизован
 
 
-@router.message(F.text == 'Бонусная карта', IsAuth())
+@router.message(F.text == __('Бонусная карта'), IsAuth())
 async def profile_handler(msg: Message, session: AsyncSession):
     # TODO: Сделать dataclass с парамтерами профиля
     bot = msg.bot
@@ -54,7 +55,7 @@ async def profile_handler(msg: Message, session: AsyncSession):
 
 
 # Обработка неавторизованных пользователей
-@router.message(F.text.in_(['Бонусная карта']), ~IsAuth())
+@router.message(F.text.in_([__('Бонусная карта')]), ~IsAuth())
 async def na_profile_handler(msg: Message):
     await msg.answer('❗Извините, но данное действие доступно только <u>авторизованным</u> пользователям! Пожалуйста, '
                      '<b>войдите</b> или <b>создайте</b> аккаунт.',

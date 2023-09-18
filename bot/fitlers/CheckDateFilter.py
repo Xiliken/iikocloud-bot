@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
+from aiogram.utils.i18n import gettext as _
 
 
 class CheckDateFilter(BaseFilter):
@@ -30,7 +31,11 @@ class CheckDateFilter(BaseFilter):
 
             # Проверяем, соответствует ли дата условиям
             if date <= seven_years_ago or date >= current_date:
-                await msg.answer(f'Вы не можете ввести дату, которая меньше {seven_years_ago.strftime("%d.%m.%Y")}, либо больше или равна текущей дате, то есть {current_date.strftime("%d.%m.%Y")}')
+                await msg.answer(
+                    _('Вы не можете ввести дату, которая меньше {old_date}, '
+                       'либо больше или равна текущей дате, то есть {current_date}').format(old_date=seven_years_ago.strftime("%d.%m.%Y"),
+                                                                                                                 current_date=current_date.strftime("%d.%m.%Y"))
+                )
                 return False
 
             return True

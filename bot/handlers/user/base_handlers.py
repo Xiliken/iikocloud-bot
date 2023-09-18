@@ -7,12 +7,14 @@ from aiogram.filters import CommandObject, Command, CommandStart, StateFilter
 from aiogram.utils.formatting import Text
 from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from aiogram.utils.i18n import lazy_gettext as __
 
 from bot.database.methods.user_exists import user_exists
 from bot.database.models.User import User
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
 from bot.keyboards.inline import chat_inline_kb, contacts_ikb
+from aiogram.utils.i18n import gettext as _
 
 router: Router = Router()
 
@@ -30,9 +32,9 @@ async def __start(msg: Message, session: AsyncSession) -> None:
 
     # Если такой пользователь уже существует
     if sql.scalar():
-        await msg.answer(f"С возвращением, <b>{user.first_name}</b>\n"
+        await msg.answer(_("С возвращением, <b>{first_name}</b>\n"
                          f"✅ Вы уже авторизованы в системе!\n"
-                         f"Продолжайте работу с ботом 😄",
+                         f"Продолжайте работу с ботом 😄").format(first_name=user.first_name),
                          reply_markup=cabinet_main_kb(), parse_mode='HTML')
     else:
         # Добавление нового пользователя
@@ -47,20 +49,20 @@ async def __start(msg: Message, session: AsyncSession) -> None:
 
 
 # Обработчик кнопки и команды "Меню"
-@router.message(F.text == 'Меню')
+@router.message(F.text == __('Меню'))
 async def menu_handler(message: Message):
     pass
 
 
 # Обработчик кнопки и команды "Чат"
-@router.message(F.text == 'Чат')
+@router.message(F.text == __('Чат'))
 @router.message(Command(commands=['chat']))
 async def chat_handler(msg: Message) -> None:
     await msg.answer('Нажми на кнопку и напиши свой вопрос', reply_markup=chat_inline_kb())
 
 
 # Обработчик кнопки и команды "Контакты"
-@router.message(F.text == 'Контакты')
+@router.message(F.text == __('Контакты'))
 @router.message(Command(commands=['contacts', 'contact']))
 async def chat_handler(msg: Message) -> None:
     await msg.answer('Выбери ресторан:', reply_markup=contacts_ikb())

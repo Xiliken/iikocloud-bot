@@ -1,10 +1,11 @@
-
 import datetime
 import pathlib
 
+import gitverse.commits
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
+from aiogram.utils.i18n import I18n, FSMI18nMiddleware, SimpleI18nMiddleware
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loguru import logger
 
@@ -45,18 +46,23 @@ async def start_bot() -> None:
                 utils.logger.setup_loger("DEBUG")
             case 'file':
                 utils.logger.setup_logger_file(log_file=pathlib.Path(pathlib.Path().cwd(), 'logs',
-                                                             f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'))
+                                                                     f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log'))
 
     # region Инициализация бота и Redis
     bot: Bot = Bot(token=Config.get('TELEGRAM_BOT_API_KEY'), parse_mode='HTML')
     redis: Redis = Redis(host=Config.get('REDIS_HOST'))
     dp: Dispatcher = Dispatcher(storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT)
+
+    # region Локализация
+    i18n = I18n(path='bot/locales', default_locale='ru', domain='messages')
+    i18n_middleware = SimpleI18nMiddleware(i18n=i18n)
     # endregion
 
-
+    # endregion
 
     # region Регистрация MiddleWares
     dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
+    dp.update.middleware(i18n_middleware)
     # endregion
 
     # region Регистрация дополнительного функционала перед запуском бота
@@ -72,13 +78,12 @@ async def start_bot() -> None:
     # dp.include_routers()
     # endregion
 
-    #region Планировщик задач
+    # TODO: ПОФИКСИТЬ
+    # region Планировщик задач
     scheduler: AsyncIOScheduler = AsyncIOScheduler()
-    changelog = await check_changelog(chat_id=5599795627, bot=bot)
-    scheduler.add_job(changelog, trigger='interval', seconds=5)
-    #endregion
-
-
+    #changelog = await check_changelog(chat_id=5599795627, bot=bot)
+    #scheduler.add_job(changelog, trigger='interval', seconds=5)
+    # endregion
 
     # Запускаем бота и пропускаем все накопленные входящие
     try:

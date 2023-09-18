@@ -21,6 +21,7 @@ from bot.keyboards.reply import cancel_kb, auth_kb
 from bot.mics import normalize_phone_number, check_telegram_account_exists
 from bot.mics.helpers.Config import Config
 from bot.states.user.LoginStates import LoginStates
+from aiogram.utils.i18n import lazy_gettext as __
 
 router: Router = Router()
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get('IIKOCLOUD_LOGIN'))
@@ -31,7 +32,7 @@ verification_code = random.randint(1000, 9999)
 
 
 @router.message(Command(commands=['login']), StateFilter(default_state), ~IsAuth())
-@router.message(F.text == '🔑 Авторизация', StateFilter(default_state), ~IsAuth())
+@router.message(F.text == __('🔑 Авторизация'), StateFilter(default_state), ~IsAuth())
 async def login_step_one(msg: Message, state: FSMContext) -> None:
     await msg.answer(text='Пожалуйста, введите номер телефона', reply_markup=cancel_kb())
     await state.set_state(LoginStates.phone_number)
@@ -113,6 +114,6 @@ async def warning_sms_handler(msg: Message):
 
 
 @router.message(Command(commands=['login']), StateFilter(default_state), IsAuth())
-@router.message(F.text == '🔑 Авторизация', StateFilter(default_state), IsAuth())
+@router.message(F.text == __('🔑 Авторизация'), StateFilter(default_state), IsAuth())
 async def auth_registration_step_regtype(msg: Message, state: FSMContext) -> None:
     await msg.answer(text='Вы уже авторизованы!', reply_markup=cabinet_main_kb())

@@ -15,8 +15,6 @@ async def check_changelog(bot: Bot, chat_id):
         changelog_path = 'changelog'.upper()
         last_modified = os.path.getmtime(changelog_path)
 
-        print(last_modified)
-
         # Ждать некоторое время, чтобы убедиться, что файл не изменяется
         time.sleep(2)
 
