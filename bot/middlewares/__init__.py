@@ -1,5 +1,5 @@
 from loguru import logger
-from .database import DbSessionMiddleware
+from .DbSessionMiddleware import DbSessionMiddleware
 
 __all__ = [
     "DbSessionMiddleware"

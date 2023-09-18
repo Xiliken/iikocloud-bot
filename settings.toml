@@ -20,4 +20,7 @@ port=3306
 enabled=true
 debug_type="console" # Console (default), File
 
+[iiko]
+organizations_ids = []
+
 
