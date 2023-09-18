@@ -1,6 +1,6 @@
 from loguru import logger
 
-from .main import __start, router
+from .base_handlers import __start, router
 
 
 logger.info('User handlers are successfully configured')

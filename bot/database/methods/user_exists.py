@@ -1,5 +1,4 @@
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database import create_async_engine, get_async_session_maker
 from bot.database.models.User import User
