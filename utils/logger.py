@@ -33,4 +33,3 @@ def setup_logger_file(log_file: str, level: Union[str, int] = "DEBUG", ignored: 
 
     for ignore in ignored:
         logger.disable(ignore)
-

@@ -13,10 +13,3 @@ class User(Base):
 
     def __repr__(self):
         return f"User(user_id={self.user_id!r}, phone_number={self.phone_number!r} is_admin={self.is_admin!r})"
-
-
-
-
-
-
-

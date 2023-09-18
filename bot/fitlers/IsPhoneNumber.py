@@ -32,5 +32,3 @@ class IsPhoneNumber(BaseFilter, ABC):
 
     def __call__(self, message: Message):
         return self.check(message)
-
-

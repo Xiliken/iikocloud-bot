@@ -5,13 +5,9 @@ import time
 from datetime import datetime
 
 from aiogram import Bot
+from loguru import logger
 
 from bot.mics import notify_admin
-
-
-def read_changelog():
-    with open('changelog'.upper(), "r") as file:
-        return file.read()
 
 
 async def check_changelog(bot: Bot, chat_id):
@@ -26,25 +22,31 @@ async def check_changelog(bot: Bot, chat_id):
         # Проверить, изменился ли файл changelog
         if os.path.getmtime(changelog_path) > last_modified:
             # Если файл изменился, прочитать его содержимое
-            with open(changelog_path, 'r', encoding='utf8') as file:
+            with open(changelog_path, 'r', encoding='cp1251') as file:
                 content = file.read()
 
             # Найти все записи в файле с помощью регулярного выражения
-            entries = re.findall(r'\d+\.\d+\.\d+ \(\d{2}/\d{2}/\d{4}\)\n-*\n.*', content)
+            entries = re.findall(
+                r'(\d+\.\d+\.\d+) \((\d{2}/\d{2}/\d{4})\)\n[-]+\n(.+?)(?=\n+\d+\.\d+\.\d+ \(\d{2}/\d{2}/\d{4}\)\n[-]+\n|$)',
+                content, re.DOTALL)
 
             if entries:
                 # Получить последнюю запись
                 latest_entry = entries[-1]
 
-                # Извлечение версии и даты с помощью регулярного выражения
-                version_date = re.search(r'(\d+\.\d+\.\d+) \((\d{2}/\d{2}/\d{4})\)', latest_entry)
-                version = version_date.group(1)
-                date = datetime.strptime(version_date.group(2), '%m/%d/%Y').strftime('%d.%m.%Y')
+                # Извлечение версии и даты
+                version = latest_entry[0]
+                date_str = latest_entry[1]
+
+                # Преобразование даты в правильный формат
+                date = datetime.strptime(date_str, '%m/%d/%Y').strftime('%d.%m.%Y')
 
                 # Извлечение изменений
-                changes = '\n'.join(latest_entry.split('\n')[2:])
+                changes = latest_entry[2].strip()
 
                 # Форматирование текста сообщения
-                message = f'Вышло новое обновление:\nВерсия: {version} ({date})\n{changes}'
+                message = f'<b>Вышло новое обновление</b>:\n\n<u>Версия</u>: {version} ({date})\n\n{changes}'
 
                 await notify_admin(bot=bot, chat_id=chat_id, message=message)
+
+                logger.info('Сhangelog has been updated. A notification of changes has been sent to Telegram!')

@@ -54,10 +54,3 @@ async def check_telegram_account_exists(message: Message = Message) -> bool:
         user = user.first()
 
         return bool(user)
-
-
-
-
-
-
-

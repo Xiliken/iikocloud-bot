@@ -35,4 +35,3 @@ def contacts_ikb() -> InlineKeyboardMarkup:
     ])
 
     return ikb
-

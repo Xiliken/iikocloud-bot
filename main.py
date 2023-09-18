@@ -10,6 +10,3 @@ if __name__ == "__main__":
         asyncio.run(start_bot())
     except (KeyboardInterrupt, SystemExit):
         logger.error('Bot stopped!')
-
-
-
