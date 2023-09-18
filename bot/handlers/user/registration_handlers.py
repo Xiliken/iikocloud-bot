@@ -71,7 +71,7 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
                             message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД.')
         await state.update_data(phone_number=msg.contact.phone_number)
         await state.set_state(RegistrationStates.sms_code)
-        await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: {msg.contact.phone_number}',
+        await msg.answer(f'Пожалуйста, введите проверочный код, отправленный по СМС на номер: {msg.contact.phone_number}',
                              reply_markup=cancel_kb())
     except Exception as ex:
         print(ex)
@@ -119,7 +119,7 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
                                     f'Вводя его вы даете согласие на обработку ПД')
             await state.set_state(RegistrationStates.sms_code)
             await msg.answer(
-                f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
+                f'Пожалуйста, введите проверочный код, отправленный по СМС на номер: +{normalize_phone_number(msg.text)}',
                 reply_markup=cancel_kb())
         except Exception as ex:
             print(ex)

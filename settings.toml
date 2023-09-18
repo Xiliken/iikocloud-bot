@@ -1,0 +1,23 @@
+[database]
+provider="sqlite"
+host=""
+port=3306
+username=""
+password=""
+db_name=""
+
+[sms_center]
+posts=false
+https=false
+charset="utf-8"
+
+[redis]
+host=""
+port=3306
+
+
+[debug]
+enabled=true
+debug_type="console" # Console (default), File
+
+

@@ -1,23 +1,21 @@
-import asyncio
+
 import datetime
-import logging
 import pathlib
 
-from aiogram import Bot, F, Dispatcher
+from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
 from loguru import logger
-from sqlalchemy.ext.asyncio import async_sessionmaker
 
 import utils
 from bot.database import create_async_engine, init_models, get_async_session_maker
-from bot.database.models.Base import Base
+from bot.handlers import user
 from bot.handlers.user import registration_handlers, other_handlers, cabinet_handlers, login_handlers
 from bot.mics.commands import set_commands
 from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import get_organizations_ids
-from bot.handlers import user, admin
 from bot.middlewares.database import DbSessionMiddleware
+from dynaconf import settings as _settings
 
 
 async def __on_startup(bot: Bot) -> None:
@@ -28,12 +26,6 @@ async def __on_startup(bot: Bot) -> None:
     org_ids = get_organizations_ids()
 
     Config.set('IIKOCLOUD_ORGANIZATIONS_IDS', org_ids)
-
-    # # БД
-    # engine = await create_async_engine(url=Config.get('DATABASE_URL'))
-    # await init_models(engine)
-    # session_maker = get_async_session_maker(engine)
-    # dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
 
 
 async def start_bot() -> None:

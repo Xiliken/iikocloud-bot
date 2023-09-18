@@ -57,7 +57,7 @@ async def login_step_phone_number(msg: Message, state: FSMContext, session: Asyn
             SMSC().send_sms(phones=f'{normalize_phone_number(msg.text)}',
                                  message=f'Код: {str(verification_code)}\nВводя его вы даете согласие на обработку ПД')
             await state.set_state(LoginStates.sms_code)
-            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный на номер: +{normalize_phone_number(msg.text)}',
+            await msg.answer(f'Пожалуйста, введите проверочный код, отправленный по СМС на номер: +{normalize_phone_number(msg.text)}',
                                  reply_markup=cancel_kb())
         except Exception as ex:
             logger.error(ex)
