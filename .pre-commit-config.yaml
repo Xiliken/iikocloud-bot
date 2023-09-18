@@ -1,0 +1,18 @@
+﻿# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    # проверка json файлов
+    -   id: check-json
+    # проверка yaml файлов
+    -   id: check-yaml
+    # проверка toml файлов
+    -   id: check-toml
+    # предупреждает о добавлении больших файлов в Git
+    -   id: check-added-large-files
+    # предотвращает сохранение приватных ключей
+    - id: detect-private-key
