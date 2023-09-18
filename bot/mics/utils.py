@@ -1,5 +1,6 @@
 import re
 import time
+from datetime import datetime
 
 from aiogram import Bot
 from aiogram.types import Message
@@ -53,23 +54,6 @@ async def check_telegram_account_exists(message: Message = Message) -> bool:
         user = user.first()
 
         return bool(user)
-
-
-def read_changelog():
-    with open('changelog'.upper(), "r") as file:
-        return file.read()
-
-
-async def check_changelog(bot: Bot, chat_id):
-    current_content = read_changelog()
-    while True:
-        time.sleep(1)
-        new_content = read_changelog()
-
-        if new_content != current_content:
-            diff = "Вышло новое обновление!\n\n{}".format(new_content)
-            await notify_admin(bot, chat_id, diff)
-            current_content = new_content
 
 
 
