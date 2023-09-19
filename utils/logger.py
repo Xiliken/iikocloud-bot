@@ -18,18 +18,28 @@ class InterceptHandler(logging.Handler):
             frame = frame.f_back
             depth += 1
 
-        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level, record.getMessage()
+        )
 
 
 def setup_loger(level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
-    logging.basicConfig(handlers=[InterceptHandler()], level=logging.getLevelName(level))
+    logging.basicConfig(
+        handlers=[InterceptHandler()], level=logging.getLevelName(level)
+    )
     for ignore in ignored:
         logger.disable(ignore)
 
 
-def setup_logger_file(log_file: str, level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
+def setup_logger_file(
+    log_file: str, level: Union[str, int] = "DEBUG", ignored: List[str] = ""
+):
     logger.remove()  # Удалить стандартные обработчики вывода
-    logger.add(log_file, rotation="500 MB", level=level, )  # Установить файловый обработчик логов
+    logger.add(
+        log_file,
+        rotation="500 MB",
+        level=level,
+    )  # Установить файловый обработчик логов
 
     for ignore in ignored:
         logger.disable(ignore)

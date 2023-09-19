@@ -15,13 +15,13 @@ class CheckDateFilter(BaseFilter):
 
     async def is_valid_date(self, msg: Message):
         # Проверяем формат даты с использованием регулярного выражения
-        date_pattern = r'^\d{2}\.\d{2}.\d{4}$'
+        date_pattern = r"^\d{2}\.\d{2}.\d{4}$"
         if not re.match(date_pattern, msg.text):
             return False
 
         # Пытаемся преобразовать строку в объект datetime
         try:
-            date = datetime.strptime(msg.text, '%d.%m.%Y')
+            date = datetime.strptime(msg.text, "%d.%m.%Y")
 
             # Получаем текущую дату
             current_date = datetime.now()
@@ -32,10 +32,13 @@ class CheckDateFilter(BaseFilter):
             # Проверяем, соответствует ли дата условиям
             if date <= seven_years_ago or date >= current_date:
                 await msg.answer(
-                    _('Вы не можете ввести дату, которая меньше {old_date}, '
-                      'либо больше или равна текущей дате, то есть {current_date}').format(
+                    _(
+                        "Вы не можете ввести дату, которая меньше {old_date}, "
+                        "либо больше или равна текущей дате, то есть {current_date}"
+                    ).format(
                         old_date=seven_years_ago.strftime("%d.%m.%Y"),
-                        current_date=current_date.strftime("%d.%m.%Y"))
+                        current_date=current_date.strftime("%d.%m.%Y"),
+                    )
                 )
                 return False
 

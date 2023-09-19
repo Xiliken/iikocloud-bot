@@ -1,9 +1,8 @@
-from datetime import datetime, timedelta, date
+import json
+from datetime import date, datetime, timedelta
 from typing import Optional, Union
 
 import requests
-import json
-
 from requests import Response
 
 from api.iikocloud.enums import TypeRCI
@@ -18,22 +17,22 @@ class BaseAPI:
 
     # __BASE_URL = "https://api-ru.iiko.services"
 
-    def __init__(self,
-                 api_login: str,
-                 session: Optional[requests.Session] = None,
-                 debug: bool = False,
-                 base_url: str = None,
-                 working_token: str = None,
-                 base_headers: dict = None,
-                 ):
-
+    def __init__(
+        self,
+        api_login: str,
+        session: Optional[requests.Session] = None,
+        debug: bool = False,
+        base_url: str = None,
+        working_token: str = None,
+        base_headers: dict = None,
+    ):
         """
-            :param api_login: Логин авторизации
-            :param session: Объект сессии
-            :param debug: Режим отладки
-            :param base_url: URL IikoCloud API
-            :param working_token: Инициализировать объект на основе рабочего токена, то есть не запрашивая новый
-            :param base_headers: Базовые заголовки запроса для IikoCloud API
+        :param api_login: Логин авторизации
+        :param session: Объект сессии
+        :param debug: Режим отладки
+        :param base_url: URL IikoCloud API
+        :param working_token: Инициализировать объект на основе рабочего токена, то есть не запрашивая новый
+        :param base_headers: Базовые заголовки запроса для IikoCloud API
         """
 
         # Установка сессии
@@ -48,13 +47,17 @@ class BaseAPI:
         self.__time_token: Optional[date] = None
         self.__organizations_ids: Optional[list[str]] = None
         self.__strfdt = "%Y-%m-%d %H:%M:%S.000"
-        self.__base_url = "https://api-ru.iiko.services" if base_url is None else base_url
-        self.__headers = \
-            {
-                "Content-Type": "application/json",
-                "Timeout": "45"
-            } if base_headers is None else base_headers
-        self.__set_token(working_token) if working_token is not None else self.__get_access_token()
+        self.__base_url = (
+            "https://api-ru.iiko.services" if base_url is None else base_url
+        )
+        self.__headers = (
+            {"Content-Type": "application/json", "Timeout": "45"}
+            if base_headers is None
+            else base_headers
+        )
+        self.__set_token(
+            working_token
+        ) if working_token is not None else self.__get_access_token()
         self.__last_data = None
 
     def check_status_code_token(self, code: Union[str, int]):
@@ -85,7 +88,7 @@ class BaseAPI:
             raise CheckTimeToken(
                 self.__class__.__qualname__,
                 self.check_token_time.__name__,
-                f"Не смог запросить или обновить токен!"
+                f"Не смог запросить или обновить токен!",
             )
 
     @property
@@ -124,7 +127,8 @@ class BaseAPI:
             raise SetSession(
                 self.__class__.__qualname__,
                 self.session_s.__name__,
-                f"Не присвоен объект типа requests.Session")
+                f"Не присвоен объект типа requests.Session",
+            )
         else:
             self.__session = session
 
@@ -159,32 +163,40 @@ class BaseAPI:
         """Получить токен доступа"""
         data = json.dumps({"apiLogin": self.api_login})
         try:
-            result = self.session_s.post(f'{self.__base_url}/api/1/access_token', json=data)
+            result = self.session_s.post(
+                f"{self.__base_url}/api/1/access_token", json=data
+            )
             # result = requests.post(f'{self.__base_url}/api/1/access_token', json=data)
 
             response_data: dict = json.loads(result.content)
 
             if (response_data.get("errorDescription", None)) is not None:
-                raise TypeError(f'{response_data}')
+                raise TypeError(f"{response_data}")
 
             if response_data.get("token", None) is not None:
                 self.check_status_code_token(result.status_code)
                 self.__set_token(response_data.get("token", ""))
         except requests.exceptions.RequestException as err:
-            raise TokenException(self.__class__.__qualname__,
-                                 self.access_token.__name__,
-                                 f"Не удалось получить токен доступа:\n {err}")
+            raise TokenException(
+                self.__class__.__qualname__,
+                self.access_token.__name__,
+                f"Не удалось получить токен доступа:\n {err}",
+            )
         except TypeError as err:
-            raise TokenException(self.__class__.__qualname__,
-                                 self.access_token.__name__,
-                                 f"Не удалось получить токен доступа:\n {err}")
+            raise TokenException(
+                self.__class__.__qualname__,
+                self.access_token.__name__,
+                f"Не удалось получить токен доступа:\n {err}",
+            )
 
     def __get_access_token(self):
         out = self.access_token()
         if isinstance(out, CustomErrorModel):
-            raise TokenException(self.__class__.__qualname__,
-                                 self.access_token.__name__,
-                                 f"Не удалось получить токен доступа: \n{out}")
+            raise TokenException(
+                self.__class__.__qualname__,
+                self.access_token.__name__,
+                f"Не удалось получить токен доступа: \n{out}",
+            )
 
     def __set_token(self, token):
         self.__token = token
@@ -197,7 +209,9 @@ class BaseAPI:
         if timeout != self.DEFAULT_TIMEOUT:
             self.timeout = timeout
 
-        response = self.session_s.post(url=f'{self.base_url}{url}', data=json.dumps(data), headers=self.headers)
+        response = self.session_s.post(
+            url=f"{self.base_url}{url}", data=json.dumps(data), headers=self.headers
+        )
 
         if response.status_code == 401:
             self.__get_access_token()
@@ -208,8 +222,13 @@ class BaseAPI:
         del self.timeout
         return response_data
 
-    def organizations(self, organizations_ids: list[str] = None, return_additional_info: bool = False,
-                      includeDisabled: bool = False, timeout=DEFAULT_TIMEOUT) -> Response:
+    def organizations(
+        self,
+        organizations_ids: list[str] = None,
+        return_additional_info: bool = False,
+        includeDisabled: bool = False,
+        timeout=DEFAULT_TIMEOUT,
+    ) -> Response:
         """
         Возвращает список организаций
         :param includeDisabled:
@@ -222,34 +241,41 @@ class BaseAPI:
         data = {}
 
         if organizations_ids is not None:
-            data['organizationIds'] = organizations_ids
+            data["organizationIds"] = organizations_ids
         if return_additional_info:
             data["returnAdditionalInfo"] = return_additional_info
         if includeDisabled:
-            data['includeDisabled'] = includeDisabled
+            data["includeDisabled"] = includeDisabled
 
         try:
             response_data = self._post_request(
-                url=f"/api/1/organizations",
-                data=data,
-                timeout=timeout
+                url=f"/api/1/organizations", data=data, timeout=timeout
             )
 
             return response_data
 
         except requests.exceptions.RequestException as err:
-            raise TokenException(self.__class__.__qualname__,
-                                 self.organizations.__name__,
-                                 f"Не удалось получить организации: \n{err}")
+            raise TokenException(
+                self.__class__.__qualname__,
+                self.organizations.__name__,
+                f"Не удалось получить организации: \n{err}",
+            )
         except TypeError as err:
-            raise TypeError(self.__class__.__qualname__,
-                            self.organizations.__name__,
-                            f"Не удалось получить организации: \n{err}")
+            raise TypeError(
+                self.__class__.__qualname__,
+                self.organizations.__name__,
+                f"Не удалось получить организации: \n{err}",
+            )
 
 
 class Customers(BaseAPI):
-    def customer_info(self, organization_id: str, type: TypeRCI, identifier: str, timeout=BaseAPI.DEFAULT_TIMEOUT):
-
+    def customer_info(
+        self,
+        organization_id: str,
+        type: TypeRCI,
+        identifier: str,
+        timeout=BaseAPI.DEFAULT_TIMEOUT,
+    ):
         """
         Получить информацию о пользователе
         :param organization_id:  id орагнизации
@@ -277,90 +303,90 @@ class Customers(BaseAPI):
 
         try:
             response_data = self._post_request(
-                url=f"/api/1/loyalty/iiko/customer/info",
-                data=data,
-                timeout=timeout
+                url=f"/api/1/loyalty/iiko/customer/info", data=data, timeout=timeout
             )
 
             return response_data
 
         except requests.exceptions.RequestException as err:
-            raise Exception(f'Ошибка получения информации о пользователе!\n\n\n{err}')
+            raise Exception(f"Ошибка получения информации о пользователе!\n\n\n{err}")
         except TypeError as err:
-            raise TypeError(f'{err}')
+            raise TypeError(f"{err}")
 
     def create_or_update_customer(
-            self,
-            organization_id: str,
-            phone: Optional = None,
-            email: Optional[str] = None,
-            card_track: Optional[str] = None,
-            card_number: Optional[str] = None,
-            name: Optional[str] = None,
-            middle_name: Optional[str] = None,
-            sur_name: Optional[str] = None,
-            birthday: Optional[str] = None,
-            sex: Optional[str] = None,
-            consent_status: Optional[str] = None,
-            should_receive_promo_actions_info: Optional[bool] = None,
-            referrer_id: Optional[str] = None,
-            user_data: Optional[str] = None,
-            id: str = None,
-            timeout=BaseAPI.DEFAULT_TIMEOUT):
-
+        self,
+        organization_id: str,
+        phone: Optional = None,
+        email: Optional[str] = None,
+        card_track: Optional[str] = None,
+        card_number: Optional[str] = None,
+        name: Optional[str] = None,
+        middle_name: Optional[str] = None,
+        sur_name: Optional[str] = None,
+        birthday: Optional[str] = None,
+        sex: Optional[str] = None,
+        consent_status: Optional[str] = None,
+        should_receive_promo_actions_info: Optional[bool] = None,
+        referrer_id: Optional[str] = None,
+        user_data: Optional[str] = None,
+        id: str = None,
+        timeout=BaseAPI.DEFAULT_TIMEOUT,
+    ):
         data = {
             "organizationId": organization_id,
         }
 
         if id is not None:
-            data['id'] = id
+            data["id"] = id
         if phone is not None:
-            data['phone'] = phone
+            data["phone"] = phone
         if card_track is not None:
-            data['cardTrack'] = card_track
+            data["cardTrack"] = card_track
         if card_number is not None:
-            data['cardNumber'] = card_number
+            data["cardNumber"] = card_number
         if name is not None:
-            data['name'] = name
+            data["name"] = name
         if middle_name is not None:
-            data['middleName'] = middle_name
+            data["middleName"] = middle_name
         if sur_name is not None:
-            data['surName'] = sur_name
+            data["surName"] = sur_name
         if birthday is not None:
-            data['birthday'] = birthday
+            data["birthday"] = birthday
         if email is not None:
-            data['email'] = email
+            data["email"] = email
         if sex is not None:
-            data['sex'] = sex
+            data["sex"] = sex
         if consent_status is not None:
-            data['consentStatus'] = consent_status
+            data["consentStatus"] = consent_status
         if should_receive_promo_actions_info is not None:
-            data['shouldReceivePromoActionsInfo'] = should_receive_promo_actions_info
+            data["shouldReceivePromoActionsInfo"] = should_receive_promo_actions_info
         if referrer_id is not None:
-            data['referrerId'] = referrer_id
+            data["referrerId"] = referrer_id
         if user_data is not None:
-            data['userData'] = user_data
+            data["userData"] = user_data
 
         try:
             return self._post_request(
                 url="/api/1/loyalty/iiko/customer/create_or_update",
                 data=data,
-                timeout=timeout
+                timeout=timeout,
             )
         except requests.exceptions.RequestException as err:
-            raise requests.exceptions.RequestException(f"Не удалось создать или обновить клиента: \n{err}")
+            raise requests.exceptions.RequestException(
+                f"Не удалось создать или обновить клиента: \n{err}"
+            )
         except TypeError as err:
             raise TypeError(f"Не удалось: \n{err}")
 
     def refill_customer_balance(
-            self,
-            organization_id: str,
-            customer_id: str = None,
-            wallet_id: Optional[str] = None,
-            sum: float = None,
-            comment: Optional[str] = None,
-            timeout=BaseAPI.DEFAULT_TIMEOUT):
-
+        self,
+        organization_id: str,
+        customer_id: str = None,
+        wallet_id: Optional[str] = None,
+        sum: float = None,
+        comment: Optional[str] = None,
+        timeout=BaseAPI.DEFAULT_TIMEOUT,
+    ):
         """
         Начислить пользователю средств на баланс
         :param organization_id: id организации
@@ -376,19 +402,19 @@ class Customers(BaseAPI):
         }
 
         if customer_id is not None:
-            data['customerId'] = customer_id,
+            data["customerId"] = (customer_id,)
         if wallet_id is not None:
-            data['walletId'] = wallet_id
+            data["walletId"] = wallet_id
         if sum is not None:
-            data['sum'] = abs(sum)
+            data["sum"] = abs(sum)
         if comment is not None:
-            data['comment'] = comment
+            data["comment"] = comment
 
         try:
             return self._post_request(
                 url="/api/1/loyalty/iiko/customer/wallet/topup/",
                 data=data,
-                timeout=timeout
+                timeout=timeout,
             )
         except:
             pass

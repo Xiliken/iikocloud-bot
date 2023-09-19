@@ -19,11 +19,13 @@ class IsAuth(BaseFilter):
         return await self.check_user(message)
 
     async def check_user(self, msg: Message):
-        engine = await create_async_engine(url=Config.get('DATABASE_URL'))
+        engine = await create_async_engine(url=Config.get("DATABASE_URL"))
         session_maker = get_async_session_maker(engine)
 
         async with session_maker.begin() as conn:
-            user = await conn.scalars(select(User).where(User.user_id == msg.from_user.id))
+            user = await conn.scalars(
+                select(User).where(User.user_id == msg.from_user.id)
+            )
             user = user.first()
 
         return bool(user)

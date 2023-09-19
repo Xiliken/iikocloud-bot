@@ -1,5 +1,5 @@
 from loguru import logger
 
-from .user import router, __start
+from .user import __start, router
 
-logger.info('All handlers are successfully configured')
+logger.info("All handlers are successfully configured")

@@ -4,10 +4,7 @@ from aiogram.types import BotCommand, BotCommandScopeDefault
 
 async def set_commands(bot: Bot) -> None:
     commands = [
-        BotCommand(
-            command='start',
-            description='Запустить бота'
-        ),
+        BotCommand(command="start", description="Запустить бота"),
         # BotCommand(
         #     command='help',
         #     description='Помощь по боту'
@@ -16,18 +13,12 @@ async def set_commands(bot: Bot) -> None:
         #     command='balance',
         #     description='Мои бонусы'
         # ),
-        BotCommand(
-            command='contacts',
-            description='Контакты организации'
-        ),
+        BotCommand(command="contacts", description="Контакты организации"),
         # BotCommand(
         #     command='sales',
         #     description='Доступные акции'
         # ),
-        BotCommand(
-            command='chat',
-            description='Чат с оператором'
-        ),
+        BotCommand(command="chat", description="Чат с оператором"),
         # BotCommand(
         #     command='register',
         #     description='Создать аккаунт'

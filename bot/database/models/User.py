@@ -1,13 +1,15 @@
-from sqlalchemy import Column,  String, BigInteger, Boolean
+from sqlalchemy import BigInteger, Boolean, Column, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from bot.database.models.Base import Base
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
-    user_id: Mapped[int] = mapped_column(primary_key=True, unique=True, autoincrement=False)
+    user_id: Mapped[int] = mapped_column(
+        primary_key=True, unique=True, autoincrement=False
+    )
     is_admin: Mapped[bool] = mapped_column(default=0)
     phone_number: Mapped[str] = mapped_column(nullable=False, unique=True)
 

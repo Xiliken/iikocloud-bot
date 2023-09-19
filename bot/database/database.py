@@ -14,7 +14,7 @@ async def create_async_engine(url: URL | str) -> AsyncEngine:
     :param url: url для подключения к БД
     :return: AsyncEngine
     """
-    return _create_async_engine(url=url, echo=Config.get('DEBUG', 'bool'))
+    return _create_async_engine(url=url, echo=Config.get("DEBUG", "bool"))
 
 
 async def init_models(engine: AsyncEngine):
@@ -24,8 +24,5 @@ async def init_models(engine: AsyncEngine):
 
 def get_async_session_maker(engine: AsyncEngine):
     return async_sessionmaker(
-        engine,
-        class_=AsyncSession,
-        expire_on_commit=False,
-        future=True
+        engine, class_=AsyncSession, expire_on_commit=False, future=True
     )

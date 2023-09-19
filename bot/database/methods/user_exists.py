@@ -6,7 +6,7 @@ from bot.mics.helpers.Config import Config
 
 
 async def user_exists(id: str | int):
-    engine = await create_async_engine(url=Config.get('DATABASE_URL'))
+    engine = await create_async_engine(url=Config.get("DATABASE_URL"))
     session_maker = get_async_session_maker(engine)
 
     async with session_maker.begin() as conn:

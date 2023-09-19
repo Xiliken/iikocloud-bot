@@ -1,7 +1,8 @@
 from decimal import Decimal
 from enum import Enum
+from typing import Any, List, Optional, Union
+
 from pydantic import BaseModel, Field
-from typing import Optional, List, Union, Any
 
 
 class IdNameModel(BaseModel):
@@ -13,11 +14,11 @@ class IdNameModel(BaseModel):
 
 
 class BaseResponseModel(BaseModel):
-    correlation_id: Optional[str] = Field(alias='correlationId')
+    correlation_id: Optional[str] = Field(alias="correlationId")
 
 
 class ErrorModel(BaseResponseModel):
-    error_description: Optional[str] = Field(alias='errorDescription')
+    error_description: Optional[str] = Field(alias="errorDescription")
     error: Optional[str]
 
 
@@ -43,18 +44,28 @@ class OrganizationModel(IdNameModel):
     use_uae_addressing_system: Optional[bool] = Field(alias="useUaeAddressingSystem")
     version: Optional[str]
     currency_iso_name: Optional[str] = Field(alias="currencyIsoName")
-    currency_minimum_denomination: Optional[Decimal] = Field(alias="currencyMinimumDenomination")
+    currency_minimum_denomination: Optional[Decimal] = Field(
+        alias="currencyMinimumDenomination"
+    )
     country_phone_code: Optional[str] = Field(alias="countryPhoneCode")
-    marketing_source_required_in_delivery: Optional[bool] = Field(alias="marketingSourceRequiredInDelivery")
+    marketing_source_required_in_delivery: Optional[bool] = Field(
+        alias="marketingSourceRequiredInDelivery"
+    )
     default_delivery_city_id: Optional[str] = Field(alias="defaultDeliveryCityId")
     delivery_city_ids: Optional[List[str]] = Field(alias="deliveryCityIds")
     delivery_service_type: Optional[str] = Field(alias="deliveryServiceType")
-    default_call_center_payment_type_id: Optional[str] = Field(alias="defaultCallCenterPaymentTypeId")
+    default_call_center_payment_type_id: Optional[str] = Field(
+        alias="defaultCallCenterPaymentTypeId"
+    )
     order_item_comment_enabled: Optional[bool] = Field(alias="orderItemCommentEnabled")
     inn: Optional[str]
-    addressFormatType: Optional[OAddressFormatTypeEnum] = Field(alias="addressFormatType")
+    addressFormatType: Optional[OAddressFormatTypeEnum] = Field(
+        alias="addressFormatType"
+    )
     is_confirmation_enabled: Optional[bool] = Field(alias="isConfirmationEnabled")
-    confirm_allowed_interval_in_minutes: Optional[int] = Field(alias="confirmAllowedIntervalInMinutes")
+    confirm_allowed_interval_in_minutes: Optional[int] = Field(
+        alias="confirmAllowedIntervalInMinutes"
+    )
     response_type: ResponseTypeEnum = Field(alias="responseType")
 
     def __str__(self):

@@ -1,8 +1,7 @@
 from loguru import logger
+
 from .DbSessionMiddleware import DbSessionMiddleware
 
-__all__ = [
-    "DbSessionMiddleware"
-]
+__all__ = ["DbSessionMiddleware"]
 
-logger.info('Middlewares are successfully configured')
+logger.info("Middlewares are successfully configured")
