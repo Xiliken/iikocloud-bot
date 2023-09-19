@@ -81,8 +81,7 @@ async def start_bot() -> None:
     # TODO: ПОФИКСИТЬ
     # region Планировщик задач
     scheduler: AsyncIOScheduler = AsyncIOScheduler()
-    #changelog = await check_changelog(chat_id=5599795627, bot=bot)
-    #scheduler.add_job(changelog, trigger='interval', seconds=5)
+    scheduler.add_job(check_changelog, trigger='interval', seconds=5, args=(bot,))
     # endregion
 
     # Запускаем бота и пропускаем все накопленные входящие
