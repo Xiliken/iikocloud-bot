@@ -33,8 +33,9 @@ class CheckDateFilter(BaseFilter):
             if date <= seven_years_ago or date >= current_date:
                 await msg.answer(
                     _('Вы не можете ввести дату, которая меньше {old_date}, '
-                       'либо больше или равна текущей дате, то есть {current_date}').format(old_date=seven_years_ago.strftime("%d.%m.%Y"),
-                                                                                                                 current_date=current_date.strftime("%d.%m.%Y"))
+                      'либо больше или равна текущей дате, то есть {current_date}').format(
+                        old_date=seven_years_ago.strftime("%d.%m.%Y"),
+                        current_date=current_date.strftime("%d.%m.%Y"))
                 )
                 return False
 

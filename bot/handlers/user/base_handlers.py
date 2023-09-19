@@ -19,8 +19,6 @@ from aiogram.utils.i18n import gettext as _
 router: Router = Router()
 
 
-
-
 # Обработчик команды "/start"
 @router.message(CommandStart(), StateFilter(default_state))
 async def __start(msg: Message, session: AsyncSession) -> None:
@@ -33,15 +31,16 @@ async def __start(msg: Message, session: AsyncSession) -> None:
     # Если такой пользователь уже существует
     if sql.scalar():
         await msg.answer(_("С возвращением, <b>{first_name}</b>\n"
-                         f"✅ Вы уже авторизованы в системе!\n"
-                         f"Продолжайте работу с ботом 😄").format(first_name=user.first_name),
+                           f"✅ Вы уже авторизованы в системе!\n"
+                           f"Продолжайте работу с ботом 😄").format(first_name=user.first_name),
                          reply_markup=cabinet_main_kb(), parse_mode='HTML')
     else:
         # Добавление нового пользователя
         # await session.merge(User(user_id=user_id, is_admin=False))
-        await msg.answer(f"Привет! Я чат-бот стрит фуд ресторана <b><a href='https://doners-club.ru'>Донерс</a></b>.\n"
-                         "Со мной тебя ждут скидки и специальные цены на продукцию, кэшбэк с каждой покупки, бонусы за отзывы и оценку заказов.\n\n"
-                         f"Авторизуйся 1 раз и получай все преимущества \"DonersClub\" 😎",
+        await msg.answer(_("Привет! Я чат-бот стрит фуд-ресторана <b><a href='https://doners-club.ru'>Донерс</a></b>.\n"
+                           "Со мной тебя ждут скидки и специальные цены на продукцию, кэшбэк с каждой покупки, "
+                           "бонусы за отзывы и оценку заказов.\n\n"
+                           "Авторизуйся 1 раз и получай все преимущества \"Doners-club\" 😎"),
                          parse_mode='HTML', disable_web_page_preview=True, reply_markup=auth_kb()
                          )
 
@@ -58,14 +57,14 @@ async def menu_handler(message: Message):
 @router.message(F.text == __('Чат'))
 @router.message(Command(commands=['chat']))
 async def chat_handler(msg: Message) -> None:
-    await msg.answer('Нажми на кнопку и напиши свой вопрос', reply_markup=chat_inline_kb())
+    await msg.answer(_('Нажми на кнопку и напиши свой вопрос'), reply_markup=chat_inline_kb())
 
 
 # Обработчик кнопки и команды "Контакты"
 @router.message(F.text == __('Контакты'))
 @router.message(Command(commands=['contacts', 'contact']))
 async def chat_handler(msg: Message) -> None:
-    await msg.answer('Выбери ресторан:', reply_markup=contacts_ikb())
+    await msg.answer(_('Выбери ресторан:'), reply_markup=contacts_ikb())
 
 # Обработчик остальных сообщений
 # TODO: Нужно сделать так, чтобы он всегда шел последним хендлером, тогда только вернуть его в работу

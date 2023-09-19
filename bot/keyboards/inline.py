@@ -1,10 +1,11 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from aiogram.utils.i18n import gettext as _
 
 def chat_inline_kb() -> InlineKeyboardMarkup:
     ikb: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=
     [
         [
-            InlineKeyboardButton(text='Позвать человека', url='https://t.me/done_help')
+            InlineKeyboardButton(text=_('Позвать человека'), url='https://t.me/done_help')
         ]
     ])
 
@@ -15,7 +16,7 @@ def sell_inline_kb() -> InlineKeyboardMarkup:
     ikb: InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard=
     [
         [
-            InlineKeyboardButton(text='К покупкам', web_app=WebAppInfo(url='https://doners-club.ru/?category=shaurma'))
+            InlineKeyboardButton(text=_('К покупкам'), web_app=WebAppInfo(url='https://doners-club.ru/?category=shaurma'))
         ]
     ])
 
