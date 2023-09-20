@@ -420,5 +420,10 @@ class Customers(BaseAPI):
             pass
 
 
-class IikoCloudAPI(Customers):
+class Order(BaseAPI):
+    def retrieve_order_by_tables(self):
+        pass
+
+
+class IikoCloudAPI(Customers, Order):
     pass

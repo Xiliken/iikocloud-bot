@@ -22,9 +22,6 @@ auth_router: Router = Router()
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get("IIKOCLOUD_LOGIN"))
 
 
-# TODO: Проверить, что пользователь авторизован
-
-
 @router.message(F.text == __("Бонусная карта"), IsAuth())
 async def profile_handler(msg: Message, session: AsyncSession):
     bot = msg.bot
@@ -40,8 +37,6 @@ async def profile_handler(msg: Message, session: AsyncSession):
             identifier=user.phone_number,
             type=TypeRCI.phone,
         )
-
-        print(f"Номер телефона {user.phone_number}")
 
         generate_qr(text=profile_info["phone"], use_logo=False)
 

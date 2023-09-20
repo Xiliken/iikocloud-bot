@@ -19,14 +19,8 @@ async def set_commands(bot: Bot) -> None:
         #     description='Доступные акции'
         # ),
         BotCommand(command="chat", description="Чат с оператором"),
-        # BotCommand(
-        #     command='register',
-        #     description='Создать аккаунт'
-        # ),
-        # BotCommand(
-        #     command='login',
-        #     description='Войти в аккаунт'
-        # )
+        BotCommand(command="register", description="Создать аккаунт"),
+        BotCommand(command="login", description="Войти в аккаунт"),
     ]
 
     await bot.set_my_commands(commands, BotCommandScopeDefault())
