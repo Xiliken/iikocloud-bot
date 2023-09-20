@@ -1,5 +1,4 @@
 import ast
-from ctypes import Union
 from os import getenv
 from typing import Dict, List, Union
 
@@ -11,7 +10,7 @@ class Config:
     @staticmethod
     def get(
         key: str, value_type: str = "str"
-    ) -> Union[str, bool, list[str], dict[str, str], int, float, None]:
+    ) -> Union[str, bool, List[str], Dict[str, str], int, float, None]:
         # Загрузка env
         load_dotenv(find_dotenv())
         value = getenv(str(key))

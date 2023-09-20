@@ -11,7 +11,6 @@ from aiogram.utils.i18n import lazy_gettext as __
 from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.database.methods.user_exists import user_exists
 from bot.database.models.User import User
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
@@ -39,7 +38,7 @@ async def __start(msg: Message, session: AsyncSession, state: FSMContext) -> Non
         await msg.answer(
             _(
                 "С возвращением, <b>{first_name}</b>\n"
-                "✅ Вы уже авторизованы в системеpip install isort[requirements_deprecated_finder,pipfile_deprecated_finder]!\n"
+                "✅ Вы уже авторизованы в системе!\n"
                 "Продолжайте работу с ботом 😄"
             ).format(first_name=user.first_name),
             reply_markup=cabinet_main_kb(),

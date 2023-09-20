@@ -23,7 +23,7 @@ class InterceptHandler(logging.Handler):
         )
 
 
-def setup_loger(level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
+def setup_logger(level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
     logging.basicConfig(
         handlers=[InterceptHandler()], level=logging.getLevelName(level)
     )

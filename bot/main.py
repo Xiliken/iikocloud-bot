@@ -1,7 +1,6 @@
 import datetime
 import pathlib
 
-import gitverse.commits
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
@@ -46,17 +45,17 @@ async def start_bot() -> None:
 
     # Дебаг
     if Config.get("DEBUG", "bool"):
-        match str(Config.get("LOG_TYPE")).lower() or "console":
-            case "console":
-                utils.logger.setup_loger("DEBUG")
-            case "file":
-                utils.logger.setup_logger_file(
-                    log_file=pathlib.Path(
-                        pathlib.Path().cwd(),
-                        "logs",
-                        f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log',
-                    )
-                )
+        log_type = str(Config.get("LOG_TYPE")).lower()
+
+        if log_type == "console":
+            utils.logger.setup_logger("DEBUG")
+        elif log_type == "file":
+            log_file = pathlib.Path(
+                pathlib.Path().cwd(),
+                "logs",
+                f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log',
+            )
+            utils.logger.setup_logger_file(log_file)
 
     # region Инициализация бота и Redis
     bot: Bot = Bot(token=Config.get("TELEGRAM_BOT_API_KEY"), parse_mode="HTML")
@@ -93,7 +92,7 @@ async def start_bot() -> None:
     # TODO: ПОФИКСИТЬ
     # region Планировщик задач
     scheduler: AsyncIOScheduler = AsyncIOScheduler()
-    scheduler.add_job(check_changelog, trigger="interval", seconds=5, args=(bot,))
+    # scheduler.add_job(check_changelog, trigger="interval", seconds=5, args=(bot,))
     # endregion
 
     # Запускаем бота и пропускаем все накопленные входящие

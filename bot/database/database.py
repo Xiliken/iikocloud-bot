@@ -1,4 +1,5 @@
 """Методы для работы с БД"""
+from typing import Union
 
 from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
@@ -8,7 +9,7 @@ from bot.database.models.Base import Base
 from bot.mics.helpers.Config import Config
 
 
-async def create_async_engine(url: URL | str) -> AsyncEngine:
+async def create_async_engine(url: Union[URL, str]) -> AsyncEngine:
     """
     Создания соединения с БД
     :param url: url для подключения к БД

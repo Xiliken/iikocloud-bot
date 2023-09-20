@@ -1,14 +1,9 @@
-import json
 import os
 
 from aiogram import F, Router
-from aiogram.filters import Command, StateFilter
-from aiogram.fsm.state import default_state
 from aiogram.types import FSInputFile, Message
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
-from path import Path
-from PIL import Image
 from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
