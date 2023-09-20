@@ -59,7 +59,9 @@ async def start_bot() -> None:
 
     # region Инициализация бота и Redis
     bot: Bot = Bot(token=Config.get("TELEGRAM_BOT_API_KEY"), parse_mode="HTML")
-    redis: Redis = Redis(host=Config.get("REDIS_HOST"))
+    redis: Redis = Redis(
+        host=Config.get("REDIS_HOST"), port=Config.get("REDIS_PORT") or 6379
+    )
     dp: Dispatcher = Dispatcher(
         storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT
     )

@@ -31,7 +31,7 @@ iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get("IIKOCLOUD_LOGIN"))
 
 MAX_SMS_ATTEMPTS = 3
 attempts = {}  # Количество попыток ввода кода
-verification_code = random.randint(1000, 9999)
+# verification_code = random.randint(1000, 9999)
 
 
 # Обработка регистрации
@@ -82,13 +82,17 @@ async def registration_step_telegram(msg: Message, state: FSMContext):
 
     # Устанавливаем состояния ожидания введения смс
     try:
+        verification_code = random.randint(1000, 9999)
+
         SMSC().send_sms(
             phones=f"{msg.contact.phone_number}",
             message=_(
                 "Код: {verification_code}\nВводя его вы даете согласие на обработку ПД."
             ).format(verification_code=str(verification_code)),
         )
+        await state.update_data()
         await state.update_data(phone_number=msg.contact.phone_number)
+        await state.update_data(verification_code=verification_code)
         await state.set_state(RegistrationStates.sms_code)
         await msg.answer(
             f"Пожалуйста, введите проверочный код, отправленный по СМС на номер: {msg.contact.phone_number}",
@@ -146,6 +150,7 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
     else:
         # Устанавливаем состояния ожидания ввода смс
         try:
+            verification_code = random.randint(1000, 9999)
             # Вывод кода подтверждения в дебаге
             if Config.get("DEBUG", "bool"):
                 logger.debug(f"Код подтверждения: {verification_code}")
@@ -157,6 +162,7 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
                     "Вводя его вы даете согласие на обработку ПД"
                 ).format(verification_code=str(verification_code)),
             )
+            await state.update_data(verification_code=verification_code)
             await state.set_state(RegistrationStates.sms_code)
             await msg.answer(
                 _(
@@ -174,15 +180,16 @@ async def check_phone_number_handler(msg: Message, state: FSMContext):
 @router.message(StateFilter(RegistrationStates.sms_code), F.text.isdigit())
 async def registration_step_sms(msg: Message, state: FSMContext, session: AsyncSession):
     user_id = msg.from_user.id
+    data = await state.get_data()
 
     # Получаем текущее количество попыток из базы данных или переменной
     current_attempts = attempts.get(user_id, MAX_SMS_ATTEMPTS - 1)
 
     # Вывод кода подтверждения в дебаге
     if Config.get("DEBUG", "bool"):
-        logger.debug(f"Код подтверждения: {verification_code}")
+        logger.debug(f"Код подтверждения: {data.get('verification_code')}")
 
-    if msg.text == str(verification_code):
+    if msg.text == str(data.get("verification_code")):
         # Код верен, выполните необходимые действия
         await msg.answer(_("🟢 Код успешно подтвержден!"))
         attempts[user_id] = None  # Сброс количества попыток

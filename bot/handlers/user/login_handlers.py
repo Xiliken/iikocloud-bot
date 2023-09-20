@@ -29,7 +29,7 @@ iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get("IIKOCLOUD_LOGIN"))
 
 MAX_SMS_ATTEMPTS = 3
 attempts = {}  # Количество попыток ввода кода
-verification_code = random.randint(1000, 9999)
+# verification_code = random.randint(1000, 9999)
 
 
 @router.message(Command(commands=["login"]), StateFilter(default_state), ~IsAuth())
@@ -63,13 +63,8 @@ async def login_step_phone_number(
 
     if bot.mics.iikoapi.check_iiko_user_exists(iiko_user):
         try:
-            await session.merge(
-                User(
-                    user_id=msg.from_user.id,
-                    phone_number=normalize_phone_number(msg.text),
-                    is_admin=False,
-                )
-            )
+            verification_code = random.randint(1000, 9999)
+
             (
                 SMSC().send_sms(
                     phones=f"{normalize_phone_number(msg.text)}",
@@ -78,6 +73,9 @@ async def login_step_phone_number(
                     ).format(verification_code=str(verification_code)),
                 )
             )
+            await state.update_data(verification_code=verification_code)
+            await state.update_data(phone_number=normalize_phone_number(msg.text))
+
             await state.set_state(LoginStates.sms_code)
             await msg.answer(
                 _(
@@ -104,6 +102,8 @@ async def login_step_phone_number(
 @router.message(StateFilter(LoginStates.sms_code), F.text.isdigit())
 async def login_step_sms(msg: Message, state: FSMContext, session: AsyncSession):
     user_id = msg.from_user.id
+    data = await state.get_data()
+    verification_code = data.get("verification_code")
 
     # Получаем текущее количество попыток из базы данных или переменной
     current_attempts = attempts.get(user_id, MAX_SMS_ATTEMPTS - 1)
@@ -116,10 +116,19 @@ async def login_step_sms(msg: Message, state: FSMContext, session: AsyncSession)
         # Код верен, выполните необходимые действия
         await msg.answer(_("🟢 Код успешно подтвержден!"))
         attempts[user_id] = None  # Сброс количества попыток
+        await session.merge(
+            User(
+                user_id=msg.from_user.id,
+                phone_number=normalize_phone_number(data.get("phone_number")),
+                is_admin=False,
+            )
+        )
         await session.commit()
         await msg.answer(
             _("✔️Авторизация успешно завершена!"), reply_markup=cabinet_main_kb()
         )
+
+        data.clear()  # Очищаем хранилище
 
         # Сброс состояния
         await state.clear()

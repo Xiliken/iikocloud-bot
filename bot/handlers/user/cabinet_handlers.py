@@ -41,6 +41,8 @@ async def profile_handler(msg: Message, session: AsyncSession):
             type=TypeRCI.phone,
         )
 
+        print(f"Номер телефона {user.phone_number}")
+
         generate_qr(text=profile_info["phone"], use_logo=False)
 
         photo = FSInputFile("qr_code.png")
