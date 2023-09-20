@@ -1,5 +1,3 @@
-from typing import Optional
-
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 from sqlalchemy import select

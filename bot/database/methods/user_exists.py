@@ -14,4 +14,3 @@ async def user_exists(id: Union[str, int]):
     async with session_maker.begin() as conn:
         user = await conn.scalars(select(User).where(User.user_id == msg.from_user.id))
         user = user.first()
-    pass

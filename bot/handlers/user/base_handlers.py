@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from aiogram import Bot, F, Router
 from aiogram.filters import Command, CommandObject, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext

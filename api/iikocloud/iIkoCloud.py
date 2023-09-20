@@ -418,7 +418,6 @@ class Customers(BaseAPI):
             )
         except:
             pass
-        pass
 
 
 class IikoCloudAPI(Customers):

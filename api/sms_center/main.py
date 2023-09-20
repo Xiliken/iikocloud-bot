@@ -1,6 +1,3 @@
-import smtplib
-from datetime import datetime
-from time import sleep
 from typing import Optional
 
 import requests
@@ -8,10 +5,9 @@ import requests
 from bot.mics.helpers.Config import Config
 
 try:
-    from urllib import quote, urlopen
+    from urllib import quote
 except ImportError:
     from urllib.parse import quote
-    from urllib.request import urlopen
 
 # Константы для настройки библиотеки
 SMSC_LOGIN = Config.get("SMSC_LOGIN")  # логин клиента

@@ -1,6 +1,5 @@
 import re
 from abc import ABC
-from ctypes import Union
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message

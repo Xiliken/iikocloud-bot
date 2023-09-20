@@ -3,7 +3,7 @@ from datetime import datetime
 
 from aiogram import F, Router
 from aiogram.enums import ContentType
-from aiogram.filters import *
+from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import Message
@@ -31,7 +31,6 @@ iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get("IIKOCLOUD_LOGIN"))
 
 MAX_SMS_ATTEMPTS = 3
 attempts = {}  # Количество попыток ввода кода
-# verification_code = random.randint(1000, 9999)
 
 
 # Обработка регистрации

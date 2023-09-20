@@ -1,8 +1,7 @@
 ﻿# See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
--
-    repo: https://github.com/pre-commit/pre-commit-hooks
+-   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
     -   id: trailing-whitespace
@@ -17,14 +16,23 @@ repos:
     -   id: check-added-large-files
     # предотвращает сохранение приватных ключей
     - id: detect-private-key
--
-    repo: 'https://github.com/psf/black'
+    - id: requirements-txt-fixer
+    - id: check-merge-conflict
+-   repo: https://github.com/psf/black
     rev: 23.9.1
     hooks:
         - id: black
--
-    repo: 'https://github.com/pycqa/isort'
+-   repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
         - id: isort
           args: ["--profile", "black", "--filter-files"]
+-   repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+    -   id: autoflake
+-   repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+    -   id: detect-secrets
+        exclude: package.lock.json
