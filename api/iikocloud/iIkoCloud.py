@@ -1,6 +1,6 @@
 import json
 from datetime import date, datetime, timedelta
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 import requests
 from requests import Response
@@ -416,8 +416,12 @@ class Customers(BaseAPI):
                 data=data,
                 timeout=timeout,
             )
-        except:
-            pass
+        except requests.exceptions.RequestException as err:
+            raise requests.exceptions.RequestException(
+                f"Не удалось создать или обновить клиента: \n{err}"
+            )
+        except TypeError as err:
+            raise TypeError(f"Не удалось: \n{err}")
 
 
 class Order(BaseAPI):
@@ -425,5 +429,102 @@ class Order(BaseAPI):
         pass
 
 
-class IikoCloudAPI(Customers, Order):
+class Deliveries(BaseAPI):
+    def retrieve_orders_by_date_and_status(
+        self,
+        organization_id: List[str],
+        delivery_date_from: Union[datetime, str],
+        delivery_date_to: Union[datetime, str] = None,
+        statuses: list = None,
+        source_keys: list = None,
+        timeout=BaseAPI.DEFAULT_TIMEOUT,
+    ) -> Response:
+        """
+        Возвращает список заказов по дате и статусу
+        :param organization_id: id организации
+        :param delivery_date_from: дата начала заказов в формате yyyy-MM-dd HH:mm:ss.fff
+        :param delivery_date_to: дата окончания заказов в формате yyyy-MM-dd HH:mm:ss.fff
+        :param statuses: список статусов заказов. Список: "Unconfirmed", "WaitCooking", "ReadyForCooking", "CookingStarted", "CookingCompleted", "Waiting", "OnWay", "Delivered", "Closed", "Cancelled"
+        :param source_keys: список источников заказов
+        :param timeout: время ожидания запроса
+        :return:
+        """
+
+        # https://api-ru.iiko.services/api/1/deliveries/by_delivery_date_and_status
+
+        data = {
+            "organizationIds": organization_id,
+        }
+
+        if isinstance(delivery_date_from, datetime):
+            data["deliveryDateFrom"] = delivery_date_from.strftime(self.strfdt)
+        elif isinstance(delivery_date_from, str):
+            data["deliveryDateFrom"] = delivery_date_from
+
+        if isinstance(delivery_date_to, datetime):
+            data["deliveryDateTo"] = delivery_date_to.strftime(self.strfdt)
+        elif isinstance(delivery_date_to, str):
+            data["deliveryDateTo"] = delivery_date_to
+        if delivery_date_to is not None:
+            if isinstance(delivery_date_to, datetime):
+                data["deliveryDateTo"] = delivery_date_to.strftime(self.strfdt)
+            elif isinstance(delivery_date_to, str):
+                data["deliveryDateTo"] = delivery_date_to
+            else:
+                raise TypeError("type delivery_date_to != datetime or str")
+
+        if statuses is not None:
+            if not isinstance(statuses, list):
+                raise TypeError("type statuses!= list")
+            data["statuses"] = statuses
+
+        if source_keys is not None:
+            if not isinstance(source_keys, list):
+                raise TypeError("type source_keys!= list")
+            data["sourceKeys"] = source_keys
+
+        try:
+            return self._post_request(
+                url="/api/1/deliveries/by_delivery_date_and_status",
+                data=data,
+                timeout=timeout,
+            )
+        except requests.exceptions.RequestException as err:
+            raise requests.exceptions.RequestException(
+                f"Не удалось получить список заказов по дате и статусу: \n{err}"
+            )
+        except TypeError as err:
+            raise TypeError(
+                f"Ошибка в методе retrieve_orders_by_date_and_status: \n{err}"
+            )
+
+
+class Dictionaries(BaseAPI):
+    def discounts(
+        self,
+        organization_ids: List[str],
+        timeout=BaseAPI.DEFAULT_TIMEOUT,
+    ) -> Response:
+        if not bool(organization_ids):
+            raise TypeError("Пустой список организаций")
+
+        data = {
+            "organizationIds": organization_ids,
+        }
+
+        try:
+            return self._post_request(
+                url="/api/1/discounts",
+                data=data,
+                timeout=timeout,
+            )
+        except requests.exceptions.RequestException as err:
+            raise requests.exceptions.RequestException(
+                f"Не удалось получить скидки/надбавки: \n{err}"
+            )
+        except TypeError as err:
+            raise TypeError(f"Ошибка в методе discounts: \n{err}")
+
+
+class IikoCloudAPI(Customers, Order, Deliveries, Dictionaries):
     pass

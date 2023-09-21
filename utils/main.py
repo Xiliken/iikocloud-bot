@@ -2,6 +2,9 @@ import re
 from datetime import datetime
 from typing import Optional
 
+from qrcode.image.styledpil import StyledPilImage
+from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
+
 
 def generate_qr(text: str, use_logo: Optional[bool] = False) -> None:
     import qrcode
@@ -9,33 +12,33 @@ def generate_qr(text: str, use_logo: Optional[bool] = False) -> None:
 
     # Создаем QR code
     QRcode = qrcode.QRCode(
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        # box_size=10
     )
 
     QRcode.add_data(text)
+    QRcode.make()
 
     # Создание изображения
     if use_logo:
-        QRcode.make()
-        QRImg = QRcode.make_image(
-            back_color=(255, 255, 255), fill_color=(0, 0, 0)
-        ).convert("RGB")
+        QRImg = QRcode.make_image().convert("RGB")
 
         # Открываем логотип
-        logo = Image.open("logo.png")
+        logo = Image.open("logo.jpg")
+        basewidth = 70
 
-        # Масштабируйте логотип до указанного размера
-        wpercent = 100 / float(logo.size[0])
+        # Масштабируем логотип
+        wpercent = basewidth / float(logo.size[0])
         hsize = int((float(logo.size[1]) * float(wpercent)))
-        logo = logo.resize((100, hsize), Image.LANCZOS)
+        logo = logo.resize((basewidth, hsize), Image.LANCZOS)
 
-        # Наложите логотип на QR-код
+        # Наложить логотип на QR-код
         pos = ((QRImg.size[0] - logo.size[0]) // 2, (QRImg.size[1] - logo.size[1]) // 2)
         QRImg.paste(logo, pos)
 
         QRImg.save("qr_code.png")
     else:
-        qr_text = QRcode.make_image(fill_color="black", back_color="white")
+        qr_text = QRcode.make_image(fill_color=(0, 0, 0), back_color=(0, 0, 0))
         qr_text.save("qr_code.png")
 
 

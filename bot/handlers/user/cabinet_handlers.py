@@ -1,6 +1,7 @@
 import os
 
 from aiogram import F, Router
+from aiogram.filters import Command
 from aiogram.types import FSInputFile, Message
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
@@ -22,6 +23,7 @@ auth_router: Router = Router()
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get("IIKOCLOUD_LOGIN"))
 
 
+@router.message(Command(commands=["balance", "money"]), IsAuth())
 @router.message(F.text == __("Бонусная карта"), IsAuth())
 async def profile_handler(msg: Message, session: AsyncSession):
     bot = msg.bot
@@ -38,7 +40,10 @@ async def profile_handler(msg: Message, session: AsyncSession):
             type=TypeRCI.phone,
         )
 
-        generate_qr(text=profile_info["phone"], use_logo=False)
+        generate_qr(
+            text=profile_info["phone"],
+            use_logo=True,
+        )
 
         photo = FSInputFile("qr_code.png")
 
@@ -60,6 +65,7 @@ async def profile_handler(msg: Message, session: AsyncSession):
 
 
 # Обработка неавторизованных пользователей
+@router.message(Command(commands=["balance", "money"]), ~IsAuth())
 @router.message(F.text.in_([__("Бонусная карта")]), ~IsAuth())
 async def na_profile_handler(msg: Message):
     await msg.answer(

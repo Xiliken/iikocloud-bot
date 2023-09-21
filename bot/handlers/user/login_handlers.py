@@ -165,4 +165,4 @@ async def warning_sms_handler(msg: Message):
 @router.message(Command(commands=["login"]), StateFilter(default_state), IsAuth())
 @router.message(F.text == __("🔑 Авторизация"), StateFilter(default_state), IsAuth())
 async def auth_registration_step_regtype(msg: Message, state: FSMContext) -> None:
-    await msg.answer(text=_("⚠️Вы уже авторизованы!"), reply_markup=cabinet_main_kb())
+    await msg.answer(text=_("❗Вы уже авторизованы!"), reply_markup=cabinet_main_kb())

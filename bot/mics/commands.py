@@ -9,10 +9,7 @@ async def set_commands(bot: Bot) -> None:
         #     command='help',
         #     description='Помощь по боту'
         # ),
-        # BotCommand(
-        #     command='balance',
-        #     description='Мои бонусы'
-        # ),
+        BotCommand(command="balance", description="Мои бонусы"),
         BotCommand(command="contacts", description="Контакты организации"),
         # BotCommand(
         #     command='sales',
