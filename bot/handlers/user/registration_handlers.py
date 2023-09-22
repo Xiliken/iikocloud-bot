@@ -209,7 +209,9 @@ async def registration_step_sms(msg: Message, state: FSMContext, session: AsyncS
             attempts[user_id] = current_attempts - 1
         else:
             await msg.answer(
-                _("🔴 Вы 3 раза ввели неверный код! Регистрация отменена!"),
+                _(
+                    "🔴 Вы {max_sms_attempts} раза ввели неверный код! Регистрация отменена!"
+                ).format(max_sms_attempts=MAX_SMS_ATTEMPTS),
                 reply_markup=auth_kb(),
             )
             # Сброс количества попыток

@@ -9,6 +9,7 @@ from aiogram.utils.i18n import lazy_gettext as __
 from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from bot.database.methods.orders import get_last_order_date
 from bot.database.models.User import User
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
@@ -88,11 +89,3 @@ async def chat_handler(msg: Message) -> None:
 @router.message(Command(commands=["contacts", "contact"]))
 async def chat_handler(msg: Message) -> None:
     await msg.answer(_("Выбери ресторан:"), reply_markup=contacts_ikb())
-
-
-# Обработчик остальных сообщений
-# TODO: Нужно сделать так, чтобы он всегда шел последним хендлером, тогда только вернуть его в работу
-# @router.message()
-# async def send_message(msg: Message) -> None:
-#     await msg.answer(f"Простите, но мой интеллект еще не настолько умен, чтобы общаться с вами на любые темы! ☹️\n"
-#                      f"Пожалуйста, для общения со мной, используйте команды или меню ниже! 🤗")

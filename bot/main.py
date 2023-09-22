@@ -23,6 +23,7 @@ from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import get_organizations_ids
 from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
 from config import settings
+from schedulers import sc_check_order
 
 
 async def __on_startup(bot: Bot) -> None:
@@ -94,6 +95,12 @@ async def start_bot() -> None:
     # TODO: ПОФИКСИТЬ
     # region Планировщик задач
     scheduler: AsyncIOScheduler = AsyncIOScheduler()
+    scheduler.add_job(
+        sc_check_order,
+        trigger="interval",
+        seconds=10,
+        kwargs={"user_id": 591343689, "phone": "79029403811", "bot": Bot},
+    )
     # scheduler.add_job(check_changelog, trigger="interval", seconds=5, args=(bot,))
     # endregion
 

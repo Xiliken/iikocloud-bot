@@ -22,3 +22,6 @@ debug_type="console" # Console (default), File
 
 [iiko]
 organizations_ids = []
+
+[general]
+max_sms_attempts = 3 # Максимальное количество попыток авторизации

@@ -6,3 +6,4 @@ venv/
 __pycache__/
 .mypy_cache/
 database.db
+logs/*.log

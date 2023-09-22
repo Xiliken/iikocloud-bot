@@ -1,8 +1,6 @@
 import datetime
 from typing import Union
 
-from pyiikocloudapi.models import CouriersModel
-
 from api.iikocloud.iIkoCloud import IikoCloudAPI
 from bot.mics import normalize_phone_number
 from bot.mics.helpers.Config import Config
@@ -61,7 +59,7 @@ def check_last_closed_order(user_phone: Union[str, int] = None) -> bool:
     """
     Проверить дату последнего закрытого заказа
     :param user_phone: Номер телефона пользователя (номер карты Iiko)
-    :return:
+    :return: Если статус закрыт и дата последнего заказа равна текущей даты, то возвращаем True, иначе False
     """
     last_order = get_last_order(user_phone=user_phone)
 
@@ -71,6 +69,8 @@ def check_last_closed_order(user_phone: Union[str, int] = None) -> bool:
     order_closed_date = datetime.datetime.strptime(
         last_order["whenClosed"], "%Y-%m-%d %H:%M:%S.%f"
     )
+
+    # Получаем дату последнего закрытого заказа у пользователя из БД
 
     if (
         last_order["status"] == "CLOSED"
