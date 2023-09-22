@@ -421,12 +421,63 @@ class Customers(BaseAPI):
                 f"Не удалось создать или обновить клиента: \n{err}"
             )
         except TypeError as err:
-            raise TypeError(f"Не удалось: \n{err}")
+            raise TypeError(f"Не удалось создать или обновить клиента: \n{err}")
 
 
 class Order(BaseAPI):
     def retrieve_order_by_tables(self):
         pass
+
+    def retrieve_orders_by_phone_number(
+        self,
+        phone: str,
+        deliveryDateFrom: Union[datetime, str] = None,
+        deliveryDateTo: Union[datetime, str] = None,
+        organizations_ids: List[str] = None,
+        startRevision: Optional[int] = None,
+        sourceKeys: Optional[List[str]] = None,
+        rowsCount: Optional[int] = None,
+        timeout=BaseAPI.DEFAULT_TIMEOUT,
+    ):
+        data = {}
+
+        if organizations_ids is not None:
+            data["organizationIds"] = organizations_ids
+
+        if isinstance(deliveryDateFrom, datetime):
+            data["deliveryDateFrom"] = deliveryDateFrom.strftime("%Y-%m-%d %H:%M:%S.%f")
+        elif isinstance(deliveryDateFrom, str):
+            data["deliveryDateFrom"] = deliveryDateFrom
+
+        if isinstance(deliveryDateTo, datetime):
+            data["deliveryDateTo"] = deliveryDateTo.strftime("%Y-%m-%d %H:%M:%S.%f")
+        elif isinstance(deliveryDateTo, str):
+            data["deliveryDateTo"] = deliveryDateTo
+
+        if startRevision is not None:
+            data["startRevision"] = startRevision
+
+        if sourceKeys is not None:
+            data["sourceKeys"] = sourceKeys
+
+        if rowsCount is not None:
+            data["rowsCount"] = rowsCount
+
+        if phone is not None:
+            data["phone"] = phone
+
+        try:
+            return self._post_request(
+                url="/api/1/deliveries/by_delivery_date_and_phone",
+                data=data,
+                timeout=timeout,
+            )
+        except requests.exceptions.RequestException as err:
+            raise requests.exceptions.RequestException(
+                f"Не удалось получить последние заказы клиента: \n{err}"
+            )
+        except TypeError as err:
+            raise TypeError(f"Не удалось получить последние заказы клиента: \n{err}")
 
 
 class Deliveries(BaseAPI):

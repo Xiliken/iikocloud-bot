@@ -35,9 +35,8 @@ async def __start(msg: Message, session: AsyncSession, state: FSMContext) -> Non
     if sql.scalar():
         await msg.answer(
             _(
-                "С возвращением, <b>{first_name}</b>\n"
-                "✅ Вы уже авторизованы в системе!\n"
-                "Продолжайте работу с ботом 😄"
+                "Привет, <b>{first_name}</b> 🤗\n"
+                "Выбери в меню интересующую функцию ⬇️\n"
             ).format(first_name=user.first_name),
             reply_markup=cabinet_main_kb(),
             parse_mode="HTML",

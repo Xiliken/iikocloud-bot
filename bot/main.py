@@ -48,7 +48,7 @@ async def start_bot() -> None:
         log_type = str(Config.get("LOG_TYPE")).lower()
 
         if log_type == "console":
-            utils.logger.setup_logger("DEBUG")
+            utils.logger.setup_logger("DEBUG", ignored=["sqlalchemy", "aiogram"])
         elif log_type == "file":
             log_file = pathlib.Path(
                 pathlib.Path().cwd(),
