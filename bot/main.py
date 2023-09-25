@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.utils.i18n import FSMI18nMiddleware, I18n, SimpleI18nMiddleware
+from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loguru import logger
 
@@ -24,6 +25,9 @@ from bot.mics.iikoapi import get_organizations_ids
 from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
 from config import settings
 from schedulers import sc_check_order
+
+# Данные пользователя
+user_dict: dict[int, dict[str, str | int | bool]] = {}
 
 
 async def __on_startup(bot: Bot) -> None:
@@ -67,6 +71,13 @@ async def start_bot() -> None:
         storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT
     )
 
+    job_stores = {
+        "default": RedisJobStore(
+            jobs_key="dispatched_trips_jobs",
+            run_times_key="dispatched_trips_jobs_run_time",
+        )
+    }
+
     # region Локализация
     i18n = I18n(path="bot/locales", default_locale="ru", domain="messages")
     i18n_middleware = SimpleI18nMiddleware(i18n=i18n)
@@ -94,12 +105,12 @@ async def start_bot() -> None:
 
     # TODO: ПОФИКСИТЬ
     # region Планировщик задач
-    scheduler: AsyncIOScheduler = AsyncIOScheduler()
+    scheduler: AsyncIOScheduler = AsyncIOScheduler(timezone="Asia/Krasnoyarsk")
     scheduler.add_job(
         sc_check_order,
         trigger="interval",
         seconds=10,
-        kwargs={"user_id": 591343689, "phone": "79029403811", "bot": Bot},
+        kwargs={"user_id": 591343689, "phone": "79029403811"},
     )
     # scheduler.add_job(check_changelog, trigger="interval", seconds=5, args=(bot,))
     # endregion

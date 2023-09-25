@@ -6,7 +6,7 @@ from datetime import datetime
 from aiogram import Bot
 from loguru import logger
 
-from bot.mics import notify_admin
+from bot.mics import notify
 
 
 async def check_changelog(bot: Bot):
@@ -47,7 +47,7 @@ async def check_changelog(bot: Bot):
             # Форматирование текста сообщения
             message = f"<b>Вышло новое обновление</b>:\n\n<u>Версия</u>: {version} ({date})\n\n{changes}"
 
-            await notify_admin(bot=bot, chat_id=5599795627, message=message)
+            await notify(bot=bot, chat_id=5599795627, message=message)
 
             logger.info(
                 "Сhangelog has been updated. A notification of changes has been sent to Telegram!"

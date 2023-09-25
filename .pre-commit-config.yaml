@@ -36,3 +36,11 @@ repos:
     hooks:
     -   id: detect-secrets
         exclude: package.lock.json
+#-   repo: local
+#    hooks:
+#        - id: docs
+#          name: docs
+#          entry: generate-doc.sh
+#          language: system
+#          pass_filenames: false
+#          always_run: true

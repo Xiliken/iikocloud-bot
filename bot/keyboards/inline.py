@@ -1,6 +1,8 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.utils.i18n import gettext as _
 
+from bot.callbacks.RateCallbackData import RateCallbackData, RateServiceCallbackData
+
 
 def chat_inline_kb() -> InlineKeyboardMarkup:
     ikb: InlineKeyboardMarkup = InlineKeyboardMarkup(
@@ -70,6 +72,60 @@ def promotions_ikb() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(
                     text="Открыть список акций", url="https://doners-club.ru/promotions"
                 )
+            ]
+        ]
+    )
+
+    return ikb
+
+
+def rate_last_order_ikb() -> InlineKeyboardMarkup:
+    ikb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="😡 1", callback_data=RateCallbackData(food_rating=1).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😟 2", callback_data=RateCallbackData(food_rating=2).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😐 3", callback_data=RateCallbackData(food_rating=3).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😚 4", callback_data=RateCallbackData(food_rating=4).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😍 5", callback_data=RateCallbackData(food_rating=5).pack()
+                ),
+            ]
+        ]
+    )
+
+    return ikb
+
+
+# TODO: Изменить это в будущем. User может нажать по любой старой кнопке и она отработает.
+#  Надо подумать, как исправить это
+def rate_last_service() -> InlineKeyboardMarkup:
+    ikb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="😡 1", callback_data=RateServiceCallbackData(rating=1).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😟 2", callback_data=RateServiceCallbackData(rating=2).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😐 3", callback_data=RateServiceCallbackData(rating=3).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😚 4", callback_data=RateServiceCallbackData(rating=4).pack()
+                ),
+                InlineKeyboardButton(
+                    text="😍 5", callback_data=RateServiceCallbackData(rating=5).pack()
+                ),
             ]
         ]
     )

@@ -1,3 +1,4 @@
+import datetime
 import random
 
 from aiogram import F, Router
@@ -121,6 +122,7 @@ async def login_step_sms(msg: Message, state: FSMContext, session: AsyncSession)
                 user_id=msg.from_user.id,
                 phone_number=normalize_phone_number(data.get("phone_number")),
                 is_admin=False,
+                registration_date=datetime.datetime.now(),
             )
         )
         await session.commit()

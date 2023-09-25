@@ -29,8 +29,23 @@ class CheckDateFilter(BaseFilter):
             # Вычисляем дату, которая находится на 7 лет раньше от текущей
             seven_years_ago = current_date - timedelta(days=7 * 365)
 
+            # Вводит: 19.03.2004
+            # 26.09.2016
+
             # Проверяем, соответствует ли дата условиям
-            if date <= seven_years_ago or date >= current_date:
+            if date.year >= seven_years_ago.year:
+                await msg.answer(
+                    _(
+                        "Вы не можете ввести дату, которая меньше {old_date}, "
+                        "либо больше или равна текущей дате, то есть {current_date}"
+                    ).format(
+                        old_date=seven_years_ago.strftime("%d.%m.%Y"),
+                        current_date=current_date.strftime("%d.%m.%Y"),
+                    )
+                )
+                return False
+
+            if date >= current_date:
                 await msg.answer(
                     _(
                         "Вы не можете ввести дату, которая меньше {old_date}, "

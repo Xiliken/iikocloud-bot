@@ -254,6 +254,7 @@ async def registration_step_birthday_handler(
                     user_id=msg.from_user.id,
                     is_admin=False,
                     phone_number=state_data["phone_number"],
+                    registration_date=datetime.now(),
                 )
             )
             print("Добавлен в БД")

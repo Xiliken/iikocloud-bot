@@ -13,7 +13,7 @@ def get_organizations_ids() -> list[str]:
     Получить id организаций
     :return:
     """
-    organizations = __api.organizations(return_additional_info=False)["organizations"]
+    organizations = __api.organizations(return_additional_info=True)["organizations"]
 
     return [item["id"] for item in organizations]
 

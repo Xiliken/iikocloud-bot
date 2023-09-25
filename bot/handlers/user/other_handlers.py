@@ -1,11 +1,20 @@
 import aiogram
-from aiogram import F, Router
+import loguru
+from aiogram import Bot, F, Router
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import Message
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from bot.callbacks.RateCallbackData import RateCallbackData, RateServiceCallbackData
+from bot.database.models import User
+from bot.keyboards.inline import rate_last_order_ikb, rate_last_service
+from bot.mics import Config, normalize_phone_number, notify
 
 router: Router = Router()
 
@@ -31,6 +40,103 @@ async def cancel_handler(msg: Message, state: FSMContext) -> None:
     )
     # Сбрасываем состояние и очищаем данные, полученные внутри состояний
     await state.clear()
+
+
+# Этот хэндлер будет срабатывать на оценивание заказа от пользователя
+@router.callback_query(RateCallbackData.filter())
+async def rate_callback_handler(
+    callback: aiogram.types.CallbackQuery,
+    callback_data: RateCallbackData,
+    bot: Bot,
+    session: AsyncSession,
+) -> None:
+    try:
+        # Получаем пользователя из бд
+        sender = await session.scalars(
+            select(User).where(User.user_id == callback.from_user.id)
+        )
+
+        sender = sender.first()
+
+        ikb = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=_("✉️ Написать гостю"),
+                        url=f"tg://user?id={sender.user_id}",
+                    )
+                ]
+            ]
+        )
+
+        # Проверка рейтинга заказа
+        if callback_data.food_rating <= 3:
+            await bot.send_message(
+                chat_id=Config.get("NOTIFY_ADMIN_ID", "int"),
+                text=_(
+                    "Гость <b>{name}</b> (+{phone}) оценил заказ на <b>{rate}</b>"
+                ).format(
+                    name=callback.from_user.first_name,
+                    phone=normalize_phone_number(sender.phone_number),
+                    rate=callback_data.food_rating,
+                ),
+                reply_markup=ikb,
+            )
+
+        await callback.message.edit_text(
+            text=_(
+                "Пожалуйста, оцените обслуживание по шкале <b>от 1 до 5</b>.Где 5 наивысшая оценка"
+            ),
+            reply_markup=rate_last_service(),
+        )
+    except TelegramBadRequest:
+        loguru.logger.error(TelegramBadRequest)
+
+
+@router.callback_query(RateServiceCallbackData.filter())
+async def rate_service_callback_handler(
+    callback: aiogram.types.CallbackQuery,
+    callback_data: RateCallbackData,
+    bot: Bot,
+    session: AsyncSession,
+) -> None:
+    try:
+        # Получаем пользователя из бд
+        sender = await session.scalars(
+            select(User).where(User.user_id == callback.from_user.id)
+        )
+
+        sender = sender.first()
+
+        ikb = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=_("✉️ Написать гостю"),
+                        url=f"tg://user?id={sender.user_id}",
+                    )
+                ]
+            ]
+        )
+
+        # Проверка рейтинга заказа
+        if callback_data.rating <= 3:
+            await bot.send_message(
+                chat_id=Config.get("NOTIFY_ADMIN_ID", "int"),
+                text=_(
+                    "Гость <b>{name}</b> (+{phone}) оценил обслуживание на <b>{rate}</b>"
+                ).format(
+                    name=callback.from_user.first_name,
+                    phone=normalize_phone_number(sender.phone_number),
+                    rate=callback_data.rating,
+                ),
+                reply_markup=ikb,
+            )
+
+        await callback.message.edit_text(_("Спасибо за ваш отзыв! Ждем Вас снова!"))
+
+    except TelegramBadRequest:
+        loguru.logger.error(TelegramBadRequest)
 
 
 # @router.message(StateFilter(default_state))
