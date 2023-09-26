@@ -10,7 +10,9 @@ from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.methods.orders import get_last_order_date
+from bot.database.methods.user import get_admins
 from bot.database.models.User import User
+from bot.fitlers import IsAdmin
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
 from bot.keyboards.inline import (
@@ -43,8 +45,6 @@ async def __start(msg: Message, session: AsyncSession, state: FSMContext) -> Non
             parse_mode="HTML",
         )
     else:
-        # Добавление нового пользователя
-        # await session.merge(User(user_id=user_id, is_admin=False))
         await msg.answer(
             _(
                 "Привет! Я чат-бот стрит-фуд ресторана <b><a href='https://doners-club.ru'>Донерс</a></b>.\n"

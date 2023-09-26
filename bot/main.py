@@ -1,17 +1,20 @@
 import datetime
 import pathlib
 
+import aiocron
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.utils.i18n import FSMI18nMiddleware, I18n, SimpleI18nMiddleware
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler_di import ContextSchedulerDecorator
 from loguru import logger
 
 import utils
 from bot.database import create_async_engine, get_async_session_maker, init_models
 from bot.handlers import user
+from bot.handlers.admin import base_admin_handlers
 from bot.handlers.user import (
     cabinet_handlers,
     login_handlers,
@@ -23,6 +26,7 @@ from bot.mics.commands import set_commands
 from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import get_organizations_ids
 from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
+from bot.middlewares.ThrottlingMiddleware import ThrottlingMiddleware
 from config import settings
 from schedulers import sc_check_order
 
@@ -40,6 +44,14 @@ async def __on_startup(bot: Bot) -> None:
     settings.iiko.organizations_ids = org_ids
 
     Config.set("IIKOCLOUD_ORGANIZATIONS_IDS", org_ids)
+
+
+async def __on_shutdown(bot: Bot) -> None:
+    pass
+
+
+async def test():
+    print("Hello")
 
 
 async def start_bot() -> None:
@@ -75,6 +87,9 @@ async def start_bot() -> None:
         "default": RedisJobStore(
             jobs_key="dispatched_trips_jobs",
             run_times_key="dispatched_trips_jobs_run_time",
+            host=Config.get("REDIS_HOST"),
+            port=Config.get("REDIS_PORT") or 6379,
+            db=Config.get("REDIS_DB") or 2,
         )
     }
 
@@ -88,15 +103,18 @@ async def start_bot() -> None:
     # region Регистрация MiddleWares
     dp.update.middleware(DbSessionMiddleware(session_pool=session_maker))
     dp.update.middleware(i18n_middleware)
+    dp.message.middleware(ThrottlingMiddleware())
     # endregion
 
     # region Регистрация дополнительного функционала перед запуском бота
     dp.startup.register(__on_startup)
+    dp.shutdown.register(__on_shutdown)
     # endregion
 
     # region Регистрация роутов
     dp.include_routers(other_handlers.router)
     dp.include_routers(user.router)
+    dp.include_routers(base_admin_handlers.router)
     dp.include_routers(registration_handlers.router)
     dp.include_routers(login_handlers.router)
     dp.include_routers(cabinet_handlers.router)
@@ -105,22 +123,26 @@ async def start_bot() -> None:
 
     # TODO: ПОФИКСИТЬ
     # region Планировщик задач
-    scheduler: AsyncIOScheduler = AsyncIOScheduler(timezone="Asia/Krasnoyarsk")
-    scheduler.add_job(
-        sc_check_order,
-        trigger="interval",
-        seconds=10,
-        kwargs={"user_id": 591343689, "phone": "79029403811"},
-    )
+    # scheduler = AsyncIOScheduler(timezone="Asia/Krasnoyarsk") #, jobstores=job_stores)
+    # scheduler.ctx.add_instance(bot, declared_class=Bot)
+    # scheduler.add_job(
+    #     sc_check_order,
+    #     trigger="interval",
+    #     seconds=30,
+    #     kwargs={"user_id": 591343689, "phone": "79029403811"},
+    # )
     # scheduler.add_job(check_changelog, trigger="interval", seconds=5, args=(bot,))
     # endregion
 
     # Запускаем бота и пропускаем все накопленные входящие
     try:
-        scheduler.start()
-        logger.warning("Bot polling is starting...")
+        aiocron.crontab("* * * * *", func=test, args=(), start=True)
+        # scheduler.start()
+        logger.success("~~~~ Bot polling is starting... ~~~~")
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+        await aiocron.crontab("* * * * *", func=test, args=(), start=True).next()
     finally:
-        logger.warning("Bot polling is stopped.")
-        scheduler.shutdown(wait=False)
+        await bot.session.close()
+        logger.warning("~~~~ Bot polling is stopped ~~~~")
+        # scheduler.shutdown(wait=False)

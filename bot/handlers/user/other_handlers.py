@@ -13,6 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.callbacks.RateCallbackData import RateCallbackData, RateServiceCallbackData
 from bot.database.models import User
+from bot.fitlers.IsAuth import IsAuth
+from bot.keyboards import cabinet_main_kb
 from bot.keyboards.inline import rate_last_order_ikb, rate_last_service
 from bot.mics import Config, normalize_phone_number, notify
 
@@ -40,6 +42,12 @@ async def cancel_handler(msg: Message, state: FSMContext) -> None:
     )
     # Сбрасываем состояние и очищаем данные, полученные внутри состояний
     await state.clear()
+
+
+@router.message(F.text == __("⬅️ В главное меню"), StateFilter(default_state), IsAuth())
+async def main_menu_handler(msg: Message) -> None:
+    await msg.delete()
+    await msg.answer(text="⬅️ В главное меню", reply_markup=cabinet_main_kb())
 
 
 # Этот хэндлер будет срабатывать на оценивание заказа от пользователя

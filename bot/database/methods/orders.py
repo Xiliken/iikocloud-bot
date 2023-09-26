@@ -19,6 +19,7 @@ async def get_last_order_date(**kwargs):
                     User.phone_number == normalize_phone_number(kwargs["phone"])
                 )
             )
+            await session.commit()
 
             last_order_date = user.scalar_one_or_none()
 

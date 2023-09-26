@@ -1,0 +1,20 @@
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from aiogram.utils.i18n import gettext as _
+
+
+def admin_main_kb() -> ReplyKeyboardMarkup:
+    kb = ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(text=_("📊 Статистика")),
+                KeyboardButton(text=_("🙍 Администраторы")),
+            ],
+            [
+                KeyboardButton(text=_("📦 Резервная копия БД")),
+            ],
+            [KeyboardButton(text=_("⬅️ В главное меню"))],
+        ],
+        resize_keyboard=True,
+    )
+
+    return kb
