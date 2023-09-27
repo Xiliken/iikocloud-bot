@@ -7,7 +7,7 @@ from aiogram.utils.i18n import lazy_gettext as __
 from bot.fitlers import IsAdmin
 from bot.keyboards.admin.inline_admin import admin_report_ikb
 from bot.keyboards.admin.reply_admin import admin_main_kb
-from bot.mics.const_functions import clear_text
+from bot.mics.const_functions import clear_text, get_stats
 
 router: Router = Router()
 router.message.filter(IsAdmin())
@@ -16,28 +16,44 @@ router.message.filter(IsAdmin())
 @router.message(Command(commands=["stats"]))
 @router.message(F.text == __("📊 Статистика"))
 async def admin_stats_handler(msg: Message):
+    stats = await get_stats()
+
     message = clear_text(
         _(
             """
-    <b>📊 СТАТИСТИКА БОТА</b>
-    ➖➖➖➖➖➖➖➖➖➖
-    <b>👤 Пользователи</b>
-    ┣ Регистраций за <b>День</b>: {reg_day_count}
-    ┣ Регистраций за <b>Неделю</b>: {reg_week_count}
-    ┣ Регистраций за <b>Месяц</b>: {reg_month_count}
-    ┗ Регистраций за <b>Все время</b>: {reg_all_time_count}
+            <b>📊 СТАТИСТИКА БОТА</b>
+            ➖➖➖➖➖➖➖➖➖➖
+            <b>👤 Пользователи</b>
+            ┣ Регистраций за <b>День</b>: <code>{reg_day_count}</code>
+            ┣ Регистраций за <b>Неделю</b>: <code>{reg_week_count}</code>
+            ┣ Регистраций за <b>Месяц</b>: <code>{reg_month_count}</code>
+            ┣ Регистраций за <b>Все время</b>: <code>{reg_all_time_count}</code>
+            ┗ Заблокировало бота: <code>{bot_blocked_count}</code>
 
-    <b> ⭐️ СТАТИСТИКА ОТЗЫВОВ:</b>
-    ┣ Отзывов за все время: {reviews_count}
-    ┣ Положительных: {reviews_positive}
-    ┗ Отрицательных: {reviews_negative}
+            <b> ⭐️ СТАТИСТИКА ОТЗЫВОВ:</b>
+            ┣ Отзывов за все время: <code>{reviews_count}</code>
+            ┣ Положительных: <code>{reviews_positive}</code>
+            ┗ Отрицательных: <code>{reviews_negative}</code>
 
-    <b> 💰 СТАТИСТИКА ДОХОДА:</b>
-    ┣ Доход за сегодня: {income_today}
-    ┣ Доход за неделю: {income_week}
-    ┣ Доход за месяц: {income_month}
-    ┗ Доход за всё время: {income_all_time}
-"""
+            <b> 💰 СТАТИСТИКА ДОХОДА:</b>
+            ┣ Доход за сегодня: <code>{income_today}</code>
+            ┣ Доход за неделю: <code>{income_week}</code>
+            ┣ Доход за месяц: <code>{income_month}</code>
+            ┗ Доход за всё время: <code>{income_all_time}</code>
+        """
+        ).format(
+            reg_day_count=stats.get("reg_users_today"),
+            reg_week_count=stats.get("reg_users_week"),
+            reg_month_count=stats.get("reg_users_month"),
+            reg_all_time_count=stats.get("reg_users_all"),
+            reviews_count=0,
+            reviews_positive=0,
+            reviews_negative=0,
+            income_today=0,
+            income_week=0,
+            income_month=0,
+            income_all_time=0,
+            bot_blocked_count=stats.get("bot_blocked"),
         )
     )
 

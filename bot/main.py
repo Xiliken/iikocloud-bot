@@ -2,6 +2,7 @@ import datetime
 import pathlib
 
 import aiocron
+import loguru
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
@@ -13,6 +14,7 @@ from loguru import logger
 
 import utils
 from bot.database import create_async_engine, get_async_session_maker, init_models
+from bot.database.methods.user import get_all_users
 from bot.handlers import user
 from bot.handlers.admin import base_admin_handlers
 from bot.handlers.user import (
@@ -29,6 +31,7 @@ from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
 from bot.middlewares.ThrottlingMiddleware import ThrottlingMiddleware
 from config import settings
 from schedulers import sc_check_order
+from schedulers.sc_check_order import check_last_orders
 
 # Данные пользователя
 user_dict: dict[int, dict[str, str | int | bool]] = {}
@@ -51,6 +54,7 @@ async def __on_shutdown(bot: Bot) -> None:
 
 
 async def test():
+    loguru.logger.info("Запускаю проверку последних заказов пользователей...")
     print("Hello")
 
 
@@ -113,8 +117,8 @@ async def start_bot() -> None:
 
     # region Регистрация роутов
     dp.include_routers(other_handlers.router)
-    dp.include_routers(user.router)
     dp.include_routers(base_admin_handlers.router)
+    dp.include_routers(user.router)
     dp.include_routers(registration_handlers.router)
     dp.include_routers(login_handlers.router)
     dp.include_routers(cabinet_handlers.router)
@@ -136,7 +140,7 @@ async def start_bot() -> None:
 
     # Запускаем бота и пропускаем все накопленные входящие
     try:
-        aiocron.crontab("* * * * *", func=test, args=(), start=True)
+        aiocron.crontab("* * * * *", func=check_last_orders, args=(), start=True)
         # scheduler.start()
         logger.success("~~~~ Bot polling is starting... ~~~~")
         await bot.delete_webhook(drop_pending_updates=True)
@@ -144,5 +148,6 @@ async def start_bot() -> None:
         await aiocron.crontab("* * * * *", func=test, args=(), start=True).next()
     finally:
         await bot.session.close()
+        await dp.storage.close()
         logger.warning("~~~~ Bot polling is stopped ~~~~")
         # scheduler.shutdown(wait=False)

@@ -10,7 +10,7 @@ from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.methods.orders import get_last_order_date
-from bot.database.methods.user import get_admins
+from bot.database.methods.user import get_admins, get_all_users
 from bot.database.models.User import User
 from bot.fitlers import IsAdmin
 from bot.keyboards import auth_kb
@@ -21,6 +21,7 @@ from bot.keyboards.inline import (
     promotions_ikb,
     website_ikb,
 )
+from schedulers.sc_check_order import check_last_orders
 
 router: Router = Router()
 

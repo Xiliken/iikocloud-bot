@@ -18,6 +18,7 @@ class User(Base):
         nullable=True, default=datetime.now()
     )
     last_order_date: Mapped[datetime] = mapped_column(nullable=True)
+    is_blocked: Mapped[bool] = mapped_column(default=False, nullable=True)
 
     def __repr__(self):
         return (
@@ -25,5 +26,6 @@ class User(Base):
             f"phone_number={self.phone_number!r}, "
             f"is_admin={self.is_admin!r},"
             f"registration_date={self.registration_date!r},"
-            f"last_order_date={self.last_order_date})"
+            f"last_order_date={self.last_order_date},"
+            f"is_blocked={self.is_blocked!r}) "
         )

@@ -2,13 +2,24 @@ import aiogram
 import loguru
 from aiogram import Bot, F, Router
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.filters import Command, StateFilter
+from aiogram.filters import (
+    KICKED,
+    MEMBER,
+    ChatMemberUpdatedFilter,
+    Command,
+    StateFilter,
+)
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from aiogram.types import (
+    ChatMemberUpdated,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+)
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.callbacks.RateCallbackData import RateCallbackData, RateServiceCallbackData
@@ -57,6 +68,7 @@ async def rate_callback_handler(
     callback_data: RateCallbackData,
     bot: Bot,
     session: AsyncSession,
+    state: FSMContext,
 ) -> None:
     try:
         # Получаем пользователя из бд
@@ -84,7 +96,7 @@ async def rate_callback_handler(
                 text=_(
                     "Гость <b>{name}</b> (+{phone}) оценил заказ на <b>{rate}</b>"
                 ).format(
-                    name=callback.from_user.first_name,
+                    name=callback.from_user.full_name,
                     phone=normalize_phone_number(sender.phone_number),
                     rate=callback_data.food_rating,
                 ),
@@ -93,7 +105,8 @@ async def rate_callback_handler(
 
         await callback.message.edit_text(
             text=_(
-                "Пожалуйста, оцените обслуживание по шкале <b>от 1 до 5</b>.Где 5 наивысшая оценка"
+                "Пожалуйста, оцените <b><u>обслуживание</u></b> по шкале <b>от 1 до 5</b>."
+                "Где 5 наивысшая оценка"
             ),
             reply_markup=rate_last_service(),
         )
@@ -104,9 +117,10 @@ async def rate_callback_handler(
 @router.callback_query(RateServiceCallbackData.filter())
 async def rate_service_callback_handler(
     callback: aiogram.types.CallbackQuery,
-    callback_data: RateCallbackData,
+    callback_data: RateServiceCallbackData,
     bot: Bot,
     session: AsyncSession,
+    state: FSMContext,
 ) -> None:
     try:
         # Получаем пользователя из бд
@@ -134,7 +148,7 @@ async def rate_service_callback_handler(
                 text=_(
                     "Гость <b>{name}</b> (+{phone}) оценил обслуживание на <b>{rate}</b>"
                 ).format(
-                    name=callback.from_user.first_name,
+                    name=callback.from_user.full_name,
                     phone=normalize_phone_number(sender.phone_number),
                     rate=callback_data.rating,
                 ),
@@ -145,6 +159,24 @@ async def rate_service_callback_handler(
 
     except TelegramBadRequest:
         loguru.logger.error(TelegramBadRequest)
+
+
+@router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))
+async def user_blocked_bot(event: ChatMemberUpdated, session: AsyncSession):
+    # Установить статус, что бот заблокирован
+    await session.execute(
+        update(User).where(User.user_id == event.from_user.id).values(is_blocked=True)
+    )
+    await session.commit()
+
+
+@router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=MEMBER))
+async def user_unblocked_bot(event: ChatMemberUpdated, session: AsyncSession):
+    # Установить статус, что бот разблокирован
+    await session.execute(
+        update(User).where(User.user_id == event.from_user.id).values(is_blocked=False)
+    )
+    await session.commit()
 
 
 # @router.message(StateFilter(default_state))

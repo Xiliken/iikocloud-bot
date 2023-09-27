@@ -1,10 +1,13 @@
 # Очистка текста от HTML тэгов
-from datetime import datetime
+import datetime
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from bot.database import create_async_engine, get_async_session_maker
+from bot.database.methods.user import get_all_users, get_users_count
 from bot.database.models import User
+from bot.mics import Config
 
 
 def clear_html(get_text: str) -> str:
@@ -71,8 +74,47 @@ def clear_text(get_text: str) -> str:
     return get_text
 
 
-def get_stats(session: AsyncSession) -> dict:
-    # Получение пользователей, которые зарегистрированы за сегодня
-    reg_users_today = session.scalars(
-        select(User).filter(User.registration_date == datetime.date.today())
-    )
+async def get_stats() -> dict:
+    engine = await create_async_engine(url=Config.get("DATABASE_URL"))
+    session_maker = get_async_session_maker(engine)
+
+    async with session_maker.begin() as session:
+        # Регистрация за сегодня
+        reg_users_today = await session.scalar(
+            select(func.count())
+            .filter(User.registration_date == datetime.date.today())
+            .select_from(User)
+        )
+        # Регистраций за неделю
+        reg_users_week = await session.scalar(
+            select(func.count())
+            .filter(
+                User.registration_date
+                >= datetime.date.today() - datetime.timedelta(days=7)
+            )
+            .select_from(User)
+        )
+        # Регистраций за месяц
+        reg_users_month = await session.scalar(
+            select(func.count())
+            .filter(
+                User.registration_date
+                >= datetime.date.today() - datetime.timedelta(days=30)
+            )
+            .select_from(User)
+        )
+        # Регистраций за все время
+        reg_users_all = await get_users_count()
+
+        # Сколько пользователей заблокировало бота
+        bot_blocked = await session.scalar(
+            select(func.count()).filter(User.is_blocked == True)
+        )
+
+    return {
+        "reg_users_today": reg_users_today,
+        "reg_users_week": reg_users_week,
+        "reg_users_month": reg_users_month,
+        "reg_users_all": reg_users_all,
+        "bot_blocked": bot_blocked,
+    }
