@@ -17,7 +17,7 @@ class User(Base):
     registration_date: Mapped[datetime] = mapped_column(
         nullable=True, default=datetime.now()
     )
-    last_order_date: Mapped[datetime] = mapped_column(nullable=True)
+    last_order_date: Mapped[datetime] = mapped_column(nullable=True, default=None)
     is_blocked: Mapped[bool] = mapped_column(default=False, nullable=True)
 
     def __repr__(self):

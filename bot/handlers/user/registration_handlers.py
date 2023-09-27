@@ -255,6 +255,8 @@ async def registration_step_birthday_handler(
                     is_admin=False,
                     phone_number=state_data["phone_number"],
                     registration_date=datetime.now(),
+                    last_order_date=None,
+                    is_blocked=0,
                 )
             )
             print("Добавлен в БД")

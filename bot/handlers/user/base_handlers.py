@@ -21,6 +21,7 @@ from bot.keyboards.inline import (
     promotions_ikb,
     website_ikb,
 )
+from bot.mics.iikoapi import get_last_order
 from schedulers.sc_check_order import check_last_orders
 
 router: Router = Router()
@@ -33,6 +34,8 @@ async def __start(msg: Message, session: AsyncSession, state: FSMContext) -> Non
     bot: Bot = msg.bot
     user_id = msg.from_user.id
     user = msg.from_user
+
+    get_last_order(user_phone="79130453040")
 
     sql = await session.execute(select(User).where(User.user_id == user_id))
     # Если такой пользователь уже существует

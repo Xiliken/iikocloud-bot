@@ -32,7 +32,7 @@ async def check_last_orders():
 
         # Если у пользователя есть заказ в iiko,
         # то сверяем с датой заказа в БД, если она не пуста
-        if iiko_last_order is not None:
+        if iiko_last_order is not None and iiko_last_order["whenClosed"] is not None:
             iiko_last_order_datetime = datetime.datetime.strptime(
                 iiko_last_order["whenClosed"], "%Y-%m-%d %H:%M:%S.%f"
             ).replace(microsecond=0, second=0)

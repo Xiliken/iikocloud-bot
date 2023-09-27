@@ -52,6 +52,7 @@ def get_last_order(user_phone: Union[str, int] = None):
     for organization in orders_by_organizations["ordersByOrganizations"]:
         for order in organization["orders"]:
             last_order = order["order"]
+            break
     return last_order
 
 
