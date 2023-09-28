@@ -1,0 +1,1250 @@
+# Translations template for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-25 12:05+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: bot/fitlers/CheckDateFilter.py:35
+msgid ""
+"Вы не можете ввести дату, которая меньше {old_date}, либо больше или "
+"равна текущей дате, то есть {current_date}"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:38
+msgid ""
+"Привет, <b>{first_name}</b> 🤗\n"
+"Выбери в меню интересующую функцию ⬇️\n"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:49
+msgid ""
+"Привет! Я чат-бот стрит-фуд ресторана <b><a href='https://doners-"
+"club.ru'>Донерс</a></b>.\n"
+"Со мной тебя ждут скидки и специальные цены на продукцию, кэшбэк с каждой"
+" покупки, бонусы за отзывы и оценку заказов.\n"
+"\n"
+"Авторизуйся 1 раз и получай все преимущества \"Doners-club\" 😎"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:66
+msgid "Нажмите ниже, чтобы открыть меню"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:73
+msgid "Нажмите на кнопку, чтобы просмотреть доступные акции"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:83
+msgid "Нажми на кнопку и напиши свой вопрос"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:91
+msgid "Выбери ресторан:"
+msgstr ""
+
+#: bot/handlers/user/cabinet_handlers.py:54
+msgid ""
+"Номер бонусной карты: {bonus_card_number}\n"
+"\n"
+"Бонусов: {balance}"
+msgstr ""
+
+#: bot/handlers/user/cabinet_handlers.py:98
+msgid ""
+"Мы работаем над установкой Wi-Fi в филиале на Мира. Пароль от него будет "
+"здесь в ближайшее время 😎"
+msgstr ""
+
+#: bot/handlers/user/cabinet_handlers.py:110
+msgid ""
+"❗Извините, но данное действие доступно только <u>авторизованным</u> "
+"пользователям! Пожалуйста, <b>войдите</b> или <b>создайте</b> аккаунт."
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:39
+msgid "Пожалуйста, введите номер телефона"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:51
+#: bot/handlers/user/registration_handlers.py:60
+#: bot/handlers/user/registration_handlers.py:128
+msgid ""
+"❗Извините, но данный номер телефона зарегистрирован на другую учетную "
+"запись!"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:71
+#: bot/handlers/user/registration_handlers.py:159
+msgid ""
+"Код: {verification_code}\n"
+"Вводя его вы даете согласие на обработку ПД"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:81
+#: bot/handlers/user/registration_handlers.py:167
+msgid ""
+"Пожалуйста, введите проверочный код, отправленный по СМС на номер: "
+"+{phone}"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:93
+msgid ""
+"Извините, не удалось найти пользователя с номером +{phone}\n"
+"\n"
+"Пожалуйста, проверьте корректность введенного номера, или зарегистрируйте"
+" новый аккаунт!"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:117
+#: bot/handlers/user/registration_handlers.py:193
+msgid "🟢 Код успешно подтвержден!"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:128
+msgid "✔️Авторизация успешно завершена!"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:139
+#: bot/handlers/user/registration_handlers.py:205
+msgid "🔴 Неверный код. Осталось попыток: {current_attempts}"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:146
+msgid "🔴 Вы {max_sms_attempts} раза ввели неверный код! Авторизация отменена!"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:160
+msgid ""
+"Пожалуйста, введите 4х значный код, отправленный на ваш номер, указанный "
+"при регистрации!\n"
+"\n"
+"Если Вы хотите прервать авторизацию - отправьте команду /cancel"
+msgstr ""
+
+#: bot/handlers/user/login_handlers.py:170
+#: bot/handlers/user/registration_handlers.py:293
+msgid "❗Вы уже авторизованы!"
+msgstr ""
+
+#: bot/handlers/user/other_handlers.py:28
+msgid "Нечего отменять"
+msgstr ""
+
+#: bot/handlers/user/other_handlers.py:38
+msgid "Действие успешно отменено"
+msgstr ""
+
+#: bot/handlers/user/other_handlers.py:64
+msgid "✉️ Написать гостю"
+msgstr ""
+
+#: bot/handlers/user/other_handlers.py:71
+msgid "Гость <b>{name}</b> (+{phone}) оценил заказ на <b>{rate}</b>"
+msgstr ""
+
+#: bot/handlers/user/other_handlers.py:78
+msgid ""
+"Пожалуйста, оцените обслуживание по шкале <b>от 1 до 5</b>.\n"
+"Где 5 наивысшая оценка"
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:45
+msgid "Пожалуйста, выберите способ регистрации в системе."
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:74
+#: bot/handlers/user/registration_handlers.py:142
+msgid ""
+"Извините, но пользователь, с номером +{phone} уже существует!\n"
+"\n"
+"Пожалуйста, повторите регистрацию с <b>другим номером</b>, или войдите с "
+"уже <u>существующим номером</u>!"
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:88
+msgid ""
+"Код: {verification_code}\n"
+"Вводя его вы даете согласие на обработку ПД."
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:113
+msgid "Пожалуйста, введите номер телефона для регистрации"
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:199
+msgid "Пожалуйста, укажите вашу дату рождения в формате: <b>дд.мм.гггг</b>"
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:212
+msgid "🔴 Вы {max_sms_attempts} раза ввели неверный код! Регистрация отменена!"
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:226
+msgid ""
+"Пожалуйста, введите 4х значный код, отправленный на ваш номер, указанный "
+"при регистрации!\n"
+"\n"
+"Если Вы хотите прервать регистрацию - отправьте команду /cancel"
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:266
+msgid "✔️Регистрация успешно завершена!"
+msgstr ""
+
+#: bot/handlers/user/registration_handlers.py:276
+msgid ""
+"Пожалуйста, введите дату рождения в формате: <b>дд.мм.гггг</b>\n"
+"\n"
+"Если Вы хотите прервать регистрацию - отправьте команду /cancel"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:15
+msgid "Бонусная карта"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:15
+msgid "Чат"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:17
+msgid "Меню"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:18
+msgid "Акции"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:19
+msgid "Контакты"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:22
+msgid "Пароль от WiFi"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:26
+msgid "Выберите пункт меню для работы с ботом"
+msgstr ""
+
+#: bot/keyboards/inline.py:12
+msgid "Позвать человека"
+msgstr ""
+
+#: bot/keyboards/inline.py:26
+msgid "К покупкам"
+msgstr ""
+
+#: bot/keyboards/reply.py:16
+msgid "🔑 Авторизация"
+msgstr ""
+
+#: bot/keyboards/reply.py:17
+msgid "🔐 Регистрация"
+msgstr ""
+
+#: bot/keyboards/reply.py:29
+msgid "Номер Telegram"
+msgstr ""
+
+#: bot/keyboards/reply.py:30
+msgid "Другой номер"
+msgstr ""
+
+#: bot/keyboards/reply.py:32 bot/keyboards/reply.py:43
+msgid "❌ Отмена"
+msgstr ""
+
+#: schedulers/sc_check_order.py:48
+msgid ""
+"Спасибо, что выбираете Донерс 😎\n"
+"Пожалуйста, оцените вкус заказанного блюда по шкале от 1 до 5.Где 5 "
+"наивысшая оценка"
+msgstr ""
+
+#: venv/Lib/site-packages/click/_termui_impl.py:518
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#: venv/Lib/site-packages/click/_termui_impl.py:522
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1120
+msgid "Aborted!"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1309
+#: venv/Lib/site-packages/click/decorators.py:559
+msgid "Show this message and exit."
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1340
+#: venv/Lib/site-packages/click/core.py:1370
+msgid "(Deprecated) {text}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1387
+msgid "Options"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1415
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/Lib/site-packages/click/core.py:1428
+msgid "DeprecationWarning: The command {name!r} is deprecated."
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1636
+msgid "Commands"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1668
+msgid "Missing command."
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:1746
+msgid "No such command {name!r}."
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:2310
+msgid "Value must be an iterable."
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:2333
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/Lib/site-packages/click/core.py:2778
+msgid "env var: {var}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:2808
+msgid "(dynamic)"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:2821
+msgid "default: {default}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/core.py:2834
+msgid "required"
+msgstr ""
+
+#: venv/Lib/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: venv/Lib/site-packages/click/decorators.py:528
+msgid "Show the version and exit."
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:44
+#: venv/Lib/site-packages/click/exceptions.py:80
+msgid "Error: {message}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:72
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:121
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:123
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:179
+msgid "Missing argument"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:181
+msgid "Missing option"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:183
+msgid "Missing parameter"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:185
+msgid "Missing {param_type}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:192
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:212
+msgid "No such option: {name}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:226
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/Lib/site-packages/click/exceptions.py:262
+msgid "unknown error"
+msgstr ""
+
+#: venv/Lib/site-packages/click/exceptions.py:269
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/parser.py:231
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: venv/Lib/site-packages/click/parser.py:413
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: venv/Lib/site-packages/click/parser.py:473
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/Lib/site-packages/click/shell_completion.py:318
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: venv/Lib/site-packages/click/shell_completion.py:326
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: venv/Lib/site-packages/click/termui.py:158
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: venv/Lib/site-packages/click/termui.py:174
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: venv/Lib/site-packages/click/termui.py:176
+msgid "Error: {e.message}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/termui.py:187
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: venv/Lib/site-packages/click/termui.py:243
+msgid "Error: invalid input"
+msgstr ""
+
+#: venv/Lib/site-packages/click/termui.py:773
+msgid "Press any key to continue..."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:266
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:300
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/Lib/site-packages/click/types.py:394
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/Lib/site-packages/click/types.py:414
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:470
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:611
+msgid "{value!r} is not a valid boolean."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:635
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:822
+msgid "file"
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:824
+msgid "directory"
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:826
+msgid "path"
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:877
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:886
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:894
+msgid "{name} '{filename}' is a directory."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:903
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:912
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:921
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: venv/Lib/site-packages/click/types.py:987
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/Lib/site-packages/isort/main.py:158
+msgid "show this help message and exit"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/config.py:404
+#, python-format
+msgid "Section %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/config.py:405
+#, python-format
+msgid "Fig. %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/config.py:406
+#, python-format
+msgid "Table %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/config.py:407
+#, python-format
+msgid "Listing %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/roles.py:173
+#, python-format
+msgid "Python Enhancement Proposals; PEP %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/changes.py:70
+msgid "Builtins"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/changes.py:72
+msgid "Module level"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/latex/__init__.py:355
+#: venv/Lib/site-packages/sphinx/builders/texinfo.py:158
+msgid " (in "
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/html/__init__.py:504
+#: venv/Lib/site-packages/sphinx/builders/latex/__init__.py:177
+#: venv/Lib/site-packages/sphinx/transforms/__init__.py:110
+#: venv/Lib/site-packages/sphinx/writers/manpage.py:94
+#: venv/Lib/site-packages/sphinx/writers/texinfo.py:222
+#, python-format
+msgid "%b %d, %Y"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/html/__init__.py:523
+msgid "General Index"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/html/__init__.py:523
+msgid "index"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/html/__init__.py:590
+msgid "next"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/html/__init__.py:599
+msgid "previous"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/html/__init__.py:1363
+#, python-format
+msgid "%s %s documentation"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/latex/__init__.py:184
+#: venv/Lib/site-packages/sphinx/domains/std.py:591
+#: venv/Lib/site-packages/sphinx/writers/texinfo.py:487
+msgid "Index"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/builders/latex/__init__.py:187
+msgid "Release"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/directives/other.py:168
+msgid "Section author: "
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/directives/other.py:170
+msgid "Module author: "
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/directives/other.py:172
+msgid "Code author: "
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/directives/other.py:174
+msgid "Author: "
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/__init__.py:389
+#, python-format
+msgid "%s %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3226
+#, python-format
+msgid "%s (C %s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3347
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7318
+#: venv/Lib/site-packages/sphinx/domains/python.py:435
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:749
+msgid "Parameters"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3350
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7324
+msgid "Return values"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3353
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7327
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:216
+#: venv/Lib/site-packages/sphinx/domains/python.py:447
+msgid "Returns"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3355
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:218
+#: venv/Lib/site-packages/sphinx/domains/python.py:449
+msgid "Return type"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3749
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7731
+msgid "member"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3750
+msgid "variable"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3751
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7730
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:318
+#: venv/Lib/site-packages/sphinx/domains/python.py:1157
+msgid "function"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3752
+msgid "macro"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3753
+msgid "struct"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3754
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7729
+msgid "union"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3755
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7734
+msgid "enum"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3756
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7735
+msgid "enumerator"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3757
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7732
+msgid "type"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/c.py:3759
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7737
+msgid "function parameter"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/changeset.py:20
+#, python-format
+msgid "New in version %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/changeset.py:21
+#, python-format
+msgid "Changed in version %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/changeset.py:22
+#, python-format
+msgid "Deprecated since version %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7079
+msgid "Template Parameters"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7196
+#, python-format
+msgid "%s (C++ %s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7321
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:213
+msgid "Throws"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7728
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:320
+#: venv/Lib/site-packages/sphinx/domains/python.py:1159
+msgid "class"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7733
+msgid "concept"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/cpp.py:7738
+msgid "template parameter"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:131
+#, python-format
+msgid "%s() (built-in function)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:132
+#: venv/Lib/site-packages/sphinx/domains/python.py:826
+#, python-format
+msgid "%s() (%s method)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:134
+#, python-format
+msgid "%s() (class)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:136
+#, python-format
+msgid "%s (global variable or constant)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:138
+#: venv/Lib/site-packages/sphinx/domains/python.py:911
+#, python-format
+msgid "%s (%s attribute)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:210
+msgid "Arguments"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:278
+#, python-format
+msgid "%s (module)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:319
+#: venv/Lib/site-packages/sphinx/domains/python.py:1161
+msgid "method"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:321
+#: venv/Lib/site-packages/sphinx/domains/python.py:1158
+msgid "data"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:322
+#: venv/Lib/site-packages/sphinx/domains/python.py:1164
+msgid "attribute"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/javascript.py:323
+#: venv/Lib/site-packages/sphinx/domains/python.py:50
+#: venv/Lib/site-packages/sphinx/domains/python.py:1166
+msgid "module"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:51
+msgid "keyword"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:52
+msgid "operator"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:53
+msgid "object"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:54
+#: venv/Lib/site-packages/sphinx/domains/python.py:1160
+msgid "exception"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:55
+msgid "statement"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:56
+msgid "built-in function"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:440
+msgid "Variables"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:444
+msgid "Raises"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:671
+#: venv/Lib/site-packages/sphinx/domains/python.py:815
+#, python-format
+msgid "%s() (in module %s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:731
+#: venv/Lib/site-packages/sphinx/domains/python.py:907
+#: venv/Lib/site-packages/sphinx/domains/python.py:958
+#, python-format
+msgid "%s (in module %s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:733
+#, python-format
+msgid "%s (built-in variable)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:758
+#, python-format
+msgid "%s (built-in class)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:759
+#, python-format
+msgid "%s (class in %s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:820
+#, python-format
+msgid "%s() (%s class method)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:822
+#: venv/Lib/site-packages/sphinx/domains/python.py:962
+#, python-format
+msgid "%s (%s property)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:824
+#, python-format
+msgid "%s() (%s static method)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:1086
+msgid "Python Module Index"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:1087
+msgid "modules"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:1136
+msgid "Deprecated"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:1162
+msgid "class method"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:1163
+msgid "static method"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:1165
+msgid "property"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/python.py:1404
+msgid " (deprecated)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/rst.py:89
+#: venv/Lib/site-packages/sphinx/domains/rst.py:143
+#, python-format
+msgid "%s (directive)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/rst.py:144
+#: venv/Lib/site-packages/sphinx/domains/rst.py:148
+#, python-format
+msgid ":%s: (directive option)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/rst.py:177
+#, python-format
+msgid "%s (role)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/rst.py:186
+msgid "directive"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/rst.py:187
+msgid "directive-option"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/rst.py:188
+msgid "role"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:85
+#: venv/Lib/site-packages/sphinx/domains/std.py:102
+#, python-format
+msgid "environment variable; %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:245
+#, python-format
+msgid "%s command line option"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:247
+msgid "command line option"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:374
+msgid "glossary term must be preceded by empty line"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:382
+msgid "glossary terms must not be separated by empty lines"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:388
+#: venv/Lib/site-packages/sphinx/domains/std.py:401
+msgid "glossary seems to be misformatted, check indentation"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:550
+msgid "glossary term"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:551
+msgid "grammar token"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:552
+msgid "reference label"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:554
+msgid "environment variable"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:555
+msgid "program option"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:556
+msgid "document"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:592
+msgid "Module Index"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/domains/std.py:593
+msgid "Search Page"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/environment/adapters/indexentries.py:70
+#, python-format
+msgid "see %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/environment/adapters/indexentries.py:74
+#, python-format
+msgid "see also %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/environment/adapters/indexentries.py:166
+msgid "Symbols"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/graphviz.py:376
+#: venv/Lib/site-packages/sphinx/ext/graphviz.py:384
+#, python-format
+msgid "[graph: %s]"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/graphviz.py:378
+#: venv/Lib/site-packages/sphinx/ext/graphviz.py:386
+msgid "[graph]"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/imgmath.py:327
+#: venv/Lib/site-packages/sphinx/ext/mathjax.py:47
+#: venv/Lib/site-packages/sphinxcontrib/jsmath/__init__.py:51
+msgid "Permalink to this equation"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/intersphinx.py:268
+#, python-format
+msgid "(in %s v%s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/intersphinx.py:270
+#, python-format
+msgid "(in %s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/linkcode.py:62
+#: venv/Lib/site-packages/sphinx/ext/viewcode.py:178
+msgid "[source]"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/todo.py:62
+msgid "Todo"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/todo.py:153
+msgid "<<original entry>>"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/todo.py:155
+#, python-format
+msgid "(The <<original entry>> is located in %s, line %d.)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/todo.py:165
+msgid "original entry"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/viewcode.py:267
+msgid "[docs]"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/viewcode.py:281
+msgid "Module code"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/viewcode.py:287
+#, python-format
+msgid "<h1>Source code for %s</h1>"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/viewcode.py:314
+msgid "Overview: module code"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/viewcode.py:315
+msgid "<h1>All modules for which code is available</h1>"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/autodoc/__init__.py:1669
+#, python-format
+msgid "Bases: %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/autodoc/__init__.py:1770
+#: venv/Lib/site-packages/sphinx/ext/autodoc/__init__.py:1848
+#: venv/Lib/site-packages/sphinx/ext/autodoc/__init__.py:1871
+#, python-format
+msgid "alias of %s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/autodoc/__init__.py:1915
+#, python-format
+msgid "alias of TypeVar(%s)"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/__init__.py:339
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:716
+msgid "Keyword Arguments"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:670
+msgid "Example"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:671
+msgid "Examples"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:731
+msgid "Notes"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:740
+msgid "Other Parameters"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:776
+msgid "Receives"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:780
+msgid "References"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:812
+msgid "Warns"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/ext/napoleon/docstring.py:816
+msgid "Yields"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:244
+msgid "Attention"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:245
+msgid "Caution"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:246
+msgid "Danger"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:247
+msgid "Error"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:248
+msgid "Hint"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:249
+msgid "Important"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:250
+msgid "Note"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:251
+msgid "See also"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:252
+msgid "Tip"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/locale/__init__.py:253
+msgid "Warning"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/util/docutils.py:293
+#, python-format
+msgid "unknown directive or role name: %s:%s"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/html.py:120
+#: venv/Lib/site-packages/sphinx/writers/html.py:129
+#: venv/Lib/site-packages/sphinx/writers/html5.py:99
+#: venv/Lib/site-packages/sphinx/writers/html5.py:108
+msgid "Permalink to this definition"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/html.py:405
+#: venv/Lib/site-packages/sphinx/writers/html5.py:364
+msgid "Permalink to this term"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/html.py:428
+#: venv/Lib/site-packages/sphinx/writers/html.py:433
+#: venv/Lib/site-packages/sphinx/writers/html5.py:387
+#: venv/Lib/site-packages/sphinx/writers/html5.py:392
+msgid "Permalink to this heading"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/html.py:437
+#: venv/Lib/site-packages/sphinx/writers/html5.py:396
+msgid "Permalink to this table"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/html.py:480
+#: venv/Lib/site-packages/sphinx/writers/html5.py:439
+msgid "Permalink to this code"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/html.py:482
+#: venv/Lib/site-packages/sphinx/writers/html5.py:441
+msgid "Permalink to this image"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/html.py:484
+#: venv/Lib/site-packages/sphinx/writers/html5.py:443
+msgid "Permalink to this toctree"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/latex.py:806
+#: venv/Lib/site-packages/sphinx/writers/manpage.py:239
+#: venv/Lib/site-packages/sphinx/writers/texinfo.py:629
+msgid "Footnotes"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/manpage.py:288
+#: venv/Lib/site-packages/sphinx/writers/text.py:795
+#, python-format
+msgid "[image: %s]"
+msgstr ""
+
+#: venv/Lib/site-packages/sphinx/writers/manpage.py:289
+#: venv/Lib/site-packages/sphinx/writers/text.py:796
+msgid "[image]"
+msgstr ""
