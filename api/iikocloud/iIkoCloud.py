@@ -47,17 +47,9 @@ class BaseAPI:
         self.__time_token: Optional[date] = None
         self.__organizations_ids: Optional[list[str]] = None
         self.__strfdt = "%Y-%m-%d %H:%M:%S.000"
-        self.__base_url = (
-            "https://api-ru.iiko.services" if base_url is None else base_url
-        )
-        self.__headers = (
-            {"Content-Type": "application/json", "Timeout": "45"}
-            if base_headers is None
-            else base_headers
-        )
-        self.__set_token(
-            working_token
-        ) if working_token is not None else self.__get_access_token()
+        self.__base_url = "https://api-ru.iiko.services" if base_url is None else base_url
+        self.__headers = {"Content-Type": "application/json", "Timeout": "45"} if base_headers is None else base_headers
+        self.__set_token(working_token) if working_token is not None else self.__get_access_token()
         self.__last_data = None
 
     def check_status_code_token(self, code: Union[str, int]):
@@ -163,9 +155,7 @@ class BaseAPI:
         """Получить токен доступа"""
         data = json.dumps({"apiLogin": self.api_login})
         try:
-            result = self.session_s.post(
-                f"{self.__base_url}/api/1/access_token", json=data
-            )
+            result = self.session_s.post(f"{self.__base_url}/api/1/access_token", json=data)
             # result = requests.post(f'{self.__base_url}/api/1/access_token', json=data)
 
             response_data: dict = json.loads(result.content)
@@ -209,9 +199,7 @@ class BaseAPI:
         if timeout != self.DEFAULT_TIMEOUT:
             self.timeout = timeout
 
-        response = self.session_s.post(
-            url=f"{self.base_url}{url}", data=json.dumps(data), headers=self.headers
-        )
+        response = self.session_s.post(url=f"{self.base_url}{url}", data=json.dumps(data), headers=self.headers)
 
         if response.status_code == 401:
             self.__get_access_token()
@@ -248,9 +236,7 @@ class BaseAPI:
             data["includeDisabled"] = includeDisabled
 
         try:
-            response_data = self._post_request(
-                url=f"/api/1/organizations", data=data, timeout=timeout
-            )
+            response_data = self._post_request(url=f"/api/1/organizations", data=data, timeout=timeout)
 
             return response_data
 
@@ -302,9 +288,7 @@ class Customers(BaseAPI):
             data[TypeRCI.id.value] = identifier
 
         try:
-            response_data = self._post_request(
-                url=f"/api/1/loyalty/iiko/customer/info", data=data, timeout=timeout
-            )
+            response_data = self._post_request(url=f"/api/1/loyalty/iiko/customer/info", data=data, timeout=timeout)
 
             return response_data
 
@@ -372,9 +356,7 @@ class Customers(BaseAPI):
                 timeout=timeout,
             )
         except requests.exceptions.RequestException as err:
-            raise requests.exceptions.RequestException(
-                f"Не удалось создать или обновить клиента: \n{err}"
-            )
+            raise requests.exceptions.RequestException(f"Не удалось создать или обновить клиента: \n{err}")
         except TypeError as err:
             raise TypeError(f"Не удалось: \n{err}")
 
@@ -417,9 +399,7 @@ class Customers(BaseAPI):
                 timeout=timeout,
             )
         except requests.exceptions.RequestException as err:
-            raise requests.exceptions.RequestException(
-                f"Не удалось создать или обновить клиента: \n{err}"
-            )
+            raise requests.exceptions.RequestException(f"Не удалось создать или обновить клиента: \n{err}")
         except TypeError as err:
             raise TypeError(f"Не удалось создать или обновить клиента: \n{err}")
 
@@ -473,9 +453,7 @@ class Order(BaseAPI):
                 timeout=timeout,
             )
         except requests.exceptions.RequestException as err:
-            raise requests.exceptions.RequestException(
-                f"Не удалось получить последние заказы клиента: \n{err}"
-            )
+            raise requests.exceptions.RequestException(f"Не удалось получить последние заказы клиента: \n{err}")
         except TypeError as err:
             raise TypeError(f"Не удалось получить последние заказы клиента: \n{err}")
 
@@ -541,13 +519,9 @@ class Deliveries(BaseAPI):
                 timeout=timeout,
             )
         except requests.exceptions.RequestException as err:
-            raise requests.exceptions.RequestException(
-                f"Не удалось получить список заказов по дате и статусу: \n{err}"
-            )
+            raise requests.exceptions.RequestException(f"Не удалось получить список заказов по дате и статусу: \n{err}")
         except TypeError as err:
-            raise TypeError(
-                f"Ошибка в методе retrieve_orders_by_date_and_status: \n{err}"
-            )
+            raise TypeError(f"Ошибка в методе retrieve_orders_by_date_and_status: \n{err}")
 
 
 class Dictionaries(BaseAPI):
@@ -570,9 +544,7 @@ class Dictionaries(BaseAPI):
                 timeout=timeout,
             )
         except requests.exceptions.RequestException as err:
-            raise requests.exceptions.RequestException(
-                f"Не удалось получить скидки/надбавки: \n{err}"
-            )
+            raise requests.exceptions.RequestException(f"Не удалось получить скидки/надбавки: \n{err}")
         except TypeError as err:
             raise TypeError(f"Ошибка в методе discounts: \n{err}")
 

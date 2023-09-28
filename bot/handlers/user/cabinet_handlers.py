@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-from aiogram import F, Router, flags
+from aiogram import F, Router
 from aiogram.enums import ChatAction
 from aiogram.filters import Command
 from aiogram.types import FSInputFile, Message
@@ -17,7 +17,6 @@ from bot.fitlers.IsAuth import IsAuth
 from bot.keyboards import auth_kb
 from bot.keyboards.inline import sell_inline_kb
 from bot.mics.helpers.Config import Config
-from bot.mics.iikoapi import get_last_order
 from utils import generate_qr
 
 router: Router = Router()
@@ -32,9 +31,7 @@ async def profile_handler(msg: Message, session: AsyncSession):
     bot = msg.bot
 
     if await session.scalar(exists().where(User.user_id == msg.from_user.id).select()):
-        user = await session.scalars(
-            select(User).where(User.user_id == msg.from_user.id)
-        )
+        user = await session.scalars(select(User).where(User.user_id == msg.from_user.id))
         user = user.first()
 
         profile_info = iiko.customer_info(
@@ -51,9 +48,7 @@ async def profile_handler(msg: Message, session: AsyncSession):
 
         photo = FSInputFile("qr_code.png")
 
-        info = _(
-            "Номер бонусной карты: {bonus_card_number}\n\n" "Бонусов: {balance}"
-        ).format(
+        info = _("Номер бонусной карты: {bonus_card_number}\n\n" "Бонусов: {balance}").format(
             bonus_card_number=profile_info["phone"],
             balance=round(profile_info["walletBalances"][0]["balance"]),
         )
@@ -95,10 +90,7 @@ async def profile_handler(msg: Message, session: AsyncSession):
 @router.message(F.text == __("Пароль от WiFi"), IsAuth())
 async def wifi_password_handler(msg: Message, session: AsyncSession):
     await msg.answer(
-        _(
-            "Мы работаем над установкой Wi-Fi в филиале на Мира. Пароль от него будет здесь в ближайшее "
-            "время 😎"
-        )
+        _("Мы работаем над установкой Wi-Fi в филиале на Мира. Пароль от него будет здесь в ближайшее " "время 😎")
     )
 
 

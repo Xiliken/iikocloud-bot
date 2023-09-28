@@ -9,9 +9,5 @@ from bot.mics import Config
 i18n = I18n(path="bot/locales", default_locale="ru", domain="messages")
 i18n_middleware = SimpleI18nMiddleware(i18n=i18n)
 bot: Bot = Bot(token=Config.get("TELEGRAM_BOT_API_KEY"), parse_mode="HTML")
-redis: Redis = Redis(
-    host=Config.get("REDIS_HOST"), port=Config.get("REDIS_PORT") or 6379
-)
-dp: Dispatcher = Dispatcher(
-    storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT
-)
+redis: Redis = Redis(host=Config.get("REDIS_HOST"), port=Config.get("REDIS_PORT") or 6379)
+dp: Dispatcher = Dispatcher(storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT)

@@ -2,19 +2,14 @@ import datetime
 import pathlib
 
 import aiocron
-import loguru
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import Redis, RedisStorage
 from aiogram.fsm.strategy import FSMStrategy
-from aiogram.utils.i18n import FSMI18nMiddleware, I18n, SimpleI18nMiddleware
-from apscheduler.jobstores.redis import RedisJobStore
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler_di import ContextSchedulerDecorator
+from aiogram.utils.i18n import I18n, SimpleI18nMiddleware
 from loguru import logger
 
 import utils
 from bot.database import create_async_engine, get_async_session_maker, init_models
-from bot.database.methods.user import get_all_users
 from bot.handlers import user
 from bot.handlers.admin import base_admin_handlers
 from bot.handlers.user import (
@@ -23,14 +18,12 @@ from bot.handlers.user import (
     other_handlers,
     registration_handlers,
 )
-from bot.mics.changelog import check_changelog
 from bot.mics.commands import set_commands
 from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import get_organizations_ids
 from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
 from bot.middlewares.ThrottlingMiddleware import ThrottlingMiddleware
 from config import settings
-from schedulers import sc_check_order
 from schedulers.sc_check_order import check_last_orders
 
 # Данные пользователя
@@ -53,18 +46,15 @@ async def __on_shutdown(bot: Bot) -> None:
     pass
 
 
-async def test():
-    loguru.logger.info("Запускаю проверку последних заказов пользователей...")
-    print("Hello")
-
-
 async def start_bot() -> None:
-    # БД
+    # region Инициализация БД
     engine = await create_async_engine(url=Config.get("DATABASE_URL"))
     await init_models(engine)
     session_maker = get_async_session_maker(engine)
 
-    # Дебаг
+    # endregion
+
+    # region Дебаг
     if Config.get("DEBUG", "bool"):
         log_type = str(Config.get("LOG_TYPE")).lower()
 
@@ -76,26 +66,13 @@ async def start_bot() -> None:
                 "logs",
                 f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log',
             )
-            utils.logger.setup_logger_file(log_file)
+            utils.logger.setup_logger_file(log_file=log_file, level="DEBUG")
+    # endregion
 
     # region Инициализация бота и Redis
     bot: Bot = Bot(token=Config.get("TELEGRAM_BOT_API_KEY"), parse_mode="HTML")
-    redis: Redis = Redis(
-        host=Config.get("REDIS_HOST"), port=Config.get("REDIS_PORT") or 6379
-    )
-    dp: Dispatcher = Dispatcher(
-        storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT
-    )
-
-    job_stores = {
-        "default": RedisJobStore(
-            jobs_key="dispatched_trips_jobs",
-            run_times_key="dispatched_trips_jobs_run_time",
-            host=Config.get("REDIS_HOST"),
-            port=Config.get("REDIS_PORT") or 6379,
-            db=Config.get("REDIS_DB") or 2,
-        )
-    }
+    redis: Redis = Redis(host=Config.get("REDIS_HOST"), port=Config.get("REDIS_PORT") or 6379)
+    dp: Dispatcher = Dispatcher(storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT)
 
     # region Локализация
     i18n = I18n(path="bot/locales", default_locale="ru", domain="messages")
@@ -125,29 +102,16 @@ async def start_bot() -> None:
     # dp.include_routers()
     # endregion
 
-    # TODO: ПОФИКСИТЬ
-    # region Планировщик задач
-    # scheduler = AsyncIOScheduler(timezone="Asia/Krasnoyarsk") #, jobstores=job_stores)
-    # scheduler.ctx.add_instance(bot, declared_class=Bot)
-    # scheduler.add_job(
-    #     sc_check_order,
-    #     trigger="interval",
-    #     seconds=30,
-    #     kwargs={"user_id": 591343689, "phone": "79029403811"},
-    # )
-    # scheduler.add_job(check_changelog, trigger="interval", seconds=5, args=(bot,))
-    # endregion
-
     # Запускаем бота и пропускаем все накопленные входящие
     try:
-        aiocron.crontab("* * * * *", func=check_last_orders, args=(), start=True)
-        # scheduler.start()
+        # region Запуск задач Cron
+        aiocron.crontab("0 */1 * * *", func=check_last_orders, args=(), start=True)
+        # endregion
+
         logger.success("~~~~ Bot polling is starting... ~~~~")
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
-        await aiocron.crontab("* * * * *", func=test, args=(), start=True).next()
     finally:
         await bot.session.close()
         await dp.storage.close()
         logger.warning("~~~~ Bot polling is stopped ~~~~")
-        # scheduler.shutdown(wait=False)

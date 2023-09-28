@@ -6,13 +6,7 @@ from bot.callbacks.RateCallbackData import RateCallbackData, RateServiceCallback
 
 def chat_inline_kb() -> InlineKeyboardMarkup:
     ikb: InlineKeyboardMarkup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=_("Позвать человека"), url="https://t.me/done_help"
-                )
-            ]
-        ]
+        inline_keyboard=[[InlineKeyboardButton(text=_("Позвать человека"), url="https://t.me/done_help")]]
     )
 
     return ikb
@@ -57,9 +51,7 @@ def contacts_ikb() -> InlineKeyboardMarkup:
 
 def website_ikb() -> InlineKeyboardMarkup:
     ikb: InlineKeyboardMarkup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="Открыть меню", url="https://doners-club.ru/")]
-        ]
+        inline_keyboard=[[InlineKeyboardButton(text="Открыть меню", url="https://doners-club.ru/")]]
     )
 
     return ikb
@@ -67,13 +59,7 @@ def website_ikb() -> InlineKeyboardMarkup:
 
 def promotions_ikb() -> InlineKeyboardMarkup:
     ikb: InlineKeyboardMarkup = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="Открыть список акций", url="https://doners-club.ru/promotions"
-                )
-            ]
-        ]
+        inline_keyboard=[[InlineKeyboardButton(text="Открыть список акций", url="https://doners-club.ru/promotions")]]
     )
 
     return ikb
@@ -83,21 +69,11 @@ def rate_last_order_ikb() -> InlineKeyboardMarkup:
     ikb = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
-                    text="😡 1", callback_data=RateCallbackData(food_rating=1).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😟 2", callback_data=RateCallbackData(food_rating=2).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😐 3", callback_data=RateCallbackData(food_rating=3).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😚 4", callback_data=RateCallbackData(food_rating=4).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😍 5", callback_data=RateCallbackData(food_rating=5).pack()
-                ),
+                InlineKeyboardButton(text="😡 1", callback_data=RateCallbackData(food_rating=1).pack()),
+                InlineKeyboardButton(text="😟 2", callback_data=RateCallbackData(food_rating=2).pack()),
+                InlineKeyboardButton(text="😐 3", callback_data=RateCallbackData(food_rating=3).pack()),
+                InlineKeyboardButton(text="😚 4", callback_data=RateCallbackData(food_rating=4).pack()),
+                InlineKeyboardButton(text="😍 5", callback_data=RateCallbackData(food_rating=5).pack()),
             ]
         ]
     )
@@ -111,21 +87,11 @@ def rate_last_service() -> InlineKeyboardMarkup:
     ikb = InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
-                    text="😡 1", callback_data=RateServiceCallbackData(rating=1).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😟 2", callback_data=RateServiceCallbackData(rating=2).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😐 3", callback_data=RateServiceCallbackData(rating=3).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😚 4", callback_data=RateServiceCallbackData(rating=4).pack()
-                ),
-                InlineKeyboardButton(
-                    text="😍 5", callback_data=RateServiceCallbackData(rating=5).pack()
-                ),
+                InlineKeyboardButton(text="😡 1", callback_data=RateServiceCallbackData(rating=1).pack()),
+                InlineKeyboardButton(text="😟 2", callback_data=RateServiceCallbackData(rating=2).pack()),
+                InlineKeyboardButton(text="😐 3", callback_data=RateServiceCallbackData(rating=3).pack()),
+                InlineKeyboardButton(text="😚 4", callback_data=RateServiceCallbackData(rating=4).pack()),
+                InlineKeyboardButton(text="😍 5", callback_data=RateServiceCallbackData(rating=5).pack()),
             ]
         ]
     )

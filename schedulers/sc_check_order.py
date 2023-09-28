@@ -1,16 +1,12 @@
 import datetime
 from typing import Union
 
-import loguru
 from aiogram import Bot
-from aiogram.utils.i18n import FSMI18nMiddleware, I18n, SimpleI18nMiddleware
-from aiogram.utils.i18n import gettext as _
-from aiogram.utils.i18n import lazy_gettext as __
 from sqlalchemy import update
 
 from bot.database import create_async_engine, get_async_session_maker
 from bot.database.methods.orders import get_last_order_date
-from bot.database.methods.user import get_all_users, get_users_count
+from bot.database.methods.user import get_all_users
 from bot.database.models import User
 from bot.keyboards.inline import rate_last_order_ikb
 from bot.mics import Config, iikoapi, notify
@@ -37,10 +33,7 @@ async def check_last_orders():
                 iiko_last_order["whenClosed"], "%Y-%m-%d %H:%M:%S.%f"
             ).replace(microsecond=0, second=0)
 
-            if (
-                user_last_order_date is not None
-                and iiko_last_order_datetime > user_last_order_date
-            ):
+            if user_last_order_date is not None and iiko_last_order_datetime > user_last_order_date:
                 # Обновляем данные в БД и отправляем сообщение
                 # с текстом отзыва
                 await notify(
@@ -102,15 +95,11 @@ async def sc_check_order(user_id, phone: Union[str, int]) -> bool:
         async with session_maker.begin() as conn:
             if last_order_iiko is None:
                 await conn.execute(
-                    update(User)
-                    .where(User.user_id == user_id)
-                    .values(last_order_date=last_order_iiko_datetime)
+                    update(User).where(User.user_id == user_id).values(last_order_date=last_order_iiko_datetime)
                 )
                 await conn.commit()
 
-    last_order_db_datetime = datetime.datetime.strptime(
-        last_order_date_db, "%Y-%m-%d %H:%M"
-    )
+    last_order_db_datetime = datetime.datetime.strptime(last_order_date_db, "%Y-%m-%d %H:%M")
 
     # Обновляем данные о последнем заказе
     if last_order_iiko_datetime > last_order_db_datetime:

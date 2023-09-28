@@ -1,10 +1,8 @@
 import re
 
-from aiogram import Bot
 from aiogram.types import Message
 
 from bot.mics.helpers.Config import Config
-from bot.mics.notify_admin import notify
 
 
 def normalize_phone_number(phone: str) -> str:

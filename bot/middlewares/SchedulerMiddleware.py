@@ -3,7 +3,6 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler_di import ContextSchedulerDecorator
 
 
 class SchedulerMiddleware(BaseMiddleware):

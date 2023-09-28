@@ -8,9 +8,7 @@ from dotenv import find_dotenv, load_dotenv
 
 class Config:
     @staticmethod
-    def get(
-        key: str, value_type: str = "str"
-    ) -> Union[str, bool, List[str], Dict[str, str], int, float, None]:
+    def get(key: str, value_type: str = "str") -> Union[str, bool, List[str], Dict[str, str], int, float, None]:
         # Загрузка env
         load_dotenv(find_dotenv())
         value = getenv(str(key))

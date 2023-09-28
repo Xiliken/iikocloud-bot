@@ -43,8 +43,6 @@ async def set_commands(bot: Bot) -> None:
     if len(admins_list) != 0:
         for admin in await get_admins():
             try:
-                await bot.set_my_commands(
-                    admin_commands, scope=BotCommandScopeChat(chat_id=admin[0].user_id)
-                )
+                await bot.set_my_commands(admin_commands, scope=BotCommandScopeChat(chat_id=admin[0].user_id))
             except Exception as e:
                 loguru.logger.error(e)

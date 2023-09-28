@@ -34,10 +34,7 @@ class ThrottlingMiddleware(BaseMiddleware):
 
             return await handler(event, data)
         else:
-            if (
-                int(time.time()) - self.users[this_user.id]["last_throttled"]
-                >= self.users[this_user.id]["now_rate"]
-            ):
+            if int(time.time()) - self.users[this_user.id]["last_throttled"] >= self.users[this_user.id]["now_rate"]:
                 self.users.pop(this_user.id)
 
                 return await handler(event, data)

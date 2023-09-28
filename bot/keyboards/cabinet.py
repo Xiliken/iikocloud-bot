@@ -1,12 +1,5 @@
-from aiogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    KeyboardButton,
-    ReplyKeyboardMarkup,
-    WebAppInfo,
-)
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from aiogram.utils.i18n import gettext as _
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
 def cabinet_main_kb() -> ReplyKeyboardMarkup:

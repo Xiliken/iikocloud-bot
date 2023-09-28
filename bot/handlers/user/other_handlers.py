@@ -19,15 +19,14 @@ from aiogram.types import (
 )
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
-from sqlalchemy import select, update
+from sqlalchemy import insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.callbacks.RateCallbackData import RateCallbackData, RateServiceCallbackData
-from bot.database.models import User
+from bot.database.models import Review, User
 from bot.fitlers.IsAuth import IsAuth
 from bot.keyboards import cabinet_main_kb
-from bot.keyboards.inline import rate_last_order_ikb, rate_last_service
-from bot.mics import Config, normalize_phone_number, notify
+from bot.mics import Config, normalize_phone_number
 
 router: Router = Router()
 
@@ -37,9 +36,7 @@ router: Router = Router()
 @router.message(Command(commands=["cancel"]), StateFilter(default_state))
 @router.message(F.text == __("❌ Отмена"), StateFilter(default_state))
 async def cancel_handler_default_state(msg: Message) -> None:
-    await msg.answer(
-        text=_("Нечего отменять"), reply_markup=aiogram.types.ReplyKeyboardRemove()
-    )
+    await msg.answer(text=_("Нечего отменять"), reply_markup=aiogram.types.ReplyKeyboardRemove())
 
 
 # Этот хэндлер будет срабатывать на команду "/cancel" в любых состояниях,
@@ -72,9 +69,7 @@ async def rate_callback_handler(
 ) -> None:
     try:
         # Получаем пользователя из бд
-        sender = await session.scalars(
-            select(User).where(User.user_id == callback.from_user.id)
-        )
+        sender = await session.scalars(select(User).where(User.user_id == callback.from_user.id))
 
         sender = sender.first()
 
@@ -93,9 +88,7 @@ async def rate_callback_handler(
         if callback_data.food_rating <= 3:
             await bot.send_message(
                 chat_id=Config.get("NOTIFY_ADMIN_ID", "int"),
-                text=_(
-                    "Гость <b>{name}</b> (+{phone}) оценил заказ на <b>{rate}</b>"
-                ).format(
+                text=_("Гость <b>{name}</b> (+{phone}) оценил заказ на <b>{rate}</b>").format(
                     name=callback.from_user.full_name,
                     phone=normalize_phone_number(sender.phone_number),
                     rate=callback_data.food_rating,
@@ -103,18 +96,24 @@ async def rate_callback_handler(
                 reply_markup=ikb,
             )
 
+        # Сохраняем результат в БД
+        try:
+            await session.execute(
+                insert(Review).values(user_id=callback.from_user.id, food_rating=int(callback_data.food_rating))
+            )
+            await session.commit()
+        except Exception as e:
+            loguru.logger.error(f"Ошибка добавления отзыва в БД:\n {e}")
+
         await callback.message.edit_text(
-            text=_(
-                "Пожалуйста, оцените <b><u>обслуживание</u></b> по шкале <b>от 1 до 5</b>."
-                "Где 5 наивысшая оценка"
-            ),
-            reply_markup=rate_last_service(),
+            text=_("Спасибо за ваш отзыв! Ждем Вас снова!"),
+            reply_markup=aiogram.types.ReplyKeyboardRemove(),
         )
     except TelegramBadRequest:
         loguru.logger.error(TelegramBadRequest)
 
 
-@router.callback_query(RateServiceCallbackData.filter())
+# @router.callback_query(RateServiceCallbackData.filter())
 async def rate_service_callback_handler(
     callback: aiogram.types.CallbackQuery,
     callback_data: RateServiceCallbackData,
@@ -124,9 +123,7 @@ async def rate_service_callback_handler(
 ) -> None:
     try:
         # Получаем пользователя из бд
-        sender = await session.scalars(
-            select(User).where(User.user_id == callback.from_user.id)
-        )
+        sender = await session.scalars(select(User).where(User.user_id == callback.from_user.id))
 
         sender = sender.first()
 
@@ -145,9 +142,7 @@ async def rate_service_callback_handler(
         if callback_data.rating <= 3:
             await bot.send_message(
                 chat_id=Config.get("NOTIFY_ADMIN_ID", "int"),
-                text=_(
-                    "Гость <b>{name}</b> (+{phone}) оценил обслуживание на <b>{rate}</b>"
-                ).format(
+                text=_("Гость <b>{name}</b> (+{phone}) оценил обслуживание на <b>{rate}</b>").format(
                     name=callback.from_user.full_name,
                     phone=normalize_phone_number(sender.phone_number),
                     rate=callback_data.rating,
@@ -164,18 +159,14 @@ async def rate_service_callback_handler(
 @router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=KICKED))
 async def user_blocked_bot(event: ChatMemberUpdated, session: AsyncSession):
     # Установить статус, что бот заблокирован
-    await session.execute(
-        update(User).where(User.user_id == event.from_user.id).values(is_blocked=True)
-    )
+    await session.execute(update(User).where(User.user_id == event.from_user.id).values(is_blocked=True))
     await session.commit()
 
 
 @router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=MEMBER))
 async def user_unblocked_bot(event: ChatMemberUpdated, session: AsyncSession):
     # Установить статус, что бот разблокирован
-    await session.execute(
-        update(User).where(User.user_id == event.from_user.id).values(is_blocked=False)
-    )
+    await session.execute(update(User).where(User.user_id == event.from_user.id).values(is_blocked=False))
     await session.commit()
 
 

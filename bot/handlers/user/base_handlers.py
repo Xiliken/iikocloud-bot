@@ -1,18 +1,14 @@
 from aiogram import Bot, F, Router
-from aiogram.filters import Command, CommandObject, CommandStart, StateFilter
+from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.types import Contact, ContentType, Message
-from aiogram.utils.formatting import Text
+from aiogram.types import Message
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
-from sqlalchemy import exists, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.database.methods.orders import get_last_order_date
-from bot.database.methods.user import get_admins, get_all_users
 from bot.database.models.User import User
-from bot.fitlers import IsAdmin
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
 from bot.keyboards.inline import (
@@ -22,7 +18,6 @@ from bot.keyboards.inline import (
     website_ikb,
 )
 from bot.mics.iikoapi import get_last_order
-from schedulers.sc_check_order import check_last_orders
 
 router: Router = Router()
 
@@ -41,10 +36,9 @@ async def __start(msg: Message, session: AsyncSession, state: FSMContext) -> Non
     # Если такой пользователь уже существует
     if sql.scalar():
         await msg.answer(
-            _(
-                "Привет, <b>{first_name}</b> 🤗\n"
-                "Выбери в меню интересующую функцию ⬇️\n"
-            ).format(first_name=user.first_name),
+            _("Привет, <b>{first_name}</b> 🤗\n" "Выбери в меню интересующую функцию ⬇️\n").format(
+                first_name=user.first_name
+            ),
             reply_markup=cabinet_main_kb(),
             parse_mode="HTML",
         )
@@ -83,9 +77,7 @@ async def promotions_handler(msg: Message):
 @router.message(F.text == __("Чат"))
 @router.message(Command(commands=["chat"]))
 async def chat_handler(msg: Message) -> None:
-    await msg.answer(
-        _("Нажми на кнопку и напиши свой вопрос"), reply_markup=chat_inline_kb()
-    )
+    await msg.answer(_("Нажми на кнопку и напиши свой вопрос"), reply_markup=chat_inline_kb())
 
 
 # Обработчик кнопки и команды "Контакты"

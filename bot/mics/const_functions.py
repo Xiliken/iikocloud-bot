@@ -2,11 +2,10 @@
 import datetime
 
 from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database import create_async_engine, get_async_session_maker
-from bot.database.methods.user import get_all_users, get_users_count
-from bot.database.models import User
+from bot.database.methods.user import get_users_count
+from bot.database.models import Review, User
 from bot.mics import Config
 
 
@@ -81,35 +80,40 @@ async def get_stats() -> dict:
     async with session_maker.begin() as session:
         # Регистрация за сегодня
         reg_users_today = await session.scalar(
-            select(func.count())
-            .filter(User.registration_date == datetime.date.today())
-            .select_from(User)
+            select(func.count()).filter(User.registration_date == datetime.date.today()).select_from(User)
         )
         # Регистраций за неделю
         reg_users_week = await session.scalar(
             select(func.count())
-            .filter(
-                User.registration_date
-                >= datetime.date.today() - datetime.timedelta(days=7)
-            )
+            .filter(User.registration_date >= datetime.date.today() - datetime.timedelta(days=7))
             .select_from(User)
         )
         # Регистраций за месяц
         reg_users_month = await session.scalar(
             select(func.count())
-            .filter(
-                User.registration_date
-                >= datetime.date.today() - datetime.timedelta(days=30)
-            )
+            .filter(User.registration_date >= datetime.date.today() - datetime.timedelta(days=30))
             .select_from(User)
         )
         # Регистраций за все время
         reg_users_all = await get_users_count()
 
         # Сколько пользователей заблокировало бота
-        bot_blocked = await session.scalar(
-            select(func.count()).filter(User.is_blocked == True)
-        )
+        bot_blocked = await session.scalar(select(func.count()).filter(User.is_blocked == True))
+
+        # Сколько всего отзывов
+        total_reviews = await session.scalar(select(func.count()).select_from(Review))
+
+        # Положительных отзывов за заказ
+        positive_reviews_order = await session.scalar(select(func.count()).filter(Review.food_rating >= 4))
+
+        # Негативных отзывов за заказ
+        negative_reviews_order = await session.scalar(select(func.count()).filter(Review.food_rating < 4))
+
+        # Положительных отзывов за обслуживание
+        positive_reviews_service = await session.scalar(select(func.count()).filter(Review.service_rating >= 4))
+
+        # Негативных отзывов за обслуживание
+        negative_reviews_service = await session.scalar(select(func.count()).filter(Review.service_rating < 4))
 
     return {
         "reg_users_today": reg_users_today,
@@ -117,4 +121,9 @@ async def get_stats() -> dict:
         "reg_users_month": reg_users_month,
         "reg_users_all": reg_users_all,
         "bot_blocked": bot_blocked,
+        "reviews_total": total_reviews,
+        "reviews_order_positive": positive_reviews_order,
+        "reviews_order_negative": negative_reviews_order,
+        "reviews_service_positive": positive_reviews_service,
+        "reviews_service_negative": negative_reviews_service,
     }

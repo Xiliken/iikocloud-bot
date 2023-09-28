@@ -38,9 +38,7 @@ def get_last_order(user_phone: Union[str, int] = None):
     """
     if user_phone is None:
         raise Exception("Phone number not specified")
-    elif (
-        len(user_phone) < 10
-    ):  # Потому что если придет номер 9222222222, то он сам подставит 7
+    elif len(user_phone) < 10:  # Потому что если придет номер 9222222222, то он сам подставит 7
         raise Exception("Invalid phone number format")
 
     orders_by_organizations = __api.retrieve_orders_by_phone_number(
@@ -67,16 +65,11 @@ def check_last_closed_order(user_phone: Union[str, int] = None) -> bool:
     if last_order is None:
         return None
 
-    order_closed_date = datetime.datetime.strptime(
-        last_order["whenClosed"], "%Y-%m-%d %H:%M:%S.%f"
-    )
+    order_closed_date = datetime.datetime.strptime(last_order["whenClosed"], "%Y-%m-%d %H:%M:%S.%f")
 
     # Получаем дату последнего закрытого заказа у пользователя из БД
 
-    if (
-        last_order["status"] == "CLOSED"
-        and order_closed_date.date() == datetime.datetime.now().date()
-    ):
+    if last_order["status"] == "CLOSED" and order_closed_date.date() == datetime.datetime.now().date():
         return True
     else:
         return False

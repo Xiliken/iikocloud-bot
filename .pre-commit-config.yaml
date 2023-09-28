@@ -22,6 +22,9 @@ repos:
     rev: 23.9.1
     hooks:
         - id: black
+          args: ["--line-length=120"]
+          language: python
+          types: [python]
 -   repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
@@ -31,6 +34,13 @@ repos:
     rev: v2.2.1
     hooks:
     -   id: autoflake
+        args: [
+            "--in-place",
+            "--remove-all-unused-imports",
+            "--remove-unused-variables",
+            "--expand-star-imports",
+            "--ignore-init-module-imports",
+      ]
 -   repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
     hooks:

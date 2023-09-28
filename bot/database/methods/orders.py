@@ -15,9 +15,7 @@ async def get_last_order_date(**kwargs):
 
         async with session_maker.begin() as session:
             user = await session.execute(
-                select(User.last_order_date).filter(
-                    User.phone_number == normalize_phone_number(kwargs["phone"])
-                )
+                select(User.last_order_date).filter(User.phone_number == normalize_phone_number(kwargs["phone"]))
             )
             await session.commit()
 
@@ -33,9 +31,7 @@ async def get_last_order_date(**kwargs):
             raise ValueError("user_id must be a string or integer")
 
         async with session_maker.begin() as session:
-            user = await session.execute(
-                select(User.last_order_date).filter(User.user_id == kwargs["user_id"])
-            )
+            user = await session.execute(select(User.last_order_date).filter(User.user_id == kwargs["user_id"]))
             last_order_date = user.scalar_one_or_none()
 
             if last_order_date is None:

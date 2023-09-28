@@ -49,6 +49,4 @@ async def check_changelog(bot: Bot):
 
             await notify(bot=bot, chat_id=5599795627, message=message)
 
-            logger.info(
-                "Сhangelog has been updated. A notification of changes has been sent to Telegram!"
-            )
+            logger.info("Сhangelog has been updated. A notification of changes has been sent to Telegram!")

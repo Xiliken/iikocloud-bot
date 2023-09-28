@@ -24,6 +24,4 @@ async def init_models(engine: AsyncEngine):
 
 
 def get_async_session_maker(engine: AsyncEngine):
-    return async_sessionmaker(
-        engine, class_=AsyncSession, expire_on_commit=False, future=True
-    )
+    return async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False, future=True)

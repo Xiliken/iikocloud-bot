@@ -2,9 +2,6 @@ import re
 from datetime import datetime
 from typing import Optional
 
-from qrcode.image.styledpil import StyledPilImage
-from qrcode.image.styles.moduledrawers import RoundedModuleDrawer, VerticalBarsDrawer
-
 
 def generate_qr(text: str, use_logo: Optional[bool] = False) -> None:
     import qrcode
