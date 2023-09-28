@@ -105,10 +105,7 @@ async def rate_callback_handler(
         except Exception as e:
             loguru.logger.error(f"Ошибка добавления отзыва в БД:\n {e}")
 
-        await callback.message.edit_text(
-            text=_("Спасибо за ваш отзыв! Ждем Вас снова!"),
-            reply_markup=aiogram.types.ReplyKeyboardRemove(),
-        )
+        await callback.message.edit_text(text=_("Спасибо за ваш отзыв! Ждем Вас снова!"))
     except TelegramBadRequest:
         loguru.logger.error(TelegramBadRequest)
 

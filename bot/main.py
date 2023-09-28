@@ -105,7 +105,7 @@ async def start_bot() -> None:
     # Запускаем бота и пропускаем все накопленные входящие
     try:
         # region Запуск задач Cron
-        aiocron.crontab("0 */1 * * *", func=check_last_orders, args=(), start=True)
+        aiocron.crontab("* * * * *", func=check_last_orders, args=(), start=True)
         # endregion
 
         logger.success("~~~~ Bot polling is starting... ~~~~")
