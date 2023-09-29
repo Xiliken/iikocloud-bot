@@ -7,7 +7,7 @@ def admin_main_kb() -> ReplyKeyboardMarkup:
         keyboard=[
             [
                 KeyboardButton(text=_("📊 Статистика")),
-                KeyboardButton(text=_("🙍 Администраторы")),
+                KeyboardButton(text=_("🙍 Админы")),
             ],
             [
                 KeyboardButton(text=_("📦 Резервная копия БД")),

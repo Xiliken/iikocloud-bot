@@ -4,6 +4,7 @@ from aiogram.types import Message
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
 
+from bot.database.methods.user import get_admins
 from bot.fitlers import IsAdmin
 from bot.keyboards.admin.inline_admin import admin_report_ikb
 from bot.keyboards.admin.reply_admin import admin_main_kb
@@ -29,7 +30,7 @@ async def admin_stats_handler(msg: Message):
             ┣ Регистраций за <b>Неделю</b>: <code>{reg_week_count}</code>
             ┣ Регистраций за <b>Месяц</b>: <code>{reg_month_count}</code>
             ┣ Регистраций за <b>Все время</b>: <code>{reg_all_time_count}</code>
-            ┗ Заблокировало бота: <code>{bot_blocked_count}</code>
+            ┗ Заблокировало <b>бота</b>: <code>{bot_blocked_count}</code>
 
             <b> ⭐️ ОТЗЫВЫ</b>
             ┣ Отзывов за <b>все время</b>: <code>{reviews_total}</code>
@@ -80,3 +81,8 @@ async def admin_panel_handler(msg: Message):
         _("Добро пожаловать в панель управления, <b>{user}</b>!").format(user=msg.from_user.full_name),
         reply_markup=admin_main_kb(),
     )
+
+
+@router.message(F.text == __("🙍 Админы"))
+async def admin_list_handler(msg: Message):
+    await get_admins()

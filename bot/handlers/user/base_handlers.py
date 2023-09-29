@@ -8,6 +8,7 @@ from aiogram.utils.i18n import lazy_gettext as __
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from bot.config.load_config import load_config
 from bot.database.models.User import User
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
@@ -17,9 +18,9 @@ from bot.keyboards.inline import (
     promotions_ikb,
     website_ikb,
 )
-from bot.mics.iikoapi import get_last_order
 
 router: Router = Router()
+config = load_config(".env.new")
 
 
 # Обработчик команды "/start"
@@ -29,8 +30,6 @@ async def __start(msg: Message, session: AsyncSession, state: FSMContext) -> Non
     bot: Bot = msg.bot
     user_id = msg.from_user.id
     user = msg.from_user
-
-    get_last_order(user_phone="79130453040")
 
     sql = await session.execute(select(User).where(User.user_id == user_id))
     # Если такой пользователь уже существует
