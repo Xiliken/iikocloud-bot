@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from pydantic import BaseModel
-
 
 @dataclass
 class DatabaseConfig:
@@ -58,7 +56,7 @@ class Development:
 
 
 @dataclass
-class Config(BaseModel):
+class Config:
     database: DatabaseConfig
     bot: Bot
     iiko_cloud: IikoCloud

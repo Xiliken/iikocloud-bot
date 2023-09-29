@@ -1,5 +1,6 @@
 from environs import Env
 
+from ..mics.iikoapi import get_organizations_ids
 from .config import (
     Bot,
     Config,
@@ -32,9 +33,7 @@ def load_config(path: str | None = None) -> Config:
             database=int(env("REDIS_DB")),
             password=env("REDIS_PASSWORD"),
         ),
-        iiko_cloud=IikoCloud(
-            api_key=env("IIKO_CLOUD_API_KEY"), organizations=list(map(str, env.list("IIKO_CLOUD_ORGANIZATIONS_IDS")))
-        ),
+        iiko_cloud=IikoCloud(api_key=env("IIKO_CLOUD_API_KEY"), organizations=list(map(str, get_organizations_ids()))),
         sms_center=SMSCenter(
             login=env("SMSC_LOGIN"),
             password=env("SMSC_PASSWORD"),
@@ -48,9 +47,5 @@ def load_config(path: str | None = None) -> Config:
             password=env("SMSC_SMTP_PASSWORD"),
             smtp_from=env("SMSC_SMTP_FROM"),
         ),
-        development=Development(
-            debug=env.bool("DEBUG"),
-            log_type=env("LOG_TYPE"),
-            maintenance=env.bool("MAINTENANCE"),
-        ),
+        development=Development(debug=env.bool("DEBUG"), log_type=env("LOG_TYPE"), maintenance=env.bool("MAINTENANCE")),
     )

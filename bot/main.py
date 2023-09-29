@@ -35,8 +35,7 @@ async def __on_startup(bot: Bot) -> None:
     await set_commands(bot)
 
     # Получаем список организаций
-    config.iiko_cloud.organizations = get_organizations_ids()
-    print("ID ОРГАНИЗАЦИЙ", config.iiko_cloud.organizations[0])
+
     org_ids = get_organizations_ids()
 
     Config.set("IIKOCLOUD_ORGANIZATIONS_IDS", org_ids)
