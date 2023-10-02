@@ -17,7 +17,7 @@ SMSC_HTTPS = Config.get("SMSC_HTTPS", "bool")  # использовать HTTPS 
 SMSC_CHARSET = Config.get(
     "SMSC_CHARSET"
 )  # кодировка сообщения (windows-1251 или koi8-r), по умолчанию используется utf-8
-SMSC_DEBUG = Config.get("SMSC_DEBUG", "bool")  # флаг отладки
+SMSC_DEBUG = Config.get("DEBUG", "bool")  # флаг отладки
 
 # Константы для отправки SMS по SMTP
 SMSC_SMTP_FROM = Config.get("SMSC_SMTP_FROM")  # e-mail адрес отправителя

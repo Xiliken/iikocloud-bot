@@ -1,14 +1,16 @@
 from aiogram import F, Router
-from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.filters import Command, CommandObject
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
 
 from bot.database.methods.user import get_admins
 from bot.fitlers import IsAdmin
-from bot.keyboards.admin.inline_admin import admin_report_ikb, admin_users_ikb
+from bot.keyboards.admin.inline_admin import admin_users_ikb, get_confirm_button_ikb
 from bot.keyboards.admin.reply_admin import admin_main_kb
 from bot.mics.const_functions import clear_text, get_stats
+from bot.states.admin.BroadcastStates import BroadcastStates
 
 router: Router = Router()
 router.message.filter(IsAdmin())
@@ -72,7 +74,7 @@ async def admin_stats_handler(msg: Message):
         )
     )
 
-    await msg.answer(message, parse_mode="HTML", reply_markup=admin_report_ikb())
+    await msg.answer(message, parse_mode="HTML")
 
 
 @router.message(Command(commands=["admin", "ap", "admin_panel"]))
@@ -88,3 +90,77 @@ async def admin_list_handler(msg: Message):
     await get_admins()
 
     await msg.answer(_("Пожалуйста, выберите пункт меню"), reply_markup=admin_users_ikb())
+
+
+@router.message(Command(commands=["broadcast", "sender"]), F.text)
+@router.message(F.text == __("📣 Рассылка"))
+async def broadcast_admin_handler(msg: Message, state: FSMContext, command: CommandObject = CommandObject):
+    if command is None:
+        return
+
+    if command.args is None:
+        await msg.answer(
+            clear_text(
+                _(
+                    """
+        Для создания новой рассылки пожалуйста введите название рассылки!
+        Для этого используйте: /sender [название рассылки]
+        """
+                )
+            )
+        )
+        return
+
+    camp_name = command.args
+
+    await msg.answer(
+        clear_text(
+            _(
+                """
+    Начинаю создание рассылки: <b>"{camp_name}"</b>
+    Пожалуйста, введите <b><u>сообщение</u></b>, которое хотите отправить!
+    """
+            ).format(camp_name=camp_name)
+        )
+    )
+
+    await state.update_data(camp_name=camp_name)
+    await state.set_state(BroadcastStates.camp_text)
+
+
+@router.message(BroadcastStates.camp_text, F.text)
+async def camp_text_handler(msg: Message, state: FSMContext):
+    await state.update_data(camp_message=msg.text)
+    await msg.answer(
+        clear_text(
+            _(
+                """
+    Отлично! Я запомнил текст, который ты хочешь отправить!
+    <u>Будем добавлять кнопку?</u>
+    """
+            )
+        ),
+        reply_markup=get_confirm_button_ikb(),
+    )
+
+    await state.update_data(message_id=msg.message_id, chat_id=msg.from_user.id)
+    await state.set_state(BroadcastStates.add_button)
+
+
+@router.callback_query(BroadcastStates.add_button)
+async def add_button_handler(call: CallbackQuery, state: FSMContext):
+    if call.data == "add_button":
+        await state.set_state(BroadcastStates.button_url)
+        await call.message.answer(text=_("Отправьте текст для кнопки!"), reply_markup=None)
+    elif call.data == "no_button":
+        await call.message.edit_reply_markup(reply_markup=None)
+
+    await call.answer()
+
+
+@router.message(BroadcastStates.button_url)
+async def button_url_handler(msg: Message, state: FSMContext):
+    await state.update_data(button_text=msg.text)
+    await msg.answer("Введите ссылку для кнопки")
+    data = await state.get_data()
+    print("Данные, которые ввели:", data)
