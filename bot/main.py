@@ -23,11 +23,7 @@ from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import get_organizations_ids
 from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
 from bot.middlewares.ThrottlingMiddleware import ThrottlingMiddleware
-from schedulers.sc_check_order import check_last_orders
-
-from .config import load_config
-
-config = load_config(".env.new")
+from schedulers.sc_check_order import check_orders
 
 
 async def __on_startup(bot: Bot) -> None:
@@ -35,7 +31,6 @@ async def __on_startup(bot: Bot) -> None:
     await set_commands(bot)
 
     # Получаем список организаций
-
     org_ids = get_organizations_ids()
 
     Config.set("IIKOCLOUD_ORGANIZATIONS_IDS", org_ids)
@@ -104,7 +99,7 @@ async def start_bot() -> None:
     # Запускаем бота и пропускаем все накопленные входящие
     try:
         # region Запуск задач Cron
-        aiocron.crontab("*/15 * * * *", func=check_last_orders, args=(), start=True)
+        aiocron.crontab("*/1 * * * *", func=check_orders, args=(), start=True)
         # endregion
 
         logger.success("~~~~ Bot polling is starting... ~~~~")

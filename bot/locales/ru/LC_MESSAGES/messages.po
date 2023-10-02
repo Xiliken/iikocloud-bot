@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-25 12:05+0700\n"
+"POT-Creation-Date: 2023-10-02 09:52+0700\n"
 "PO-Revision-Date: 2023-09-19 13:48+0700\n"
 "Last-Translator: \n"
 "Language: ru\n"
@@ -19,19 +19,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: bot/fitlers/CheckDateFilter.py:35
+#: bot/fitlers/CheckDateFilter.py:28
 msgid ""
 "Вы не можете ввести дату, которая меньше {old_date}, либо больше или "
 "равна текущей дате, то есть {current_date}"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:38
+#: bot/handlers/admin/base_admin_handlers.py:23
+msgid ""
+"\n"
+"            <b>📊 СТАТИСТИКА БОТА</b>\n"
+"            ➖➖➖➖➖➖➖➖➖➖\n"
+"\n"
+"            <b>👤 ПОЛЬЗОВАТЕЛИ</b>\n"
+"            ┣ Регистраций за <b>День</b>: <code>{reg_day_count}</code>\n"
+"            ┣ Регистраций за <b>Неделю</b>: <code>{reg_week_count}</code>"
+"\n"
+"            ┣ Регистраций за <b>Месяц</b>: <code>{reg_month_count}</code>"
+"\n"
+"            ┣ Регистраций за <b>Все время</b>: "
+"<code>{reg_all_time_count}</code>\n"
+"            ┗ Заблокировало <b>бота</b>: <code>{bot_blocked_count}</code>"
+"\n"
+"\n"
+"            <b> ⭐️ ОТЗЫВЫ</b>\n"
+"            ┣ Отзывов за <b>все время</b>: <code>{reviews_total}</code>\n"
+"            ┣ 😻 Положительных: <code>{reviews_positive}</code>\n"
+"            ┣ 😡 Отрицательных: <code>{reviews_negative}</code>\n"
+"            ╰┈➤ <b><u>ЗАКАЗЫ</u></b>\n"
+"            ┣ 😻 Положительных: <code>{reviews_order_positive}</code>\n"
+"            ┣ 😡 Отрицательных: <code>{reviews_order_negative}</code>\n"
+"            ┣ 🤔 Средняя оценка: <code>{reviews_avg_order_rating}</code>\n"
+"            ╰┈➤ <b><u>ОБСЛУЖИВАНИЕ</u></b>\n"
+"            ┣ 😻 Положительных: <code>{reviews_service_negative}</code>\n"
+"            ┣ 😡 Отрицательных: <code>{reviews_service_negative}</code>\n"
+"            ┗ 🤔 Средняя оценка: <code>{reviews_avg_service_rating}</code>"
+"\n"
+"\n"
+"            <b> 💰 ДОХОД</b>\n"
+"            ┣ Доход за <b>сегодня</b>: <code>{income_today}</code>\n"
+"            ┣ Доход за <b>неделю</b>: <code>{income_week}</code>\n"
+"            ┣ Доход за <b>месяц</b>: <code>{income_month}</code>\n"
+"            ┗ Доход за <b>всё время</b>: <code>{income_all_time}</code>\n"
+"        "
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:81
+msgid "Добро пожаловать в панель управления, <b>{user}</b>!"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:37
 msgid ""
 "Привет, <b>{first_name}</b> 🤗\n"
 "Выбери в меню интересующую функцию ⬇️\n"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:49
+#: bot/handlers/user/base_handlers.py:45
 msgid ""
 "Привет! Я чат-бот стрит-фуд ресторана <b><a href='https://doners-"
 "club.ru'>Донерс</a></b>.\n"
@@ -41,68 +84,68 @@ msgid ""
 "Авторизуйся 1 раз и получай все преимущества \"Doners-club\" 😎"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:66
+#: bot/handlers/user/base_handlers.py:62
 msgid "Нажмите ниже, чтобы открыть меню"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:73
+#: bot/handlers/user/base_handlers.py:69
 msgid "Нажмите на кнопку, чтобы просмотреть доступные акции"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:83
+#: bot/handlers/user/base_handlers.py:78
 msgid "Нажми на кнопку и напиши свой вопрос"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:91
+#: bot/handlers/user/base_handlers.py:85
 msgid "Выбери ресторан:"
 msgstr ""
 
-#: bot/handlers/user/cabinet_handlers.py:54
+#: bot/handlers/user/cabinet_handlers.py:51
 msgid ""
 "Номер бонусной карты: {bonus_card_number}\n"
 "\n"
 "Бонусов: {balance}"
 msgstr ""
 
-#: bot/handlers/user/cabinet_handlers.py:98
+#: bot/handlers/user/cabinet_handlers.py:93
 msgid ""
 "Мы работаем над установкой Wi-Fi в филиале на Мира. Пароль от него будет "
 "здесь в ближайшее время 😎"
 msgstr ""
 
-#: bot/handlers/user/cabinet_handlers.py:110
+#: bot/handlers/user/cabinet_handlers.py:102
 msgid ""
 "❗Извините, но данное действие доступно только <u>авторизованным</u> "
 "пользователям! Пожалуйста, <b>войдите</b> или <b>создайте</b> аккаунт."
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:39
+#: bot/handlers/user/login_handlers.py:38
 msgid "Пожалуйста, введите номер телефона"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:51
-#: bot/handlers/user/registration_handlers.py:60
-#: bot/handlers/user/registration_handlers.py:128
+#: bot/handlers/user/login_handlers.py:46
+#: bot/handlers/user/registration_handlers.py:59
+#: bot/handlers/user/registration_handlers.py:121
 msgid ""
 "❗Извините, но данный номер телефона зарегистрирован на другую учетную "
 "запись!"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:71
-#: bot/handlers/user/registration_handlers.py:159
+#: bot/handlers/user/login_handlers.py:63
+#: bot/handlers/user/registration_handlers.py:149
 msgid ""
 "Код: {verification_code}\n"
 "Вводя его вы даете согласие на обработку ПД"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:81
-#: bot/handlers/user/registration_handlers.py:167
+#: bot/handlers/user/login_handlers.py:73
+#: bot/handlers/user/registration_handlers.py:156
 msgid ""
 "Пожалуйста, введите проверочный код, отправленный по СМС на номер: "
 "+{phone}"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:93
+#: bot/handlers/user/login_handlers.py:85
 msgid ""
 "Извините, не удалось найти пользователя с номером +{phone}\n"
 "\n"
@@ -110,25 +153,25 @@ msgid ""
 " новый аккаунт!"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:117
-#: bot/handlers/user/registration_handlers.py:193
+#: bot/handlers/user/login_handlers.py:109
+#: bot/handlers/user/registration_handlers.py:182
 msgid "🟢 Код успешно подтвержден!"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:128
+#: bot/handlers/user/login_handlers.py:120
 msgid "✔️Авторизация успешно завершена!"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:139
-#: bot/handlers/user/registration_handlers.py:205
+#: bot/handlers/user/login_handlers.py:130
+#: bot/handlers/user/registration_handlers.py:190
 msgid "🔴 Неверный код. Осталось попыток: {current_attempts}"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:146
+#: bot/handlers/user/login_handlers.py:135
 msgid "🔴 Вы {max_sms_attempts} раза ввели неверный код! Авторизация отменена!"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:160
+#: bot/handlers/user/login_handlers.py:149
 msgid ""
 "Пожалуйста, введите 4х значный код, отправленный на ваш номер, указанный "
 "при регистрации!\n"
@@ -136,39 +179,43 @@ msgid ""
 "Если Вы хотите прервать авторизацию - отправьте команду /cancel"
 msgstr ""
 
-#: bot/handlers/user/login_handlers.py:170
-#: bot/handlers/user/registration_handlers.py:293
+#: bot/handlers/user/login_handlers.py:159
+#: bot/handlers/user/registration_handlers.py:273
 msgid "❗Вы уже авторизованы!"
 msgstr ""
 
-#: bot/handlers/user/other_handlers.py:28
+#: bot/handlers/user/other_handlers.py:39
 msgid "Нечего отменять"
 msgstr ""
 
-#: bot/handlers/user/other_handlers.py:38
+#: bot/handlers/user/other_handlers.py:48
 msgid "Действие успешно отменено"
 msgstr ""
 
-#: bot/handlers/user/other_handlers.py:64
+#: bot/handlers/user/other_handlers.py:80
+#: bot/handlers/user/other_handlers.py:131
 msgid "✉️ Написать гостю"
 msgstr ""
 
-#: bot/handlers/user/other_handlers.py:71
+#: bot/handlers/user/other_handlers.py:91
 msgid "Гость <b>{name}</b> (+{phone}) оценил заказ на <b>{rate}</b>"
 msgstr ""
 
-#: bot/handlers/user/other_handlers.py:78
-msgid ""
-"Пожалуйста, оцените обслуживание по шкале <b>от 1 до 5</b>.\n"
-"Где 5 наивысшая оценка"
+#: bot/handlers/user/other_handlers.py:108
+#: bot/handlers/user/other_handlers.py:150
+msgid "Спасибо за ваш отзыв! Ждем Вас снова!"
+msgstr ""
+
+#: bot/handlers/user/other_handlers.py:142
+msgid "Гость <b>{name}</b> (+{phone}) оценил обслуживание на <b>{rate}</b>"
 msgstr ""
 
 #: bot/handlers/user/registration_handlers.py:45
 msgid "Пожалуйста, выберите способ регистрации в системе."
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:74
-#: bot/handlers/user/registration_handlers.py:142
+#: bot/handlers/user/registration_handlers.py:70
+#: bot/handlers/user/registration_handlers.py:132
 msgid ""
 "Извините, но пользователь, с номером +{phone} уже существует!\n"
 "\n"
@@ -176,25 +223,25 @@ msgid ""
 "уже <u>существующим номером</u>!"
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:88
+#: bot/handlers/user/registration_handlers.py:84
 msgid ""
 "Код: {verification_code}\n"
 "Вводя его вы даете согласие на обработку ПД."
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:113
+#: bot/handlers/user/registration_handlers.py:107
 msgid "Пожалуйста, введите номер телефона для регистрации"
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:199
+#: bot/handlers/user/registration_handlers.py:185
 msgid "Пожалуйста, укажите вашу дату рождения в формате: <b>дд.мм.гггг</b>"
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:212
+#: bot/handlers/user/registration_handlers.py:195
 msgid "🔴 Вы {max_sms_attempts} раза ввели неверный код! Регистрация отменена!"
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:226
+#: bot/handlers/user/registration_handlers.py:209
 msgid ""
 "Пожалуйста, введите 4х значный код, отправленный на ваш номер, указанный "
 "при регистрации!\n"
@@ -202,78 +249,99 @@ msgid ""
 "Если Вы хотите прервать регистрацию - отправьте команду /cancel"
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:266
+#: bot/handlers/user/registration_handlers.py:247
 msgid "✔️Регистрация успешно завершена!"
 msgstr ""
 
-#: bot/handlers/user/registration_handlers.py:276
+#: bot/handlers/user/registration_handlers.py:256
 msgid ""
 "Пожалуйста, введите дату рождения в формате: <b>дд.мм.гггг</b>\n"
 "\n"
 "Если Вы хотите прервать регистрацию - отправьте команду /cancel"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:15
+#: bot/keyboards/cabinet.py:8
 msgid "Бонусная карта"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:15
+#: bot/keyboards/cabinet.py:8
 msgid "Чат"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:17
+#: bot/keyboards/cabinet.py:10
 msgid "Меню"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:18
+#: bot/keyboards/cabinet.py:11
 msgid "Акции"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:19
+#: bot/keyboards/cabinet.py:12
 msgid "Контакты"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:22
+#: bot/keyboards/cabinet.py:15
 msgid "Пароль от WiFi"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:26
+#: bot/keyboards/cabinet.py:19
 msgid "Выберите пункт меню для работы с ботом"
 msgstr ""
 
-#: bot/keyboards/inline.py:12
+#: bot/keyboards/inline.py:9
 msgid "Позвать человека"
 msgstr ""
 
-#: bot/keyboards/inline.py:26
+#: bot/keyboards/inline.py:20
 msgid "К покупкам"
 msgstr ""
 
-#: bot/keyboards/reply.py:16
+#: bot/keyboards/reply.py:10
 msgid "🔑 Авторизация"
 msgstr ""
 
-#: bot/keyboards/reply.py:17
+#: bot/keyboards/reply.py:11
 msgid "🔐 Регистрация"
 msgstr ""
 
-#: bot/keyboards/reply.py:29
+#: bot/keyboards/reply.py:23
 msgid "Номер Telegram"
 msgstr ""
 
-#: bot/keyboards/reply.py:30
+#: bot/keyboards/reply.py:24
 msgid "Другой номер"
 msgstr ""
 
-#: bot/keyboards/reply.py:32 bot/keyboards/reply.py:43
+#: bot/keyboards/reply.py:26 bot/keyboards/reply.py:37
 msgid "❌ Отмена"
 msgstr ""
 
-#: schedulers/sc_check_order.py:48
-msgid ""
-"Спасибо, что выбираете Донерс 😎\n"
-"Пожалуйста, оцените вкус заказанного блюда по шкале от 1 до 5.Где 5 "
-"наивысшая оценка"
+#: bot/keyboards/admin/inline_admin.py:7
+msgid "📋 Сформировать отчет"
+msgstr ""
+
+#: bot/keyboards/admin/reply_admin.py:9
+msgid "📊 Статистика"
+msgstr ""
+
+#: bot/keyboards/admin/reply_admin.py:10
+msgid "🙍 Админы"
+msgstr ""
+
+#: bot/keyboards/admin/reply_admin.py:13
+msgid "📦 Резервная копия БД"
+msgstr ""
+
+#: bot/keyboards/admin/reply_admin.py:15
+msgid "⬅️ В главное меню"
+msgstr ""
+
+#: bot/middlewares/ThrottlingMiddleware.py:54
+msgid "<b>❗ Пожалуйста, не спамьте.</b>\n"
+msgstr ""
+
+#: bot/middlewares/ThrottlingMiddleware.py:61
+msgid "<b>❗ Бот не будет отвечать до прекращения спама.</b>\n"
 msgstr ""
 
 #: venv/Lib/site-packages/click/_termui_impl.py:518
@@ -1306,4 +1374,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "🔴 Вы 3 раза ввели неверный код! Регистрация отменена!"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Пожалуйста, оцените обслуживание по шкале <b>от 1 до 5</b>.\n"
+#~ "Где 5 наивысшая оценка"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Спасибо, что выбираете Донерс 😎\n"
+#~ "Пожалуйста, оцените вкус заказанного блюда "
+#~ "по шкале от 1 до 5.Где 5 "
+#~ "наивысшая оценка"
 #~ msgstr ""

@@ -8,7 +8,6 @@ from aiogram.utils.i18n import lazy_gettext as __
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.config.load_config import load_config
 from bot.database.models.User import User
 from bot.keyboards import auth_kb
 from bot.keyboards.cabinet import cabinet_main_kb
@@ -20,7 +19,6 @@ from bot.keyboards.inline import (
 )
 
 router: Router = Router()
-config = load_config(".env.new")
 
 
 # Обработчик команды "/start"
