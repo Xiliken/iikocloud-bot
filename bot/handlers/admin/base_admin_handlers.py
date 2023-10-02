@@ -6,7 +6,7 @@ from aiogram.utils.i18n import lazy_gettext as __
 
 from bot.database.methods.user import get_admins
 from bot.fitlers import IsAdmin
-from bot.keyboards.admin.inline_admin import admin_report_ikb
+from bot.keyboards.admin.inline_admin import admin_report_ikb, admin_users_ikb
 from bot.keyboards.admin.reply_admin import admin_main_kb
 from bot.mics.const_functions import clear_text, get_stats
 
@@ -83,6 +83,8 @@ async def admin_panel_handler(msg: Message):
     )
 
 
-@router.message(F.text == __("🙍 Админы"))
+@router.message(F.text == __("🙍 Пользователи"))
 async def admin_list_handler(msg: Message):
     await get_admins()
+
+    await msg.answer(_("Пожалуйста, выберите пункт меню"), reply_markup=admin_users_ikb())

@@ -12,9 +12,6 @@ from aiogram.utils.i18n import lazy_gettext as __
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.iikocloud.enums import TypeRCI
-from api.iikocloud.iIkoCloud import IikoCloudAPI
-from api.sms_center import SMSC
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
 from bot.fitlers.CheckDateFilter import CheckDateFilter
@@ -25,6 +22,9 @@ from bot.mics import check_telegram_account_exists, normalize_phone_number
 from bot.mics.helpers.Config import Config
 from bot.mics.iikoapi import check_iiko_user_exists
 from bot.states.user import RegistrationStates
+from services.iikocloud.enums import TypeRCI
+from services.iikocloud.iIkoCloud import IikoCloudAPI
+from services.sms_center import SMSC
 
 router: Router = Router()
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get("IIKOCLOUD_LOGIN"))

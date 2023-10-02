@@ -8,3 +8,23 @@ def admin_report_ikb() -> InlineKeyboardMarkup:
     )
 
     return ikb
+
+
+def admin_users_ikb() -> InlineKeyboardMarkup:
+    ikb: InlineKeyboardMarkup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text=_("👥 Список пользователей"), callback_data="users_list"),
+            ],
+            [
+                InlineKeyboardButton(text=_("👮‍♀️ Администраторы"), callback_data="admins_list"),
+            ],
+            [
+                InlineKeyboardButton(text=_("🔎 Поиск пользователя"), callback_data="search_users"),
+            ],
+            [
+                InlineKeyboardButton(text=_("➕ Добавить пользователя"), callback_data="add_user"),
+            ],
+        ]
+    )
+    return ikb

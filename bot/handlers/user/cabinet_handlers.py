@@ -10,13 +10,13 @@ from aiogram.utils.i18n import lazy_gettext as __
 from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.iikocloud.enums import TypeRCI
-from api.iikocloud.iIkoCloud import IikoCloudAPI
 from bot.database.models.User import User
 from bot.fitlers.IsAuth import IsAuth
 from bot.keyboards import auth_kb
 from bot.keyboards.inline import sell_inline_kb
 from bot.mics.helpers.Config import Config
+from services.iikocloud.enums import TypeRCI
+from services.iikocloud.iIkoCloud import IikoCloudAPI
 from utils import generate_qr
 
 router: Router = Router()
@@ -64,27 +64,6 @@ async def profile_handler(msg: Message, session: AsyncSession):
         )
 
         os.remove("qr_code.png")
-        # endregion
-
-        # region Получение последнего заказа
-        # ordersByOrganizations = iiko.retrieve_orders_by_phone_number(
-        #     phone='+79029403811',
-        #     organizations_ids=[Config.get("IIKOCLOUD_ORGANIZATIONS_IDS", "list")[0]],
-        # )
-        #
-        # last_closed_order = None
-        # for organization in ordersByOrganizations['ordersByOrganizations']:
-        #     for order in organization['orders']:
-        #         order_status = order['order']['status']
-        #         order_closed_date = datetime.datetime.strptime(order['order']['whenClosed'], '%Y-%m-%d %H:%M:%S.%f')
-        #         print(order_closed_date)
-        #         if order_status == 'Closed' and order_closed_date.date() == datetime.datetime.now().date():
-        #             if last_closed_order is None or order_closed_date > last_closed_order['order']['whenClosed']:
-        #                 last_closed_order = order
-        #
-        # print(last_closed_order)
-
-        # endregion
 
 
 @router.message(F.text == __("Пароль от WiFi"), IsAuth())

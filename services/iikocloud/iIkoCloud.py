@@ -5,9 +5,9 @@ from typing import List, Optional, Union
 import requests
 from requests import Response
 
-from api.iikocloud.enums import TypeRCI
-from api.iikocloud.exceptions import CheckTimeToken, SetSession, TokenException
-from api.iikocloud.models import CustomErrorModel
+from services.iikocloud.enums import TypeRCI
+from services.iikocloud.exceptions import CheckTimeToken, SetSession, TokenException
+from services.iikocloud.models import CustomErrorModel
 
 
 class BaseAPI:

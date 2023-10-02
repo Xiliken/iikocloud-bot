@@ -12,9 +12,6 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import bot.mics.iikoapi
-from api.iikocloud.enums import TypeRCI
-from api.iikocloud.iIkoCloud import IikoCloudAPI
-from api.sms_center import SMSC
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
 from bot.fitlers.IsAuth import IsAuth
@@ -23,6 +20,9 @@ from bot.keyboards.reply import auth_kb, cancel_kb
 from bot.mics import check_telegram_account_exists, normalize_phone_number
 from bot.mics.helpers.Config import Config
 from bot.states.user.LoginStates import LoginStates
+from services.iikocloud.enums import TypeRCI
+from services.iikocloud.iIkoCloud import IikoCloudAPI
+from services.sms_center import SMSC
 
 router: Router = Router()
 iiko: IikoCloudAPI = IikoCloudAPI(api_login=Config.get("IIKOCLOUD_LOGIN"))

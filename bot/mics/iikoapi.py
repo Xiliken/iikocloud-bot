@@ -1,9 +1,9 @@
 import datetime
 from typing import Union
 
-from api.iikocloud.iIkoCloud import IikoCloudAPI
 from bot.mics import normalize_phone_number
 from bot.mics.helpers.Config import Config
+from services.iikocloud.iIkoCloud import IikoCloudAPI
 
 __api = IikoCloudAPI(Config.get("IIKOCLOUD_LOGIN"))
 

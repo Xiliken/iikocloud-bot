@@ -7,10 +7,11 @@ def admin_main_kb() -> ReplyKeyboardMarkup:
         keyboard=[
             [
                 KeyboardButton(text=_("📊 Статистика")),
-                KeyboardButton(text=_("🙍 Админы")),
+                KeyboardButton(text=_("🙍 Пользователи")),
             ],
             [
                 KeyboardButton(text=_("📦 Резервная копия БД")),
+                KeyboardButton(text=_("📣 Рассылка")),
             ],
             [KeyboardButton(text=_("⬅️ В главное меню"))],
         ],
