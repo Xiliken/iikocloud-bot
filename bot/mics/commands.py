@@ -19,6 +19,7 @@ user_commands = [
     BotCommand(command="chat", description="Чат с оператором"),
     BotCommand(command="register", description="Создать аккаунт"),
     BotCommand(command="login", description="Войти в аккаунт"),
+    BotCommand(command="work", description="Работа в Донерс"),
 ]
 
 
@@ -31,7 +32,8 @@ admin_commands = [
     BotCommand(command="contacts", description="Контакты организации"),
     BotCommand(command="admin", description="Войти в панель администратора"),
     BotCommand(command="stats", description="Просмотреть статистику"),
-    BotCommand(command="broadcast", description="Рассылка сообщений пользователям"),
+    BotCommand(command="work", description="Работа в Донерс"),
+    BotCommand(command="broadcast", description="Рассылка сообщений"),
 ]
 
 

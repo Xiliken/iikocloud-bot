@@ -11,9 +11,7 @@ def cabinet_main_kb() -> ReplyKeyboardMarkup:
                 KeyboardButton(text=_("Акции")),
                 KeyboardButton(text=_("Контакты")),
             ],
-            [
-                KeyboardButton(text=_("Пароль от WiFi")),
-            ],
+            [KeyboardButton(text=_("Пароль от WiFi")), KeyboardButton(text=_("Работа"))],
         ],
         resize_keyboard=True,
         input_field_placeholder=_("Выберите пункт меню для работы с ботом"),

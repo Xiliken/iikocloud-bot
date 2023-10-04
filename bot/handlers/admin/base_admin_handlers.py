@@ -208,14 +208,12 @@ async def confirm_broadcast(
 
 async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, session: AsyncSession):
     data = await state.get_data()
-    message_id = int(data.get("message_id"))
-    chat_id = int(data.get("chat_id"))
-    button_text = data.get("button_text")
-    button_url = data.get("button_url")
-    camp_name = data.get("camp_name")
-    camp_message = data.get("camp_message")
-
-    print(message_id, chat_id, button_url, button_text, camp_message, camp_name)
+    int(data.get("message_id"))
+    int(data.get("chat_id"))
+    data.get("button_text")
+    data.get("button_url")
+    data.get("camp_name")
+    data.get("camp_message")
 
     if call.data == "confirm_broadcast":
         await call.message.edit_text(text=_("Начинаю рассылку!"), reply_markup=None)

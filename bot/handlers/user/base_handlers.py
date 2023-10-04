@@ -14,9 +14,11 @@ from bot.keyboards.cabinet import cabinet_main_kb
 from bot.keyboards.inline import (
     chat_inline_kb,
     contacts_ikb,
+    hr_ikb,
     promotions_ikb,
     website_ikb,
 )
+from bot.mics.const_functions import clear_text
 
 router: Router = Router()
 
@@ -82,3 +84,21 @@ async def chat_handler(msg: Message) -> None:
 @router.message(Command(commands=["contacts", "contact"]))
 async def chat_handler(msg: Message) -> None:
     await msg.answer(_("Выбери ресторан:"), reply_markup=contacts_ikb())
+
+
+@router.message(F.text == __("Работа"))
+@router.message(Command(commands=["work", "job"]))
+async def work_handler(msg: Message) -> None:
+    await msg.answer(
+        clear_text(
+            _(
+                """
+        Донерс - это не только ресторан и доставка! Мы большая команда 😎
+        Мы ищем как сотрудников в общепит, так и офисных работников.
+        Также у нас много друзей, которым нужны классные ребята с опытом работы и без 😉
+        Напиши нам и мы предложим тебе вакансии на выбор!
+        """
+            )
+        ),
+        reply_markup=hr_ikb(),
+    )

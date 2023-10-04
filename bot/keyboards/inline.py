@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.utils.i18n import gettext as _
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.callbacks.RateCallbackData import RateCallbackData, RateServiceCallbackData
 
@@ -97,3 +98,11 @@ def rate_last_service() -> InlineKeyboardMarkup:
     )
 
     return ikb
+
+
+def hr_ikb() -> InlineKeyboardMarkup:
+    keyboard_builder = InlineKeyboardBuilder()
+    keyboard_builder.button(text=_("✉️ Написать HR"), url="https://t.me/HR_sferagroup")
+    keyboard_builder.adjust(1)
+
+    return keyboard_builder.as_markup()
