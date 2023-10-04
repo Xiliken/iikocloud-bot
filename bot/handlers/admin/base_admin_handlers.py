@@ -1,9 +1,15 @@
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import (
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+)
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.database.methods.user import get_admins
 from bot.fitlers import IsAdmin
@@ -148,19 +154,72 @@ async def camp_text_handler(msg: Message, state: FSMContext):
 
 
 @router.callback_query(BroadcastStates.add_button)
-async def add_button_handler(call: CallbackQuery, state: FSMContext):
+async def add_button_handler(call: CallbackQuery, state: FSMContext, bot: Bot):
     if call.data == "add_button":
-        await state.set_state(BroadcastStates.button_url)
+        await state.set_state(BroadcastStates.button_text)
         await call.message.answer(text=_("Отправьте текст для кнопки!"), reply_markup=None)
     elif call.data == "no_button":
         await call.message.edit_reply_markup(reply_markup=None)
+        data = await state.get_data()
+        message_id = int(data.get("message_id"))
+        chat_id = int(data.get("chat_id"))
+        await confirm_broadcast(message=call.message, bot=bot, chat_id=chat_id, message_id=message_id)
 
     await call.answer()
 
 
-@router.message(BroadcastStates.button_url)
-async def button_url_handler(msg: Message, state: FSMContext):
+@router.message(BroadcastStates.button_text)
+async def button_text_handler(msg: Message, state: FSMContext):
     await state.update_data(button_text=msg.text)
-    await msg.answer("Введите ссылку для кнопки")
+    await msg.answer(_("Введите ссылку для кнопки"))
+    await state.set_state(BroadcastStates.button_url)
+
+
+@router.message(BroadcastStates.button_url)
+async def button_url_handler(msg: Message, state: FSMContext, bot: Bot):
+    await state.update_data(button_url=msg.text)
+    added_kb = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text=(await state.get_data()).get("button_text"), url=msg.text)]]
+    )
     data = await state.get_data()
-    print("Данные, которые ввели:", data)
+    message_id = int(data.get("message_id"))
+    chat_id = int(data.get("chat_id"))
+    await confirm_broadcast(message=msg, bot=bot, chat_id=chat_id, message_id=message_id, reply_markup=added_kb)
+
+
+async def confirm_broadcast(
+    message: Message, bot: Bot, message_id: int, chat_id: int, reply_markup: InlineKeyboardMarkup = None
+):
+    await bot.copy_message(chat_id, chat_id, message_id, reply_markup=reply_markup)
+    await message.answer(
+        _("Вот сообщение, которое будет отправлено! Подтвердите рассылку!"),
+        reply_markup=InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(text=_("Подтвердить"), callback_data="confirm_broadcast"),
+                ],
+                [
+                    InlineKeyboardButton(text=_("Отклонить"), callback_data="cancel_broadcast"),
+                ],
+            ]
+        ),
+    )
+
+
+async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, session: AsyncSession):
+    data = await state.get_data()
+    message_id = int(data.get("message_id"))
+    chat_id = int(data.get("chat_id"))
+    button_text = data.get("button_text")
+    button_url = data.get("button_url")
+    camp_name = data.get("camp_name")
+    camp_message = data.get("camp_message")
+
+    print(message_id, chat_id, button_url, button_text, camp_message, camp_name)
+
+    if call.data == "confirm_broadcast":
+        await call.message.edit_text(text=_("Начинаю рассылку!"), reply_markup=None)
+    elif call.data == "cancel_broadcast":
+        await call.message.edit_text(text=_("Рассылка отменена"), reply_markup=None)
+
+    await state.clear()
