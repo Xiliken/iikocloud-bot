@@ -1,8 +1,15 @@
+import datetime
+import os
+import zipfile
+
+import loguru
 from aiogram import Bot, F, Router
+from aiogram.enums import ChatAction
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (
     CallbackQuery,
+    FSInputFile,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
@@ -34,24 +41,16 @@ async def admin_stats_handler(msg: Message):
             ➖➖➖➖➖➖➖➖➖➖
 
             <b>👤 ПОЛЬЗОВАТЕЛИ</b>
-            ┣ Регистраций за <b>День</b>: <code>{reg_day_count}</code>
-            ┣ Регистраций за <b>Неделю</b>: <code>{reg_week_count}</code>
-            ┣ Регистраций за <b>Месяц</b>: <code>{reg_month_count}</code>
-            ┣ Регистраций за <b>Все время</b>: <code>{reg_all_time_count}</code>
-            ┗ Заблокировало <b>бота</b>: <code>{bot_blocked_count}</code>
+            ┣ Регистраций за <b>сегодня</b>: <code>{reg_day_count}</code>
+            ┣ Регистраций за <b>неделю</b>: <code>{reg_week_count}</code>
+            ┣ Регистраций за <b>месяц</b>: <code>{reg_month_count}</code>
+            ┣ Регистраций за <b>все время</b>: <code>{reg_all_time_count}</code>
+            ┗ Пользователей, <b>заблокировавшие бота</b>: <code>{bot_blocked_count}</code>
 
             <b> ⭐️ ОТЗЫВЫ</b>
-            ┣ Отзывов за <b>все время</b>: <code>{reviews_total}</code>
-            ┣ 😻 Положительных: <code>{reviews_positive}</code>
-            ┣ 😡 Отрицательных: <code>{reviews_negative}</code>
-            ╰┈➤ <b><u>ЗАКАЗЫ</u></b>
-            ┣ 😻 Положительных: <code>{reviews_order_positive}</code>
-            ┣ 😡 Отрицательных: <code>{reviews_order_negative}</code>
-            ┣ 🤔 Средняя оценка: <code>{reviews_avg_order_rating}</code>
-            ╰┈➤ <b><u>ОБСЛУЖИВАНИЕ</u></b>
-            ┣ 😻 Положительных: <code>{reviews_service_negative}</code>
-            ┣ 😡 Отрицательных: <code>{reviews_service_negative}</code>
-            ┗ 🤔 Средняя оценка: <code>{reviews_avg_service_rating}</code>
+            ┣ Общее количество отзывов: <code>{reviews_total}</code>
+            ┣ Положительных отзывов: <code>{reviews_positive}</code>
+            ┗ Отрицательных отзывов: <code>{reviews_negative}</code>
 
             <b> 💰 ДОХОД</b>
             ┣ Доход за <b>сегодня</b>: <code>{income_today}</code>
@@ -109,9 +108,9 @@ async def broadcast_admin_handler(msg: Message, state: FSMContext, command: Comm
             clear_text(
                 _(
                     """
-        Для создания новой рассылки пожалуйста введите название рассылки!
-        Для этого используйте: /sender [название рассылки]
-        """
+                    Для создания новой рассылки пожалуйста введите название рассылки!
+                    Для этого используйте: /sender [название рассылки]
+                    """
                 )
             )
         )
@@ -221,3 +220,29 @@ async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, sessio
         await call.message.edit_text(text=_("Рассылка отменена"), reply_markup=None)
 
     await state.clear()
+
+
+@router.message(Command(commands=["backup"]))
+@router.message(F.text == __("📦 Резервная копия БД"))
+async def admin_backup_handler(msg: Message, bot: Bot):
+    await msg.answer(_("Начинаю создание копии БД..."))
+    try:
+        with zipfile.ZipFile(
+            f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip", "w", compression=zipfile.ZIP_DEFLATED
+        ) as zip_file:
+            zip_file.write("database.db")
+            zip_file.comment = b"{date}".replace(
+                b"{date}", bytes(f'Резервная копия от: {datetime.datetime.now().strftime("%d.%m.%Y %H:%M")}', "utf-8")
+            )
+
+        await bot.send_chat_action(chat_id=msg.chat.id, action=ChatAction.UPLOAD_DOCUMENT)
+        await bot.send_document(
+            chat_id=msg.chat.id,
+            document=FSInputFile(path=f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip"),
+            caption=_("Резервная копия БД от {date}").format(date=datetime.datetime.now().strftime("%d.%m.%Y %H:%M")),
+        )
+        os.remove(f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip")
+    except Exception as e:
+        os.remove(f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip")
+        loguru.logger.error(f"Не удалось создать копию БД\n\n{e}")
+        await msg.answer(_("Не удалось создать копию БД. Возможно файл слишком большой! Проверьте логи!"))

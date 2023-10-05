@@ -25,3 +25,16 @@ async def init_models(engine: AsyncEngine):
 
 def get_async_session_maker(engine: AsyncEngine):
     return async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False, future=True)
+
+
+async def check_table_exist(table_name: str, session: AsyncSession) -> bool:
+    """
+    Проверка существования таблицы в БД
+    :param table_name: название таблицы
+    :param session: сессия
+    :return: bool
+    """
+    result = await session.execute(
+        f"SELECT EXISTS (SELECT 1 FROM sqlite_master WHERE type='table' AND name='{table_name}');"
+    )
+    return bool(result)
