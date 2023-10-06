@@ -146,7 +146,22 @@ async def get_stats() -> dict:
             password=Config.get("IIKOSERVER_PASSWORD"),
         )
 
-        iikoserverapi.get_departments()
+        departments = iikoserverapi.get_departments()
+
+        # Формирование доходов
+
+        for department in departments:
+            department["incomes"] = {
+                "income_today": _get_income_stats(
+                    iiko_server.sales(
+                        department=department["id"],
+                        date_from=datetime.datetime.now().strftime("%d.%m.%Y"),
+                        date_to=datetime.datetime.now().strftime("%d.%m.%Y"),
+                    )
+                )
+            }
+
+        print("РЕЗУЛЬТАТ РАБОТЫ", departments)
         # endregion
 
     return {
@@ -165,3 +180,15 @@ async def get_stats() -> dict:
         "reviews_avg_order_rating": round(average_rating_order, 1) if average_rating_order is not None else 0,
         "reviews_avg_service_rating": round(average_rating_service, 1) if average_rating_service is not None else 0,
     }
+
+
+def _get_income_stats(xml):
+    """
+    Получить статистику доходов за периоды
+    :return:
+    """
+    import xml.etree.ElementTree as ET
+
+    root = ET.fromstring(xml)
+
+    return round(float(root.find("dayDishValue").find("value").text), 1)
