@@ -11,7 +11,7 @@ from aiogram.utils.i18n import lazy_gettext as __
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import bot.mics.iikoapi
+import bot.mics.iikocloudapi
 from bot.database.models.User import User
 from bot.fitlers import IsPhoneNumber
 from bot.fitlers.IsAuth import IsAuth
@@ -53,7 +53,7 @@ async def login_step_phone_number(msg: Message, state: FSMContext, session: Asyn
         identifier=normalize_phone_number(msg.text),
     )
 
-    if bot.mics.iikoapi.check_iiko_user_exists(iiko_user):
+    if bot.mics.iikocloudapi.check_iiko_user_exists(iiko_user):
         try:
             verification_code = random.randint(1000, 9999)
 

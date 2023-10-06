@@ -20,7 +20,7 @@ from bot.handlers.user import (
 )
 from bot.mics.commands import set_commands
 from bot.mics.helpers.Config import Config
-from bot.mics.iikoapi import get_organizations_ids
+from bot.mics.iikocloudapi import get_organizations_ids
 from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
 from bot.middlewares.ThrottlingMiddleware import ThrottlingMiddleware
 from schedulers.sc_check_order import check_orders

@@ -6,7 +6,8 @@ from sqlalchemy import func, or_, select
 from bot.database import create_async_engine, get_async_session_maker
 from bot.database.methods.user import get_users_count
 from bot.database.models import Review, User
-from bot.mics import Config
+from bot.mics import Config, iikoserverapi
+from services.iikoserver.IikoServer import IikoServer
 
 
 def clear_html(get_text: str) -> str:
@@ -136,6 +137,16 @@ async def get_stats() -> dict:
         # Среднее значение отзывов за обслуживание
         average_rating_service = await session.scalar(select(func.avg(Review.service_rating)))
 
+        # endregion
+
+        # region Статистика дохода
+        iiko_server = IikoServer(
+            domain=Config.get("IIKOSERVER_DOMAIN"),
+            login=Config.get("IIKOSERVER_LOGIN"),
+            password=Config.get("IIKOSERVER_PASSWORD"),
+        )
+
+        iikoserverapi.get_departments()
         # endregion
 
     return {

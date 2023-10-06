@@ -20,7 +20,7 @@ from bot.keyboards import auth_kb, cabinet_main_kb, register_kb
 from bot.keyboards.reply import cancel_kb
 from bot.mics import check_telegram_account_exists, normalize_phone_number
 from bot.mics.helpers.Config import Config
-from bot.mics.iikoapi import check_iiko_user_exists
+from bot.mics.iikocloudapi import check_iiko_user_exists
 from bot.states.user import RegistrationStates
 from services.iikocloud.enums import TypeRCI
 from services.iikocloud.iIkoCloud import IikoCloudAPI
