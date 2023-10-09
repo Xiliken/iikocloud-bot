@@ -28,13 +28,13 @@ async def check_orders():
             # Если у пользователя есть заказ в iiko,
             # то сверяем с датой заказа в БД, если она не пуста
             if last_order and last_order["whenClosed"]:
-                last_order_datetime = datetime.datetime.strptime(
+                last_order_datetime_iiko = datetime.datetime.strptime(
                     last_order["whenClosed"], "%Y-%m-%d %H:%M:%S.%f"
                 ).replace(microsecond=0, second=0)
 
                 # Если у пользователя есть заказ в iiko и он новый,
                 # то отправляем сообщение с текстом отзыва
-                if last_order_date and last_order_datetime > last_order_date:
+                if last_order_date and last_order_datetime_iiko > last_order_date:
                     try:
                         await notify(
                             bot=bot,
@@ -49,7 +49,7 @@ async def check_orders():
                             reply_markup=rate_last_order_ikb(),
                         )
                         # Обновляем данные в БД
-                        await update_user(user[0].user_id, last_order_datetime)
+                        await update_user(user[0].user_id, last_order_datetime_iiko)
                     except aiogram.exceptions.TelegramBadRequest as e:
                         if e.message.endswith("chat not found"):
                             pass
@@ -57,7 +57,7 @@ async def check_orders():
                 # Если у пользователя нет заказа в iiko,
                 # то записываем в БД заказ из iiko
                 elif last_order:
-                    await update_user(user[0].user_id, last_order_datetime)
+                    await update_user(user[0].user_id, last_order_datetime_iiko)
         loguru.logger.info("ПРОВЕРКА ПОСЛЕДНИХ ЗАКАЗОВ ЗАВЕРШЕНА")
     except aiogram.exceptions.TelegramBadRequest as e:
         if e.message.endswith("chat not found"):

@@ -1,4 +1,5 @@
 import logging
+import pathlib
 from typing import List, Union
 
 from loguru import logger
@@ -27,12 +28,8 @@ def setup_logger(level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
         logger.disable(ignore)
 
 
-def setup_logger_file(log_file: str, level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
-    logger.add(
-        log_file,
-        rotation="500 MB",
-        level=level,
-    )  # Установить файловый обработчик логов
+def setup_logger_file(log_file: Union[pathlib.Path, str], level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
+    logger.add(log_file, rotation="500 MB")  # Установить файловый обработчик логов
 
     for ignore in ignored:
         logger.disable(ignore)

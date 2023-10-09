@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import os
 import zipfile
@@ -31,8 +32,27 @@ router.message.filter(IsAdmin())
 
 @router.message(Command(commands=["stats"]))
 @router.message(F.text == __("📊 Статистика"))
-async def admin_stats_handler(msg: Message):
+async def admin_stats_handler(msg: Message, bot: Bot):
+    # Нужно для того, чтобы пользователь видел, что бот что-то печатает, а не просто висит
+    await bot.send_chat_action(chat_id=msg.chat.id, action=ChatAction.TYPING)
+    await asyncio.sleep(0.5)
+
     stats = await get_stats()
+
+    department_incomes = stats.get("department_incomes")
+    department_incomes_text = ""
+    for department in department_incomes:
+        department_name = department.get("department_name")
+        income_today = department.get("income_today")
+        income_yesterday = department.get("income_yesterday")
+        income_per_week = department.get("income_per_week")
+
+        department_incomes_text += f"""
+        <b>💸 {department_name}</b>
+        ┣ Доход за вчера: <code>{income_yesterday:,}</code>
+        ┣ Доход за сегодня: <code>{income_today:,}</code>
+        ┗ Доход за неделю: <code>{income_per_week:,}</code>
+        """
 
     message = clear_text(
         _(
@@ -53,10 +73,7 @@ async def admin_stats_handler(msg: Message):
             ┗ Отрицательных отзывов: <code>{reviews_negative}</code>
 
             <b> 💰 ДОХОД</b>
-            ┣ Доход за <b>сегодня</b>: <code>{income_today}</code>
-            ┣ Доход за <b>неделю</b>: <code>{income_week}</code>
-            ┣ Доход за <b>месяц</b>: <code>{income_month}</code>
-            ┗ Доход за <b>всё время</b>: <code>{income_all_time}</code>
+            {department_incomes_text}
         """
         ).format(
             reg_day_count=stats.get("reg_users_today"),
@@ -71,11 +88,8 @@ async def admin_stats_handler(msg: Message):
             reviews_negative=stats.get("total_negative_reviews"),
             reviews_avg_order_rating=stats.get("reviews_avg_order_rating"),
             reviews_avg_service_rating=stats.get("reviews_avg_service_rating"),
-            income_today=stats.get("income_today"),
-            income_week=stats.get("income_week"),
-            income_month=stats.get("income_month"),
-            income_all_time=stats.get("income_all_time"),
             bot_blocked_count=stats.get("bot_blocked"),
+            department_incomes_text=department_incomes_text,
         )
     )
 
@@ -85,7 +99,9 @@ async def admin_stats_handler(msg: Message):
 @router.message(Command(commands=["admin", "ap", "admin_panel"]))
 async def admin_panel_handler(msg: Message):
     await msg.answer(
-        _("Добро пожаловать в панель управления, <b>{user}</b>!").format(user=msg.from_user.full_name),
+        _(
+            "✅ Добро пожаловать в панель управления, <b>{user}</b>! Выберите нужный раздел для дальнейшей работы!"
+        ).format(user=msg.from_user.full_name),
         reply_markup=admin_main_kb(),
     )
 

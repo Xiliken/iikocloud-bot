@@ -93,9 +93,16 @@ NOTIFY_ADMIN_IDS=
 IIKOCLOUD_LOGIN=
 IIKOCLOUD_ORGANIZATIONS_IDS=
 
+# IikoServer API settings
+IIKOSERVER_LOGIN=
+IIKOSERVER_PASSWORD=
+IIKOSERVER_DEPARTMENTS_IDS=
+
 # Redis Settings
 REDIS_HOST=localhost
 REDIS_PORT=6379
+REDIS_USER=
+REDIS_PASSWORD=
 
 # SMS Center Settings
 SMSC_LOGIN=
@@ -117,6 +124,7 @@ DATABASE_URL=sqlite+aiosqlite:///database.db
 DEBUG=True
 LOG_TYPE=file# File, Console
 MAINTENANCE=False
+
 
   ```
 </details>
@@ -154,13 +162,11 @@ MAINTENANCE=False
   - [ ] Поиск пользователей через админку
 - [ ] Настроить интеграцию с Webhooks IikoCloud API ???
 - [ ] Перенести возможно с SQLite на PostgreSQL
-- [ ] Сделать автоматическую резервную копию БД
-- [ ] Вывести с IikoCloud API статистику дохода ???
+- [x] Вывести с IikoCloud API статистику дохода
 - [ ] Сделать работу с Config более удобной
 - [ ] Автоматический бэкап БД
-- [ ] Web интерфейс для бота
 - [ ] Сделать профиль пользователя
   -  [ ] Просмотр истории заказов
   -  [ ] Редактирование учетной записи
 - [ ] Перенести работу с Telegram с polling на Webhooks
-- [ ] Если пользователь удалил аккаунт, то не взаимодействовать с ним
+- [x] Если пользователь удалил аккаунт, то не взаимодействовать с ним

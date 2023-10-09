@@ -1,7 +1,8 @@
 # Очистка текста от HTML тэгов
+import calendar
 import datetime
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 
 from bot.database import create_async_engine, get_async_session_maker
 from bot.database.methods.user import get_users_count
@@ -92,10 +93,26 @@ async def get_stats() -> dict:
             .filter(func.DATE(User.registration_date) >= datetime.date.today() - datetime.timedelta(days=7))
             .select_from(User)
         )
+
+        current_date = datetime.datetime.today()
+
+        # Получить первый день текущего месяца
+        first_day_of_month = datetime.date(current_date.year, current_date.month, 1)
+
+        # Получить последний день текущего месяца
+        last_day_of_month = datetime.date(
+            current_date.year, current_date.month, calendar.monthrange(current_date.year, current_date.month)[1]
+        )
+
         # Регистраций за месяц
         reg_users_month = await session.scalar(
             select(func.count())
-            .filter(func.DATE(User.registration_date) >= datetime.date.today() - datetime.timedelta(days=30))
+            .filter(
+                and_(
+                    func.DATE(User.registration_date) >= first_day_of_month,
+                    func.DATE(User.registration_date) <= last_day_of_month,
+                )
+            )
             .select_from(User)
         )
         # Регистраций за все время
@@ -117,7 +134,12 @@ async def get_stats() -> dict:
         )
         # Негативных отзывов
         total_negative_reviews = await session.scalar(
-            select(func.count()).filter(or_(Review.food_rating < 4, Review.service_rating < 4))
+            select(func.count()).filter(
+                and_(
+                    Review.food_rating <= 3,
+                    Review.food_rating != 0,
+                )
+            )
         )
         # Положительных отзывов за заказ
         positive_reviews_order = await session.scalar(select(func.count()).filter(Review.food_rating >= 4))
@@ -140,6 +162,7 @@ async def get_stats() -> dict:
         # endregion
 
         # region Статистика дохода
+
         iiko_server = IikoServer(
             domain=Config.get("IIKOSERVER_DOMAIN"),
             login=Config.get("IIKOSERVER_LOGIN"),
@@ -147,21 +170,47 @@ async def get_stats() -> dict:
         )
 
         departments = iikoserverapi.get_departments()
+        department_incomes = []
 
         # Формирование доходов
-
         for department in departments:
-            department["incomes"] = {
-                "income_today": _get_income_stats(
-                    iiko_server.sales(
-                        department=department["id"],
-                        date_from=datetime.datetime.now().strftime("%d.%m.%Y"),
-                        date_to=datetime.datetime.now().strftime("%d.%m.%Y"),
-                    )
+            # Получить доход за сегодня
+            income_today = _get_income_stats(
+                iiko_server.sales(
+                    department=department["id"],
+                    date_from=datetime.datetime.now().strftime("%d.%m.%Y"),
+                    date_to=datetime.datetime.now().strftime("%d.%m.%Y"),
                 )
-            }
+            )
 
-        print("РЕЗУЛЬТАТ РАБОТЫ", departments)
+            # Получить доход за вчера
+            income_yesterday = _get_income_stats(
+                iiko_server.sales(
+                    department=department["id"],
+                    date_from=(datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%d.%m.%Y"),
+                    date_to=(datetime.datetime.now() - datetime.timedelta(days=1)).strftime("%d.%m.%Y"),
+                )
+            )
+
+            # Получить доход за неделю
+            income_per_week = _get_income_stats(
+                iiko_server.sales(
+                    department=department["id"],
+                    date_from=(datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%d.%m.%Y"),
+                    date_to=datetime.datetime.now().strftime("%d.%m.%Y"),
+                )
+            )
+
+            department_incomes.append(
+                {
+                    "department_id": department["id"],
+                    "department_name": department["name"],
+                    "income_today": income_today,
+                    "income_yesterday": income_yesterday,
+                    "income_per_week": income_per_week,
+                }
+            )
+
         # endregion
 
     return {
@@ -179,6 +228,7 @@ async def get_stats() -> dict:
         "reviews_service_negative": negative_reviews_service or 0,
         "reviews_avg_order_rating": round(average_rating_order, 1) if average_rating_order is not None else 0,
         "reviews_avg_service_rating": round(average_rating_service, 1) if average_rating_service is not None else 0,
+        "department_incomes": department_incomes,
     }
 
 
@@ -191,4 +241,19 @@ def _get_income_stats(xml):
 
     root = ET.fromstring(xml)
 
-    return round(float(root.find("dayDishValue").find("value").text), 1)
+    day_dish_values = root.findall("dayDishValue")
+
+    if not day_dish_values:
+        return 0
+
+    # Если есть несколько дат, то считаем их сумму
+
+    if len(day_dish_values) > 1:
+        total_income = 0
+        for day_dish_value in day_dish_values:
+            total_income += float(day_dish_value.find("value").text)
+        return round(total_income, 2)
+
+    # Если одна дата, то просто возвращаем ее значение
+
+    return float(day_dish_values[0].find("value").text)
