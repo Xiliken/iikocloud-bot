@@ -94,6 +94,7 @@ async def get_stats() -> dict:
             .select_from(User)
         )
 
+        # Текущий день
         current_date = datetime.datetime.today()
 
         # Получить первый день текущего месяца
