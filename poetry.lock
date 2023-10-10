@@ -329,6 +329,20 @@ files = [
 ]
 
 [[package]]
+name = "asynczipstream"
+version = "1.0.1"
+description = "Asynchronous Zipfile generator that takes input files as well as streams"
+optional = false
+python-versions = "*"
+files = [
+    {file = "asynczipstream-1.0.1-py3-none-any.whl", hash = "sha256:a57f78fb36054450f57472f3f10b3b15ba93cd2547a0055a1e7b08a78f82674d"},
+    {file = "asynczipstream-1.0.1.tar.gz", hash = "sha256:800fa0d9849e8ea46dcac8f283b0efe70d86e0f5a7c441c1896a068b94c3c2ed"},
+]
+
+[package.dependencies]
+aiofiles = ">22.1.0"
+
+[[package]]
 name = "attrs"
 version = "23.1.0"
 description = "Classes Without Boilerplate"
@@ -2247,4 +2261,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ce8fdc441a686301a6d108285cb37cbbb581b7f23b19f65b86824b6b3fb699db"
+content-hash = "f959c3631074373ada30e13afabe05704e1020e4d8a23b9538df4b18e61988bc"

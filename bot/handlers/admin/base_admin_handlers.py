@@ -1,20 +1,16 @@
 import asyncio
-import datetime
-import os
-import zipfile
 
-import loguru
 from aiogram import Bot, F, Router
 from aiogram.enums import ChatAction
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (
     CallbackQuery,
-    FSInputFile,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
 )
+from aiogram.utils.i18n import I18n
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -25,6 +21,7 @@ from bot.keyboards.admin.inline_admin import admin_users_ikb, get_confirm_button
 from bot.keyboards.admin.reply_admin import admin_main_kb
 from bot.mics.const_functions import clear_text, get_stats
 from bot.states.admin.BroadcastStates import BroadcastStates
+from schedulers.sc_backup_db import backup
 
 router: Router = Router()
 router.message.filter(IsAdmin())
@@ -240,25 +237,5 @@ async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, sessio
 
 @router.message(Command(commands=["backup"]))
 @router.message(F.text == __("📦 Резервная копия БД"))
-async def admin_backup_handler(msg: Message, bot: Bot):
-    await msg.answer(_("Начинаю создание копии БД..."))
-    try:
-        with zipfile.ZipFile(
-            f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip", "w", compression=zipfile.ZIP_DEFLATED
-        ) as zip_file:
-            zip_file.write("database.db")
-            zip_file.comment = b"{date}".replace(
-                b"{date}", bytes(f'Резервная копия от: {datetime.datetime.now().strftime("%d.%m.%Y %H:%M")}', "utf-8")
-            )
-
-        await bot.send_chat_action(chat_id=msg.chat.id, action=ChatAction.UPLOAD_DOCUMENT)
-        await bot.send_document(
-            chat_id=msg.chat.id,
-            document=FSInputFile(path=f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip"),
-            caption=_("Резервная копия БД от {date}").format(date=datetime.datetime.now().strftime("%d.%m.%Y %H:%M")),
-        )
-        os.remove(f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip")
-    except Exception as e:
-        os.remove(f"backup_{datetime.datetime.now().strftime('%Y-%d-%m')}.zip")
-        loguru.logger.error(f"Не удалось создать копию БД\n\n{e}")
-        await msg.answer(_("Не удалось создать копию БД. Возможно файл слишком большой! Проверьте логи!"))
+async def admin_backup_handler(msg: Message, bot: Bot, i18n: I18n):
+    await backup(bot=bot, i18n=i18n)

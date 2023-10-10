@@ -3,6 +3,7 @@ import datetime
 import aiogram.exceptions
 import loguru
 from aiogram import Bot
+from aiogram.utils.i18n import I18n
 from sqlalchemy import update
 
 from bot.database import create_async_engine, get_async_session_maker
@@ -10,10 +11,9 @@ from bot.database.methods.user import get_all_users
 from bot.database.models import User
 from bot.keyboards.inline import rate_last_order_ikb
 from bot.mics import Config, iikocloudapi, notify
-from bot.mics.const_functions import clear_text
 
 
-async def check_orders():
+async def check_orders(i18n: I18n):
     try:
         loguru.logger.info("ЗАПУСКАЮ ПРОВЕРКУ ПОСЛЕДНИХ ЗАКАЗОВ ПОЛЬЗОВАТЕЛЕЙ")
         # Получаем пользователей из БД
@@ -39,12 +39,12 @@ async def check_orders():
                         await notify(
                             bot=bot,
                             chat_id=user[0].user_id,
-                            message=clear_text(
+                            message=i18n.gettext(
+                                f"""
+                                Спасибо, что выбираете Донерс 😎
+                                Пожалуйста, оцените <b><u>вкус заказанного блюда</u></b> по шкале <b>от 1 до 5</b>.
+                                Где 5 наивысшая оценка
                                 """
-                                                   Спасибо, что выбираете Донерс 😎
-                                                   Пожалуйста, оцените <b><u>вкус заказанного блюда</u></b> по шкале <b>от 1 до 5</b>.
-                                                   Где 5 наивысшая оценка
-                                                   """
                             ),
                             reply_markup=rate_last_order_ikb(),
                         )
@@ -58,10 +58,12 @@ async def check_orders():
                 # то записываем в БД заказ из iiko
                 elif last_order:
                     await update_user(user[0].user_id, last_order_datetime_iiko)
-        loguru.logger.info("ПРОВЕРКА ПОСЛЕДНИХ ЗАКАЗОВ ЗАВЕРШЕНА")
+        loguru.logger.success("ПРОВЕРКА ПОСЛЕДНИХ ЗАКАЗОВ ЗАВЕРШЕНА")
     except aiogram.exceptions.TelegramBadRequest as e:
         if e.message.endswith("chat not found"):
             pass
+    except Exception as e:
+        loguru.logger.error(f"Ошибка проверки последних заказов:\n{e}")
 
 
 async def update_user(user_id, last_order_datetime):

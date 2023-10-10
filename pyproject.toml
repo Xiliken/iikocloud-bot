@@ -98,6 +98,7 @@ urllib3 = "2.0.4"
 virtualenv = "20.24.5"
 win32-setctime = "1.1.0"
 yarl = "1.9.2"
+asynczipstream = "^1.0.1"
 
 
 [build-system]

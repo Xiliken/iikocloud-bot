@@ -23,6 +23,7 @@ from bot.mics.helpers.Config import Config
 from bot.mics.iikocloudapi import get_organizations_ids
 from bot.middlewares.DbSessionMiddleware import DbSessionMiddleware
 from bot.middlewares.ThrottlingMiddleware import ThrottlingMiddleware
+from schedulers.sc_backup_db import backup
 from schedulers.sc_check_order import check_orders
 
 
@@ -69,7 +70,9 @@ async def start_bot() -> None:
     dp: Dispatcher = Dispatcher(storage=RedisStorage(redis=redis), fsm_strategy=FSMStrategy.CHAT)
 
     # region Локализация
-    i18n = I18n(path="bot/locales", default_locale="ru", domain="messages")
+    i18n = I18n(
+        path=Config.get("I18N_PATH"), default_locale=Config.get("I18N_DEFAULT_LOCALE"), domain=Config.get("I18N_DOMAIN")
+    )
     i18n_middleware = SimpleI18nMiddleware(i18n=i18n)
     # endregion
 
@@ -101,7 +104,9 @@ async def start_bot() -> None:
         # region Запуск задач Cron
 
         # Проверка последних заказов
-        aiocron.crontab("*/30 * * * *", func=check_orders, args=(), start=True)
+        aiocron.crontab("*/30 * * * *", func=check_orders, args={i18n: i18n}, start=True)
+        # Создание резервной копии БД
+        aiocron.crontab("0 0 * * *", func=backup, args={bot, i18n}, start=True)
 
         # endregion
 

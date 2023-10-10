@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-02 09:52+0700\n"
+"POT-Creation-Date: 2023-10-10 13:29+0700\n"
 "PO-Revision-Date: 2023-09-19 13:48+0700\n"
 "Last-Translator: \n"
 "Language: ru\n"
@@ -25,56 +25,105 @@ msgid ""
 "равна текущей дате, то есть {current_date}"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:23
+#: bot/handlers/admin/base_admin_handlers.py:55
 msgid ""
 "\n"
 "            <b>📊 СТАТИСТИКА БОТА</b>\n"
 "            ➖➖➖➖➖➖➖➖➖➖\n"
 "\n"
 "            <b>👤 ПОЛЬЗОВАТЕЛИ</b>\n"
-"            ┣ Регистраций за <b>День</b>: <code>{reg_day_count}</code>\n"
-"            ┣ Регистраций за <b>Неделю</b>: <code>{reg_week_count}</code>"
+"            ┣ Регистраций за <b>сегодня</b>: <code>{reg_day_count}</code>"
 "\n"
-"            ┣ Регистраций за <b>Месяц</b>: <code>{reg_month_count}</code>"
+"            ┣ Регистраций за <b>неделю</b>: <code>{reg_week_count}</code>"
 "\n"
-"            ┣ Регистраций за <b>Все время</b>: "
+"            ┣ Регистраций за <b>месяц</b>: <code>{reg_month_count}</code>"
+"\n"
+"            ┣ Регистраций за <b>все время</b>: "
 "<code>{reg_all_time_count}</code>\n"
-"            ┗ Заблокировало <b>бота</b>: <code>{bot_blocked_count}</code>"
-"\n"
+"            ┗ Пользователей, <b>заблокировавшие бота</b>: "
+"<code>{bot_blocked_count}</code>\n"
 "\n"
 "            <b> ⭐️ ОТЗЫВЫ</b>\n"
-"            ┣ Отзывов за <b>все время</b>: <code>{reviews_total}</code>\n"
-"            ┣ 😻 Положительных: <code>{reviews_positive}</code>\n"
-"            ┣ 😡 Отрицательных: <code>{reviews_negative}</code>\n"
-"            ╰┈➤ <b><u>ЗАКАЗЫ</u></b>\n"
-"            ┣ 😻 Положительных: <code>{reviews_order_positive}</code>\n"
-"            ┣ 😡 Отрицательных: <code>{reviews_order_negative}</code>\n"
-"            ┣ 🤔 Средняя оценка: <code>{reviews_avg_order_rating}</code>\n"
-"            ╰┈➤ <b><u>ОБСЛУЖИВАНИЕ</u></b>\n"
-"            ┣ 😻 Положительных: <code>{reviews_service_negative}</code>\n"
-"            ┣ 😡 Отрицательных: <code>{reviews_service_negative}</code>\n"
-"            ┗ 🤔 Средняя оценка: <code>{reviews_avg_service_rating}</code>"
-"\n"
+"            ┣ Общее количество отзывов: <code>{reviews_total}</code>\n"
+"            ┣ Положительных отзывов: <code>{reviews_positive}</code>\n"
+"            ┗ Отрицательных отзывов: <code>{reviews_negative}</code>\n"
 "\n"
 "            <b> 💰 ДОХОД</b>\n"
-"            ┣ Доход за <b>сегодня</b>: <code>{income_today}</code>\n"
-"            ┣ Доход за <b>неделю</b>: <code>{income_week}</code>\n"
-"            ┣ Доход за <b>месяц</b>: <code>{income_month}</code>\n"
-"            ┗ Доход за <b>всё время</b>: <code>{income_all_time}</code>\n"
+"            {department_incomes_text}\n"
 "        "
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:81
-msgid "Добро пожаловать в панель управления, <b>{user}</b>!"
+#: bot/handlers/admin/base_admin_handlers.py:99
+msgid ""
+"✅ Добро пожаловать в панель управления, <b>{user}</b>! Выберите нужный "
+"раздел для дальнейшей работы!"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:37
+#: bot/handlers/admin/base_admin_handlers.py:110
+msgid "Пожалуйста, выберите пункт меню"
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:122
+msgid ""
+"\n"
+"                    Для создания новой рассылки пожалуйста введите "
+"название рассылки!\n"
+"                    Для этого используйте: /sender [название рассылки]\n"
+"                    "
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:136
+msgid ""
+"\n"
+"    Начинаю создание рассылки: <b>\"{camp_name}\"</b>\n"
+"    Пожалуйста, введите <b><u>сообщение</u></b>, которое хотите "
+"отправить!\n"
+"    "
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:154
+msgid ""
+"\n"
+"    Отлично! Я запомнил текст, который ты хочешь отправить!\n"
+"    <u>Будем добавлять кнопку?</u>\n"
+"    "
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:172
+msgid "Отправьте текст для кнопки!"
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:186
+msgid "Введите ссылку для кнопки"
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:207
+msgid "Вот сообщение, которое будет отправлено! Подтвердите рассылку!"
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:211
+msgid "Подтвердить"
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:214
+msgid "Отклонить"
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:231
+msgid "Начинаю рассылку!"
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:233
+msgid "Рассылка отменена"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:38
 msgid ""
 "Привет, <b>{first_name}</b> 🤗\n"
 "Выбери в меню интересующую функцию ⬇️\n"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:45
+#: bot/handlers/user/base_handlers.py:46
 msgid ""
 "Привет! Я чат-бот стрит-фуд ресторана <b><a href='https://doners-"
 "club.ru'>Донерс</a></b>.\n"
@@ -84,20 +133,31 @@ msgid ""
 "Авторизуйся 1 раз и получай все преимущества \"Doners-club\" 😎"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:62
+#: bot/handlers/user/base_handlers.py:63
 msgid "Нажмите ниже, чтобы открыть меню"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:69
+#: bot/handlers/user/base_handlers.py:70
 msgid "Нажмите на кнопку, чтобы просмотреть доступные акции"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:78
+#: bot/handlers/user/base_handlers.py:79
 msgid "Нажми на кнопку и напиши свой вопрос"
 msgstr ""
 
-#: bot/handlers/user/base_handlers.py:85
+#: bot/handlers/user/base_handlers.py:86
 msgid "Выбери ресторан:"
+msgstr ""
+
+#: bot/handlers/user/base_handlers.py:94
+msgid ""
+"\n"
+"        Донерс - это не только ресторан и доставка! Мы большая команда 😎\n"
+"        Мы ищем как сотрудников в общепит, так и офисных работников.\n"
+"        Также у нас много друзей, которым нужны классные ребята с опытом "
+"работы и без 😉\n"
+"        Напиши нам и мы предложим тебе вакансии на выбор!\n"
+"        "
 msgstr ""
 
 #: bot/handlers/user/cabinet_handlers.py:51
@@ -107,13 +167,13 @@ msgid ""
 "Бонусов: {balance}"
 msgstr ""
 
-#: bot/handlers/user/cabinet_handlers.py:93
+#: bot/handlers/user/cabinet_handlers.py:72
 msgid ""
 "Мы работаем над установкой Wi-Fi в филиале на Мира. Пароль от него будет "
 "здесь в ближайшее время 😎"
 msgstr ""
 
-#: bot/handlers/user/cabinet_handlers.py:102
+#: bot/handlers/user/cabinet_handlers.py:81
 msgid ""
 "❗Извините, но данное действие доступно только <u>авторизованным</u> "
 "пользователям! Пожалуйста, <b>войдите</b> или <b>создайте</b> аккаунт."
@@ -280,20 +340,28 @@ msgstr ""
 msgid "Контакты"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:15
+#: bot/keyboards/cabinet.py:14
 msgid "Пароль от WiFi"
 msgstr ""
 
-#: bot/keyboards/cabinet.py:19
+#: bot/keyboards/cabinet.py:14
+msgid "Работа"
+msgstr ""
+
+#: bot/keyboards/cabinet.py:17
 msgid "Выберите пункт меню для работы с ботом"
 msgstr ""
 
-#: bot/keyboards/inline.py:9
+#: bot/keyboards/inline.py:10
 msgid "Позвать человека"
 msgstr ""
 
-#: bot/keyboards/inline.py:20
+#: bot/keyboards/inline.py:21
 msgid "К покупкам"
+msgstr ""
+
+#: bot/keyboards/inline.py:105
+msgid "✉️ Написать HR"
 msgstr ""
 
 #: bot/keyboards/reply.py:10
@@ -316,8 +384,32 @@ msgstr ""
 msgid "❌ Отмена"
 msgstr ""
 
-#: bot/keyboards/admin/inline_admin.py:7
+#: bot/keyboards/admin/inline_admin.py:8
 msgid "📋 Сформировать отчет"
+msgstr ""
+
+#: bot/keyboards/admin/inline_admin.py:16
+msgid "👥 Список пользователей"
+msgstr ""
+
+#: bot/keyboards/admin/inline_admin.py:17
+msgid "👮‍♀️ Администраторы"
+msgstr ""
+
+#: bot/keyboards/admin/inline_admin.py:18
+msgid "🔎 Поиск пользователя"
+msgstr ""
+
+#: bot/keyboards/admin/inline_admin.py:19
+msgid "➕ Добавить пользователя"
+msgstr ""
+
+#: bot/keyboards/admin/inline_admin.py:27
+msgid "Добавить кнопку"
+msgstr ""
+
+#: bot/keyboards/admin/inline_admin.py:28
+msgid "Продолжить без кнопки"
 msgstr ""
 
 #: bot/keyboards/admin/reply_admin.py:9
@@ -325,14 +417,18 @@ msgid "📊 Статистика"
 msgstr ""
 
 #: bot/keyboards/admin/reply_admin.py:10
-msgid "🙍 Админы"
+msgid "🙍 Пользователи"
 msgstr ""
 
 #: bot/keyboards/admin/reply_admin.py:13
 msgid "📦 Резервная копия БД"
 msgstr ""
 
-#: bot/keyboards/admin/reply_admin.py:15
+#: bot/keyboards/admin/reply_admin.py:14
+msgid "📣 Рассылка"
+msgstr ""
+
+#: bot/keyboards/admin/reply_admin.py:16
 msgid "⬅️ В главное меню"
 msgstr ""
 
@@ -342,6 +438,33 @@ msgstr ""
 
 #: bot/middlewares/ThrottlingMiddleware.py:61
 msgid "<b>❗ Бот не будет отвечать до прекращения спама.</b>\n"
+msgstr ""
+
+#: schedulers/sc_backup_db.py:20
+msgid ""
+"Начинаю создание резервной копии БД!\n"
+"\n"
+"ℹ️ Если бот не отослал сообщение в течении 1 минуты, беги смотреть логи!"
+msgstr ""
+
+#: schedulers/sc_backup_db.py:35
+msgid "Резервная копия БД от {date}"
+msgstr ""
+
+#: schedulers/sc_backup_db.py:47
+msgid ""
+"🔴 Не удалось создать или отправить резервную копию БД! Бегом смотреть "
+"логи!"
+msgstr ""
+
+#: schedulers/sc_check_order.py:43
+msgid ""
+"\n"
+"                                Спасибо, что выбираете Донерс 😎\n"
+"                                Пожалуйста, оцените <b><u>вкус "
+"заказанного блюда</u></b> по шкале <b>от 1 до 5</b>.\n"
+"                                Где 5 наивысшая оценка\n"
+"                                "
 msgstr ""
 
 #: venv/Lib/site-packages/click/_termui_impl.py:518
@@ -1386,4 +1509,57 @@ msgstr ""
 #~ "Пожалуйста, оцените вкус заказанного блюда "
 #~ "по шкале от 1 до 5.Где 5 "
 #~ "наивысшая оценка"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "            <b>📊 СТАТИСТИКА БОТА</b>\n"
+#~ "            ➖➖➖➖➖➖➖➖➖➖\n"
+#~ "\n"
+#~ "            <b>👤 ПОЛЬЗОВАТЕЛИ</b>\n"
+#~ "            ┣ Регистраций за <b>День</b>: "
+#~ "<code>{reg_day_count}</code>\n"
+#~ "            ┣ Регистраций за <b>Неделю</b>:"
+#~ " <code>{reg_week_count}</code>\n"
+#~ "            ┣ Регистраций за <b>Месяц</b>: "
+#~ "<code>{reg_month_count}</code>\n"
+#~ "            ┣ Регистраций за <b>Все "
+#~ "время</b>: <code>{reg_all_time_count}</code>\n"
+#~ "            ┗ Заблокировало <b>бота</b>: "
+#~ "<code>{bot_blocked_count}</code>\n"
+#~ "\n"
+#~ "            <b> ⭐️ ОТЗЫВЫ</b>\n"
+#~ "            ┣ Отзывов за <b>все "
+#~ "время</b>: <code>{reviews_total}</code>\n"
+#~ "            ┣ 😻 Положительных: <code>{reviews_positive}</code>\n"
+#~ "            ┣ 😡 Отрицательных: <code>{reviews_negative}</code>\n"
+#~ "            ╰┈➤ <b><u>ЗАКАЗЫ</u></b>\n"
+#~ "            ┣ 😻 Положительных: <code>{reviews_order_positive}</code>\n"
+#~ "            ┣ 😡 Отрицательных: <code>{reviews_order_negative}</code>\n"
+#~ "            ┣ 🤔 Средняя оценка: "
+#~ "<code>{reviews_avg_order_rating}</code>\n"
+#~ "            ╰┈➤ <b><u>ОБСЛУЖИВАНИЕ</u></b>\n"
+#~ "            ┣ 😻 Положительных: "
+#~ "<code>{reviews_service_negative}</code>\n"
+#~ "            ┣ 😡 Отрицательных: "
+#~ "<code>{reviews_service_negative}</code>\n"
+#~ "            ┗ 🤔 Средняя оценка: "
+#~ "<code>{reviews_avg_service_rating}</code>\n"
+#~ "\n"
+#~ "            <b> 💰 ДОХОД</b>\n"
+#~ "            ┣ Доход за <b>сегодня</b>: <code>{income_today}</code>\n"
+#~ "            ┣ Доход за <b>неделю</b>: <code>{income_week}</code>\n"
+#~ "            ┣ Доход за <b>месяц</b>: <code>{income_month}</code>\n"
+#~ "            ┗ Доход за <b>всё время</b>:"
+#~ " <code>{income_all_time}</code>\n"
+#~ "        "
+#~ msgstr ""
+
+#~ msgid "Добро пожаловать в панель управления, <b>{user}</b>!"
+#~ msgstr ""
+
+#~ msgid "🙍 Админы"
+#~ msgstr ""
+
+#~ msgid "ТЕСТОВАЯ ШТУКА ДЛЯ ПРОВЕРКИ РАБОТЫ ПЕРЕВОДА"
 #~ msgstr ""
