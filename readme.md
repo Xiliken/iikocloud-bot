@@ -96,6 +96,7 @@ IIKOCLOUD_ORGANIZATIONS_IDS=
 # IikoServer API settings
 IIKOSERVER_LOGIN=
 IIKOSERVER_PASSWORD=
+IIKOSERVER_DOMAIN=
 IIKOSERVER_DEPARTMENTS_IDS=
 
 # Redis Settings
@@ -120,11 +121,16 @@ SMSC_SMTP_PASSWORD=
 # Database Settings
 DATABASE_URL=sqlite+aiosqlite:///database.db
 
+# Localization Settings
+I18N_PATH=bot/locales
+I18N_DEFAULT_LOCALE=ru
+I18N_DOMAIN=messages
+
 # Other settings
 DEBUG=True
-LOG_TYPE=file# File, Console
+# File, Console
+LOG_TYPE=file
 MAINTENANCE=False
-
 
   ```
 </details>
@@ -164,7 +170,7 @@ MAINTENANCE=False
 - [ ] Перенести возможно с SQLite на PostgreSQL
 - [x] Вывести с IikoCloud API статистику дохода
 - [ ] Сделать работу с Config более удобной
-- [ ] Автоматический бэкап БД
+- [x] Автоматический бэкап БД
 - [ ] Сделать профиль пользователя
   -  [ ] Просмотр истории заказов
   -  [ ] Редактирование учетной записи

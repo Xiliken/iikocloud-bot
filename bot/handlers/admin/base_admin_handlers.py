@@ -30,67 +30,70 @@ router.message.filter(IsAdmin())
 @router.message(Command(commands=["stats"]))
 @router.message(F.text == __("📊 Статистика"))
 async def admin_stats_handler(msg: Message, bot: Bot):
-    # Нужно для того, чтобы пользователь видел, что бот что-то печатает, а не просто висит
-    await bot.send_chat_action(chat_id=msg.chat.id, action=ChatAction.TYPING)
-    await asyncio.sleep(0.5)
+    try:
+        # Нужно для того, чтобы пользователь видел, что бот что-то печатает, а не просто висит
+        await bot.send_chat_action(chat_id=msg.chat.id, action=ChatAction.TYPING)
+        await asyncio.sleep(0.5)
 
-    stats = await get_stats()
+        stats = await get_stats()
 
-    department_incomes = stats.get("department_incomes")
-    department_incomes_text = ""
-    for department in department_incomes:
-        department_name = department.get("department_name")
-        income_today = "{0:,}".format(department.get("income_today")).replace(",", " ")
-        income_yesterday = "{0:,}".format(department.get("income_yesterday")).replace(",", " ")
-        income_per_week = "{0:,}".format(department.get("income_per_week")).replace(",", " ")
+        department_incomes = stats.get("department_incomes")
+        department_incomes_text = ""
+        for department in department_incomes:
+            department_name = department.get("department_name")
+            income_today = "{0:,}".format(department.get("income_today")).replace(",", " ")
+            income_yesterday = "{0:,}".format(department.get("income_yesterday")).replace(",", " ")
+            income_per_week = "{0:,}".format(department.get("income_per_week")).replace(",", " ")
 
-        department_incomes_text += f"""
-        <b>💸 {department_name}</b>
-        ┣ Доход за вчера: <code>{income_yesterday}</code>
-        ┣ Доход за сегодня: <code>{income_today}</code>
-        ┗ Доход за неделю: <code>{income_per_week}</code>
-        """
-
-    message = clear_text(
-        _(
+            department_incomes_text += f"""
+            <b>💸 {department_name}</b>
+            ┣ Доход за вчера: <code>{income_yesterday}</code>
+            ┣ Доход за сегодня: <code>{income_today}</code>
+            ┗ Доход за неделю: <code>{income_per_week}</code>
             """
-            <b>📊 СТАТИСТИКА БОТА</b>
-            ➖➖➖➖➖➖➖➖➖➖
 
-            <b>👤 ПОЛЬЗОВАТЕЛИ</b>
-            ┣ Регистраций за <b>сегодня</b>: <code>{reg_day_count}</code>
-            ┣ Регистраций за <b>неделю</b>: <code>{reg_week_count}</code>
-            ┣ Регистраций за <b>месяц</b>: <code>{reg_month_count}</code>
-            ┣ Регистраций за <b>все время</b>: <code>{reg_all_time_count}</code>
-            ┗ Пользователей, <b>заблокировавшие бота</b>: <code>{bot_blocked_count}</code>
+        message = clear_text(
+            _(
+                """
+                <b>📊 СТАТИСТИКА БОТА</b>
+                ➖➖➖➖➖➖➖➖➖➖
 
-            <b> ⭐️ ОТЗЫВЫ</b>
-            ┣ Общее количество отзывов: <code>{reviews_total}</code>
-            ┣ Положительных отзывов: <code>{reviews_positive}</code>
-            ┗ Отрицательных отзывов: <code>{reviews_negative}</code>
+                <b>👤 ПОЛЬЗОВАТЕЛИ</b>
+                ┣ Регистраций за <b>сегодня</b>: <code>{reg_day_count}</code>
+                ┣ Регистраций за <b>неделю</b>: <code>{reg_week_count}</code>
+                ┣ Регистраций за <b>месяц</b>: <code>{reg_month_count}</code>
+                ┣ Регистраций за <b>все время</b>: <code>{reg_all_time_count}</code>
+                ┗ Пользователей, <b>заблокировавшие бота</b>: <code>{bot_blocked_count}</code>
 
-            <b> 💰 ДОХОД</b>
-            {department_incomes_text}
-        """
-        ).format(
-            reg_day_count=stats.get("reg_users_today"),
-            reg_week_count=stats.get("reg_users_week"),
-            reg_month_count=stats.get("reg_users_month"),
-            reg_all_time_count=stats.get("reg_users_all"),
-            reviews_total=stats.get("total_reviews"),
-            reviews_order_positive=stats.get("reviews_order_positive"),
-            reviews_order_negative=stats.get("reviews_order_negative"),
-            reviews_service_negative=stats.get("reviews_service_negative"),
-            reviews_positive=stats.get("total_positive_reviews"),
-            reviews_negative=stats.get("total_negative_reviews"),
-            reviews_avg_order_rating=stats.get("reviews_avg_order_rating"),
-            reviews_avg_service_rating=stats.get("reviews_avg_service_rating"),
-            bot_blocked_count=stats.get("bot_blocked"),
-            department_incomes_text=department_incomes_text,
+                <b> ⭐️ ОТЗЫВЫ</b>
+                ┣ Общее количество отзывов: <code>{reviews_total}</code>
+                ┣ Положительных отзывов: <code>{reviews_positive}</code>
+                ┗ Отрицательных отзывов: <code>{reviews_negative}</code>
+
+                <b> 💰 ДОХОД</b>
+                {department_incomes_text}
+            """
+            ).format(
+                reg_day_count=stats.get("reg_users_today"),
+                reg_week_count=stats.get("reg_users_week"),
+                reg_month_count=stats.get("reg_users_month"),
+                reg_all_time_count=stats.get("reg_users_all"),
+                reviews_total=stats.get("total_reviews"),
+                reviews_order_positive=stats.get("reviews_order_positive"),
+                reviews_order_negative=stats.get("reviews_order_negative"),
+                reviews_service_negative=stats.get("reviews_service_negative"),
+                reviews_positive=stats.get("total_positive_reviews"),
+                reviews_negative=stats.get("total_negative_reviews"),
+                reviews_avg_order_rating=stats.get("reviews_avg_order_rating"),
+                reviews_avg_service_rating=stats.get("reviews_avg_service_rating"),
+                bot_blocked_count=stats.get("bot_blocked"),
+                department_incomes_text=department_incomes_text,
+            )
         )
-    )
 
-    await msg.answer(message, parse_mode="HTML")
+        await msg.answer(message, parse_mode="HTML")
+    except Exception as e:
+        await msg.answer(_("❌ Произошла ошибка при получении статистики."))
 
 
 @router.message(Command(commands=["admin", "ap", "admin_panel"]))
@@ -121,7 +124,7 @@ async def broadcast_admin_handler(msg: Message, state: FSMContext, command: Comm
             clear_text(
                 _(
                     """
-                    Для создания новой рассылки пожалуйста введите название рассылки!
+                    Для создания новой рассылки, пожалуйста, введите название рассылки!
                     Для этого используйте: /sender [название рассылки]
                     """
                 )
@@ -153,7 +156,7 @@ async def camp_text_handler(msg: Message, state: FSMContext):
         clear_text(
             _(
                 """
-    Отлично! Я запомнил текст, который ты хочешь отправить!
+    Отлично! Я запомнил текст, который будет отправлен!
     <u>Будем добавлять кнопку?</u>
     """
             )
@@ -208,10 +211,10 @@ async def confirm_broadcast(
         reply_markup=InlineKeyboardMarkup(
             inline_keyboard=[
                 [
-                    InlineKeyboardButton(text=_("Подтвердить"), callback_data="confirm_broadcast"),
+                    InlineKeyboardButton(text=_("✅ Подтвердить"), callback_data="confirm_broadcast"),
                 ],
                 [
-                    InlineKeyboardButton(text=_("Отклонить"), callback_data="cancel_broadcast"),
+                    InlineKeyboardButton(text=_("❌ Отклонить"), callback_data="cancel_broadcast"),
                 ],
             ]
         ),
@@ -228,9 +231,9 @@ async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, sessio
     data.get("camp_message")
 
     if call.data == "confirm_broadcast":
-        await call.message.edit_text(text=_("Начинаю рассылку!"), reply_markup=None)
+        await call.message.edit_text(text=_("ℹ️ Начинаю рассылку!"), reply_markup=None)
     elif call.data == "cancel_broadcast":
-        await call.message.edit_text(text=_("Рассылка отменена"), reply_markup=None)
+        await call.message.edit_text(text=_("❌ Рассылка отменена!"), reply_markup=None)
 
     await state.clear()
 

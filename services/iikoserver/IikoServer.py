@@ -2,6 +2,7 @@ import hashlib
 from datetime import date, datetime, timedelta
 from typing import Optional, Union
 
+import loguru
 import requests
 
 from services.iikocloud.models import CustomErrorModel
@@ -42,6 +43,9 @@ class IikoServer:
             self._get_access_token()
         elif str(code) == "400":
             pass
+        elif str(code) == "403":
+            loguru.logger.error("Что-то пошло не так при получении токена. Смотри логи. Пытаюсь разлогиниться.")
+            self._quit_token()
         elif str(code) == "408":
             pass
         elif str(code) == "500":
@@ -50,9 +54,9 @@ class IikoServer:
     def check_token_time(self) -> bool:
         """
         Проверка на время жизни токена.
-        :return: Если прошло 15 минут, будет запрощен токен, и метод вернет True,иначе вернется False
+        :return: Если прошло 60 минут, будет запрощен токен, и метод вернет True,иначе вернется False
         """
-        fifteen_minutes_ago = datetime.now() - timedelta(minutes=15)
+        fifteen_minutes_ago = datetime.now() - timedelta(hours=1)
         time_token = self._time_token
 
         try:
@@ -130,6 +134,12 @@ class IikoServer:
 
             if (
                 result.text is not None
+                and "License enhancement is required: no connections available for module" in result.text
+            ):
+                self._quit_token()
+
+            if (
+                result.text is not None
                 and "Неверный пароль для пользователя" not in result.text
                 and "Пользователь с логином" not in result.text
             ):
@@ -172,43 +182,20 @@ class IikoServer:
 
         return response_data
 
-    def get_token(self):
-        """
-        Метод получения нового токена
-        при авторизации вы занимаете один слот лицензии. Token,
-        который вы получаете при авторизации, можно использовать до того момента,
-        пока он не протухнет (не перестанет работать). И если у вас только одна
-        лицензия сервера, а вы уже получили token, следующее обращение к серверу за
-        token-ом вызовет ошибку. Если вам негде хранить token при работе с сервером API,
-        рекомендуем вам разлогиниться, что приводит к отпусканию лицензии.
-
-        """
-
-        try:
-            url = (
-                self._domain
-                + "/auth?login="
-                + self._login
-                + "&pass="
-                + hashlib.sha1(self._password.encode()).hexdigest()
-            )
-            return requests.get(url=url, timeout=self.DEFAULT_TIMEOUT).text
-
-        except Exception as e:
-            print("Ошибка при обновлении токена доступа IikoServer:\n ", e)
-
-    def quit_token(self):
+    def _quit_token(self):
         """
         Уничтожение токена
         """
 
         try:
-            logout = requests.get(self._domain + "/logout?key=" + self._token)
-            print("\nТокен уничтожен: " + self._token)
-            return logout
-
+            result = self.session_s.get(url=f"{self.domain}/logout?key={self._token}", timeout=self.DEFAULT_TIMEOUT)
+            loguru.logger.info("\nТокен уничтожен: " + self._token)
+            loguru.logger.info(f"РЕЗУЛЬТАТ РАБОТЫ: {result.status_code}")
+            return result.text
         except requests.exceptions.ConnectTimeout:
-            print("Не удалось подключиться к серверу IikoServer")
+            loguru.logger.error("Не удалось подключиться к серверу IikoServer")
+        except Exception as e:
+            loguru.logger.error(f"Не удалось подключиться к серверу IikoServer\n{e}")
 
     def departments(self):
         """
