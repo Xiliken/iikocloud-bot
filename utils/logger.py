@@ -1,5 +1,6 @@
 import logging
 import pathlib
+import sys
 from typing import List, Union
 
 from loguru import logger
@@ -23,13 +24,26 @@ class InterceptHandler(logging.Handler):
 
 
 def setup_logger(level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
-    logging.basicConfig(handlers=[InterceptHandler()], level=logging.getLevelName(level))
+    logger.remove()
+    logger.add(
+        sys.stdout,
+        colorize=True,
+        format="<green>{time:DD.MM.YYYY HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    )
+
     for ignore in ignored:
         logger.disable(ignore)
 
 
 def setup_logger_file(log_file: Union[pathlib.Path, str], level: Union[str, int] = "DEBUG", ignored: List[str] = ""):
-    logger.add(log_file, rotation="500 MB")  # Установить файловый обработчик логов
+    logger.remove()
+
+    logger.add(
+        sys.stdout,
+        colorize=True,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+    )
+    logger.add(log_file, rotation="500 MB", enqueue=True, compression="tar.gz")
 
     for ignore in ignored:
         logger.disable(ignore)

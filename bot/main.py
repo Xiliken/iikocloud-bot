@@ -52,15 +52,15 @@ async def start_bot() -> None:
     if Config.get("DEBUG", "bool"):
         log_type = str(Config.get("LOG_TYPE")).lower()
 
-        if log_type == "console":
-            utils.logger.setup_logger("DEBUG", ignored=["sqlalchemy", "aiogram"])
-        elif log_type == "file":
+        if log_type.startswith("console"):
+            utils.logger.setup_logger(ignored=["sqlalchemy"])
+        elif log_type.startswith("file"):
             log_file = pathlib.Path(
                 pathlib.Path().cwd(),
                 "logs",
-                f'bot_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log',
+                f'bot_{datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")}.log',
             )
-            utils.logger.setup_logger_file(log_file=log_file, level="DEBUG")
+            utils.logger.setup_logger_file(log_file=log_file)
     # endregion
 
     # region Инициализация бота и Redis

@@ -43,15 +43,15 @@ async def admin_stats_handler(msg: Message, bot: Bot):
     department_incomes_text = ""
     for department in department_incomes:
         department_name = department.get("department_name")
-        income_today = department.get("income_today")
-        income_yesterday = department.get("income_yesterday")
-        income_per_week = department.get("income_per_week")
+        income_today = "{0:,}".format(department.get("income_today")).replace(",", " ")
+        income_yesterday = "{0:,}".format(department.get("income_yesterday")).replace(",", " ")
+        income_per_week = "{0:,}".format(department.get("income_per_week")).replace(",", " ")
 
         department_incomes_text += f"""
         <b>💸 {department_name}</b>
-        ┣ Доход за вчера: <code>{income_yesterday:,}</code>
-        ┣ Доход за сегодня: <code>{income_today:,}</code>
-        ┗ Доход за неделю: <code>{income_per_week:,}</code>
+        ┣ Доход за вчера: <code>{income_yesterday}</code>
+        ┣ Доход за сегодня: <code>{income_today}</code>
+        ┗ Доход за неделю: <code>{income_per_week}</code>
         """
 
     message = clear_text(
