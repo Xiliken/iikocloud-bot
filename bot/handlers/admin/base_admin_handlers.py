@@ -93,7 +93,7 @@ async def admin_stats_handler(msg: Message, bot: Bot):
 
         await msg.answer(message, parse_mode="HTML")
     except Exception as e:
-        await msg.answer(_("❌ Произошла ошибка при получении статистики."))
+        await msg.answer(_("❌ Произошла ошибка при получении статистики. Попробуйте позже."))
 
 
 @router.message(Command(commands=["admin", "ap", "admin_panel"]))

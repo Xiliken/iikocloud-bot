@@ -31,12 +31,16 @@ class IikoServer:
 
         self._login = login
         self._password = password
-        self._domain = domain + "/resto/api"
+        self._domain = f"{domain}/resto/api"
         self._token: Optional[str] = None
         self._time_token: Optional[date] = None
         self._set_token(working_token) if working_token is not None else self._get_access_token()
         self._last_data = None
         self._headers = {"Content-Type": "application/json", "Timeout": "45"} if base_headers is None else base_headers
+
+    def __del__(self):
+        loguru.logger.info("Уничтожен экземпляр класса IikoServer")
+        self._quit_token()
 
     def check_status_code_token(self, code: Union[str, int]):
         if str(code) == "401":
@@ -56,21 +60,25 @@ class IikoServer:
         Проверка на время жизни токена.
         :return: Если прошло 60 минут, будет запрощен токен, и метод вернет True,иначе вернется False
         """
-        fifteen_minutes_ago = datetime.now() - timedelta(hours=1)
+        one_hour_ago = datetime.now() - timedelta(minutes=1)
         time_token = self._time_token
 
-        try:
-            if time_token <= fifteen_minutes_ago:
-                self._get_access_token()
-                return True
-            else:
-                return False
-        except TypeError:
-            raise CheckTimeToken(
-                self.__class__.__qualname__,
-                self.check_token_time.__name__,
-                f"Не смог запросить или обновить токен!",
-            )
+        if self._token is not None:
+            try:
+                if time_token <= one_hour_ago:
+                    self._quit_token()
+                    loguru.logger.info("Получен новый токен для IikoServer", self._token)
+                    return True
+                else:
+                    return False
+            except TypeError:
+                raise CheckTimeToken(
+                    self.__class__.__qualname__,
+                    self.check_token_time.__name__,
+                    f"Не смог запросить или обновить токен!",
+                )
+        else:
+            return False
 
     @property
     def login(self):
@@ -127,15 +135,13 @@ class IikoServer:
 
     def access_token(self):
         try:
+            self.check_token_time()
             result = self._session.get(
                 f"{self._domain}/auth?login={self._login}&pass={hashlib.sha1(self._password.encode()).hexdigest()}",
                 timeout=self.DEFAULT_TIMEOUT,
             )
 
-            if (
-                result.text is not None
-                and "License enhancement is required: no connections available for module" in result.text
-            ):
+            if result.text is not None and "License enhancement is required" in result.text:
                 self._quit_token()
 
             if (
@@ -186,11 +192,11 @@ class IikoServer:
         """
         Уничтожение токена
         """
-
         try:
             result = self.session_s.get(url=f"{self.domain}/logout?key={self._token}", timeout=self.DEFAULT_TIMEOUT)
-            loguru.logger.info("\nТокен уничтожен: " + self._token)
-            loguru.logger.info(f"РЕЗУЛЬТАТ РАБОТЫ: {result.status_code}")
+            if result.status_code == 200:
+                loguru.logger.debug("\nТокен уничтожен: " + self._token)
+                # self.access_token()
             return result.text
         except requests.exceptions.ConnectTimeout:
             loguru.logger.error("Не удалось подключиться к серверу IikoServer")
@@ -214,7 +220,7 @@ class IikoServer:
         """
 
         try:
-            urls = self._domain + "/corporation/departments?key=" + self._token
+            loguru.logger.debug(f"Текущий токен при получении подразделений {self._token}")
             return self._get_request(url="/corporation/departments?key=" + self._token, timeout=self.DEFAULT_TIMEOUT)
             # return requests.get(url=urls, timeout=self.DEFAULT_TIMEOUT).content
         except requests.exceptions.RequestException as e:
@@ -273,6 +279,7 @@ class IikoServer:
             data["allRevenue"] = bool(all_revenue)
 
         try:
+            loguru.logger.debug(f"Текущий токен при получении доходов: {self._token}")
             return requests.get(
                 url=self._domain + f"/reports/sales?key={self._token}&department={department}",
                 params=data,

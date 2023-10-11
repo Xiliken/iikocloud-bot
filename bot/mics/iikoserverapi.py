@@ -3,14 +3,14 @@ import xml.etree.ElementTree as ET
 from bot.mics import Config
 from services.iikoserver.IikoServer import IikoServer
 
-iiko_server = IikoServer(
-    login=Config.get("IIKOSERVER_LOGIN"),
-    password=Config.get("IIKOSERVER_PASSWORD"),
-    domain=Config.get("IIKOSERVER_DOMAIN"),
-)
-
 
 def get_departments():
+    iiko_server = IikoServer(
+        login=Config.get("IIKOSERVER_LOGIN"),
+        password=Config.get("IIKOSERVER_PASSWORD"),
+        domain=Config.get("IIKOSERVER_DOMAIN"),
+    )
+
     departments = iiko_server.departments()
 
     tree = ET.fromstring(departments)
