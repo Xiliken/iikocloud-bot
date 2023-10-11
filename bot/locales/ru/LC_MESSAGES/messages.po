@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-10-10 13:29+0700\n"
+"POT-Creation-Date: 2023-10-11 12:55+0700\n"
 "PO-Revision-Date: 2023-09-19 13:48+0700\n"
 "Last-Translator: \n"
 "Language: ru\n"
@@ -25,54 +25,62 @@ msgid ""
 "равна текущей дате, то есть {current_date}"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:55
-msgid ""
-"\n"
-"            <b>📊 СТАТИСТИКА БОТА</b>\n"
-"            ➖➖➖➖➖➖➖➖➖➖\n"
-"\n"
-"            <b>👤 ПОЛЬЗОВАТЕЛИ</b>\n"
-"            ┣ Регистраций за <b>сегодня</b>: <code>{reg_day_count}</code>"
-"\n"
-"            ┣ Регистраций за <b>неделю</b>: <code>{reg_week_count}</code>"
-"\n"
-"            ┣ Регистраций за <b>месяц</b>: <code>{reg_month_count}</code>"
-"\n"
-"            ┣ Регистраций за <b>все время</b>: "
-"<code>{reg_all_time_count}</code>\n"
-"            ┗ Пользователей, <b>заблокировавшие бота</b>: "
-"<code>{bot_blocked_count}</code>\n"
-"\n"
-"            <b> ⭐️ ОТЗЫВЫ</b>\n"
-"            ┣ Общее количество отзывов: <code>{reviews_total}</code>\n"
-"            ┣ Положительных отзывов: <code>{reviews_positive}</code>\n"
-"            ┗ Отрицательных отзывов: <code>{reviews_negative}</code>\n"
-"\n"
-"            <b> 💰 ДОХОД</b>\n"
-"            {department_incomes_text}\n"
-"        "
+#: bot/handlers/admin/base_admin_handlers.py:37
+msgid "ℹ️ Идет формирование статистики. Пожалуйста, подождите..."
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:99
+#: bot/handlers/admin/base_admin_handlers.py:58
+msgid ""
+"\n"
+"                <b>📊 СТАТИСТИКА БОТА</b>\n"
+"                ➖➖➖➖➖➖➖➖➖➖\n"
+"\n"
+"                <b>👤 ПОЛЬЗОВАТЕЛИ</b>\n"
+"                ┣ Регистраций за <b>сегодня</b>: "
+"<code>{reg_day_count}</code>\n"
+"                ┣ Регистраций за <b>неделю</b>: "
+"<code>{reg_week_count}</code>\n"
+"                ┣ Регистраций за <b>месяц</b>: "
+"<code>{reg_month_count}</code>\n"
+"                ┣ Регистраций за <b>все время</b>: "
+"<code>{reg_all_time_count}</code>\n"
+"                ┗ Пользователей, <b>заблокировавшие бота</b>: "
+"<code>{bot_blocked_count}</code>\n"
+"\n"
+"                <b> ⭐️ ОТЗЫВЫ</b>\n"
+"                ┣ Общее количество отзывов: <code>{reviews_total}</code>\n"
+"                ┣ Положительных отзывов: <code>{reviews_positive}</code>\n"
+"                ┗ Отрицательных отзывов: <code>{reviews_negative}</code>\n"
+"\n"
+"                <b> 💰 ДОХОД</b>\n"
+"                {department_incomes_text}\n"
+"            "
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:98
+msgid "❌ Произошла ошибка при получении статистики. Попробуйте позже."
+msgstr ""
+
+#: bot/handlers/admin/base_admin_handlers.py:104
 msgid ""
 "✅ Добро пожаловать в панель управления, <b>{user}</b>! Выберите нужный "
 "раздел для дальнейшей работы!"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:110
+#: bot/handlers/admin/base_admin_handlers.py:115
 msgid "Пожалуйста, выберите пункт меню"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:122
+#: bot/handlers/admin/base_admin_handlers.py:127
 msgid ""
 "\n"
-"                    Для создания новой рассылки пожалуйста введите "
+"                    Для создания новой рассылки, пожалуйста, введите "
 "название рассылки!\n"
 "                    Для этого используйте: /sender [название рассылки]\n"
 "                    "
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:136
+#: bot/handlers/admin/base_admin_handlers.py:141
 msgid ""
 "\n"
 "    Начинаю создание рассылки: <b>\"{camp_name}\"</b>\n"
@@ -81,40 +89,40 @@ msgid ""
 "    "
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:154
+#: bot/handlers/admin/base_admin_handlers.py:160
 msgid ""
 "\n"
-"    Отлично! Я запомнил текст, который ты хочешь отправить!\n"
+"    Отлично! Я запомнил текст, который будет отправлен!\n"
 "    <u>Будем добавлять кнопку?</u>\n"
 "    "
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:172
+#: bot/handlers/admin/base_admin_handlers.py:178
 msgid "Отправьте текст для кнопки!"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:186
+#: bot/handlers/admin/base_admin_handlers.py:192
 msgid "Введите ссылку для кнопки"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:207
+#: bot/handlers/admin/base_admin_handlers.py:213
 msgid "Вот сообщение, которое будет отправлено! Подтвердите рассылку!"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:211
-msgid "Подтвердить"
+#: bot/handlers/admin/base_admin_handlers.py:217
+msgid "✅ Подтвердить"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:214
-msgid "Отклонить"
+#: bot/handlers/admin/base_admin_handlers.py:220
+msgid "❌ Отклонить"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:231
-msgid "Начинаю рассылку!"
+#: bot/handlers/admin/base_admin_handlers.py:237
+msgid "ℹ️ Начинаю рассылку!"
 msgstr ""
 
-#: bot/handlers/admin/base_admin_handlers.py:233
-msgid "Рассылка отменена"
+#: bot/handlers/admin/base_admin_handlers.py:239
+msgid "❌ Рассылка отменена!"
 msgstr ""
 
 #: bot/handlers/user/base_handlers.py:38
@@ -440,24 +448,24 @@ msgstr ""
 msgid "<b>❗ Бот не будет отвечать до прекращения спама.</b>\n"
 msgstr ""
 
-#: schedulers/sc_backup_db.py:20
+#: schedulers/sc_backup_db.py:19
 msgid ""
 "Начинаю создание резервной копии БД!\n"
 "\n"
 "ℹ️ Если бот не отослал сообщение в течении 1 минуты, беги смотреть логи!"
 msgstr ""
 
-#: schedulers/sc_backup_db.py:35
+#: schedulers/sc_backup_db.py:36
 msgid "Резервная копия БД от {date}"
 msgstr ""
 
-#: schedulers/sc_backup_db.py:47
+#: schedulers/sc_backup_db.py:48
 msgid ""
 "🔴 Не удалось создать или отправить резервную копию БД! Бегом смотреть "
 "логи!"
 msgstr ""
 
-#: schedulers/sc_check_order.py:43
+#: schedulers/sc_check_order.py:42
 msgid ""
 "\n"
 "                                Спасибо, что выбираете Донерс 😎\n"
@@ -1562,4 +1570,60 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "ТЕСТОВАЯ ШТУКА ДЛЯ ПРОВЕРКИ РАБОТЫ ПЕРЕВОДА"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "            <b>📊 СТАТИСТИКА БОТА</b>\n"
+#~ "            ➖➖➖➖➖➖➖➖➖➖\n"
+#~ "\n"
+#~ "            <b>👤 ПОЛЬЗОВАТЕЛИ</b>\n"
+#~ "            ┣ Регистраций за <b>сегодня</b>:"
+#~ " <code>{reg_day_count}</code>\n"
+#~ "            ┣ Регистраций за <b>неделю</b>:"
+#~ " <code>{reg_week_count}</code>\n"
+#~ "            ┣ Регистраций за <b>месяц</b>: "
+#~ "<code>{reg_month_count}</code>\n"
+#~ "            ┣ Регистраций за <b>все "
+#~ "время</b>: <code>{reg_all_time_count}</code>\n"
+#~ "            ┗ Пользователей, <b>заблокировавшие "
+#~ "бота</b>: <code>{bot_blocked_count}</code>\n"
+#~ "\n"
+#~ "            <b> ⭐️ ОТЗЫВЫ</b>\n"
+#~ "            ┣ Общее количество отзывов: <code>{reviews_total}</code>\n"
+#~ "            ┣ Положительных отзывов: <code>{reviews_positive}</code>\n"
+#~ "            ┗ Отрицательных отзывов: <code>{reviews_negative}</code>\n"
+#~ "\n"
+#~ "            <b> 💰 ДОХОД</b>\n"
+#~ "            {department_incomes_text}\n"
+#~ "        "
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "                    Для создания новой "
+#~ "рассылки пожалуйста введите название рассылки!"
+#~ "\n"
+#~ "                    Для этого используйте: "
+#~ "/sender [название рассылки]\n"
+#~ "                    "
+#~ msgstr ""
+
+#~ msgid ""
+#~ "\n"
+#~ "    Отлично! Я запомнил текст, который ты хочешь отправить!\n"
+#~ "    <u>Будем добавлять кнопку?</u>\n"
+#~ "    "
+#~ msgstr ""
+
+#~ msgid "Подтвердить"
+#~ msgstr ""
+
+#~ msgid "Отклонить"
+#~ msgstr ""
+
+#~ msgid "Начинаю рассылку!"
+#~ msgstr ""
+
+#~ msgid "Рассылка отменена"
 #~ msgstr ""

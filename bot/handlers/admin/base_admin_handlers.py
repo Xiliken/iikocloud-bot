@@ -19,6 +19,7 @@ from bot.database.methods.user import get_admins
 from bot.fitlers import IsAdmin
 from bot.keyboards.admin.inline_admin import admin_users_ikb, get_confirm_button_ikb
 from bot.keyboards.admin.reply_admin import admin_main_kb
+from bot.keyboards.reply import cancel_kb
 from bot.mics.const_functions import clear_text, get_stats
 from bot.states.admin.BroadcastStates import BroadcastStates
 from schedulers.sc_backup_db import backup
@@ -33,6 +34,7 @@ async def admin_stats_handler(msg: Message, bot: Bot):
     try:
         # Нужно для того, чтобы пользователь видел, что бот что-то печатает, а не просто висит
         await bot.send_chat_action(chat_id=msg.chat.id, action=ChatAction.TYPING)
+        await msg.answer(_("ℹ️ Идет формирование статистики. Пожалуйста, подождите..."))
         await asyncio.sleep(0.5)
 
         stats = await get_stats()
@@ -142,7 +144,8 @@ async def broadcast_admin_handler(msg: Message, state: FSMContext, command: Comm
     Пожалуйста, введите <b><u>сообщение</u></b>, которое хотите отправить!
     """
             ).format(camp_name=camp_name)
-        )
+        ),
+        reply_markup=cancel_kb(),
     )
 
     await state.update_data(camp_name=camp_name)

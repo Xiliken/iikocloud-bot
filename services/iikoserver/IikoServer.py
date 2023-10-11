@@ -39,7 +39,7 @@ class IikoServer:
         self._headers = {"Content-Type": "application/json", "Timeout": "45"} if base_headers is None else base_headers
 
     def __del__(self):
-        loguru.logger.info("Уничтожен экземпляр класса IikoServer")
+        loguru.logger.info(f"Уничтожен экземпляр класса {self.__class__.__name__}")
         self._quit_token()
 
     def check_status_code_token(self, code: Union[str, int]):
@@ -60,14 +60,15 @@ class IikoServer:
         Проверка на время жизни токена.
         :return: Если прошло 60 минут, будет запрощен токен, и метод вернет True,иначе вернется False
         """
-        one_hour_ago = datetime.now() - timedelta(minutes=1)
+        one_hour_ago = datetime.now() - timedelta(hours=1)
         time_token = self._time_token
 
         if self._token is not None:
             try:
                 if time_token <= one_hour_ago:
                     self._quit_token()
-                    loguru.logger.info("Получен новый токен для IikoServer", self._token)
+                    self.access_token()
+                    loguru.logger.info(f"Получен новый токен для IikoServer: {self._token}")
                     return True
                 else:
                     return False
@@ -195,7 +196,7 @@ class IikoServer:
         try:
             result = self.session_s.get(url=f"{self.domain}/logout?key={self._token}", timeout=self.DEFAULT_TIMEOUT)
             if result.status_code == 200:
-                loguru.logger.debug("\nТокен уничтожен: " + self._token)
+                loguru.logger.debug(f"Токен {self._token} уничтожен")
                 # self.access_token()
             return result.text
         except requests.exceptions.ConnectTimeout:

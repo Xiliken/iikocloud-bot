@@ -5,35 +5,35 @@ from aiogram.types import BotCommand, BotCommandScopeChat, BotCommandScopeDefaul
 from bot.database.methods.user import get_admins
 
 user_commands = [
-    BotCommand(command="start", description="Запустить бота"),
+    BotCommand(command="start", description="Запустить бота 🤖"),
     # BotCommand(
     #     command='help',
     #     description='Помощь по боту'
     # ),
-    BotCommand(command="balance", description="Мои бонусы"),
-    BotCommand(command="contacts", description="Контакты организации"),
+    BotCommand(command="balance", description="Мои бонусы 💳"),
+    BotCommand(command="contacts", description="Контакты организации 📝"),
     # BotCommand(
     #     command='sales',
     #     description='Доступные акции'
     # ),
-    BotCommand(command="chat", description="Чат с оператором"),
-    BotCommand(command="register", description="Создать аккаунт"),
-    BotCommand(command="login", description="Войти в аккаунт"),
-    BotCommand(command="work", description="Работа в Донерс"),
+    BotCommand(command="chat", description="Чат с оператором 💬"),
+    BotCommand(command="register", description="Создать аккаунт 👤"),
+    BotCommand(command="login", description="Войти в аккаунт 🔑"),
+    BotCommand(command="work", description="Работа в Донерс 👨‍💻"),
 ]
 
 
 admin_commands = [
-    BotCommand(command="start", description="Запустить бота"),
-    BotCommand(command="chat", description="Чат с оператором"),
-    BotCommand(command="register", description="Создать аккаунт"),
-    BotCommand(command="login", description="Войти в аккаунт"),
-    BotCommand(command="balance", description="Мои бонусы"),
-    BotCommand(command="contacts", description="Контакты организации"),
-    BotCommand(command="admin", description="Войти в панель администратора"),
-    BotCommand(command="stats", description="Просмотреть статистику"),
-    BotCommand(command="work", description="Работа в Донерс"),
-    BotCommand(command="broadcast", description="Рассылка сообщений"),
+    BotCommand(command="start", description="Запустить бота 🤖"),
+    BotCommand(command="chat", description="Чат с оператором 💬"),
+    BotCommand(command="register", description="Создать аккаунт 👤"),
+    BotCommand(command="login", description="Войти в аккаунт 🔑"),
+    BotCommand(command="balance", description="Мои бонусы 💳"),
+    BotCommand(command="contacts", description="Контакты организации 📝"),
+    BotCommand(command="admin", description="Войти в панель администратора 👑"),
+    BotCommand(command="stats", description="Просмотреть статистику 📊"),
+    BotCommand(command="work", description="Работа в Донерс ‍💻"),
+    BotCommand(command="broadcast", description="Рассылка сообщений 📣"),
 ]
 
 

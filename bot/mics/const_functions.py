@@ -143,22 +143,22 @@ async def get_stats() -> dict:
             )
         )
         # Положительных отзывов за заказ
-        positive_reviews_order = await session.scalar(select(func.count()).filter(Review.food_rating >= 4))
+        # positive_reviews_order = await session.scalar(select(func.count()).filter(Review.food_rating >= 4))
 
         # Негативных отзывов за заказ
-        negative_reviews_order = await session.scalar(select(func.count()).filter(Review.food_rating < 4))
+        # negative_reviews_order = await session.scalar(select(func.count()).filter(Review.food_rating < 4))
 
         # Положительных отзывов за обслуживание
-        positive_reviews_service = await session.scalar(select(func.count()).filter(Review.service_rating >= 4))
+        # positive_reviews_service = await session.scalar(select(func.count()).filter(Review.service_rating >= 4))
 
         # Негативных отзывов за обслуживание
-        negative_reviews_service = await session.scalar(select(func.count()).filter(Review.service_rating < 4))
+        # negative_reviews_service = await session.scalar(select(func.count()).filter(Review.service_rating < 4))
 
         # Среднее значение отзывов за заказ
-        average_rating_order = await session.scalar(select(func.avg(Review.food_rating)))
+        # average_rating_order = await session.scalar(select(func.avg(Review.food_rating)))
 
         # Среднее значение отзывов за обслуживание
-        average_rating_service = await session.scalar(select(func.avg(Review.service_rating)))
+        # average_rating_service = await session.scalar(select(func.avg(Review.service_rating)))
 
         # endregion
 
@@ -223,12 +223,12 @@ async def get_stats() -> dict:
         "total_reviews": total_reviews or 0,
         "total_positive_reviews": total_positive_reviews or 0,
         "total_negative_reviews": total_negative_reviews or 0,
-        "reviews_order_positive": positive_reviews_order or 0,
-        "reviews_order_negative": negative_reviews_order or 0,
-        "reviews_service_positive": positive_reviews_service or 0,
-        "reviews_service_negative": negative_reviews_service or 0,
-        "reviews_avg_order_rating": round(average_rating_order, 1) if average_rating_order is not None else 0,
-        "reviews_avg_service_rating": round(average_rating_service, 1) if average_rating_service is not None else 0,
+        # "reviews_order_positive": positive_reviews_order or 0,
+        # "reviews_order_negative": negative_reviews_order or 0,
+        # "reviews_service_positive": positive_reviews_service or 0,
+        # "reviews_service_negative": negative_reviews_service or 0,
+        # "reviews_avg_order_rating": round(average_rating_order, 1) if average_rating_order is not None else 0,
+        # "reviews_avg_service_rating": round(average_rating_service, 1) if average_rating_service is not None else 0,
         "department_incomes": department_incomes,
     }
 
