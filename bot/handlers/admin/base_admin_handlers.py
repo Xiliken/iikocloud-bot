@@ -49,9 +49,9 @@ async def admin_stats_handler(msg: Message, bot: Bot):
 
             department_incomes_text += f"""
             <b>💸 {department_name}</b>
-            ┣ Доход за вчера: <code>{income_yesterday}</code>
-            ┣ Доход за сегодня: <code>{income_today}</code>
-            ┗ Доход за неделю: <code>{income_per_week}</code>
+            ┣ Выручка за вчера: <code>{income_yesterday}</code>
+            ┣ Выручка за сегодня: <code>{income_today}</code>
+            ┗ Выручка за последние 7 дней: <code>{income_per_week}</code>
             """
 
         message = clear_text(
@@ -63,7 +63,7 @@ async def admin_stats_handler(msg: Message, bot: Bot):
                 <b>👤 ПОЛЬЗОВАТЕЛИ</b>
                 ┣ Регистраций за <b>сегодня</b>: <code>{reg_day_count}</code>
                 ┣ Регистраций за <b>неделю</b>: <code>{reg_week_count}</code>
-                ┣ Регистраций за <b>месяц</b>: <code>{reg_month_count}</code>
+                ┣ Регистраций за <b>текущий месяц</b>: <code>{reg_month_count}</code>
                 ┣ Регистраций за <b>все время</b>: <code>{reg_all_time_count}</code>
                 ┗ Пользователей, <b>заблокировавшие бота</b>: <code>{bot_blocked_count}</code>
 
@@ -72,7 +72,7 @@ async def admin_stats_handler(msg: Message, bot: Bot):
                 ┣ Положительных отзывов: <code>{reviews_positive}</code>
                 ┗ Отрицательных отзывов: <code>{reviews_negative}</code>
 
-                <b> 💰 ДОХОД</b>
+                <b> 💰 ВЫРУЧКА</b>
                 {department_incomes_text}
             """
             ).format(
@@ -115,6 +115,7 @@ async def admin_list_handler(msg: Message):
     await msg.answer(_("Пожалуйста, выберите пункт меню"), reply_markup=admin_users_ikb())
 
 
+# region Рассылка сообщений
 @router.message(Command(commands=["broadcast", "sender"]), F.text)
 @router.message(F.text == __("📣 Рассылка"))
 async def broadcast_admin_handler(msg: Message, state: FSMContext, command: CommandObject = CommandObject):
@@ -239,6 +240,9 @@ async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, sessio
         await call.message.edit_text(text=_("❌ Рассылка отменена!"), reply_markup=None)
 
     await state.clear()
+
+
+# endregion
 
 
 @router.message(Command(commands=["backup"]))
