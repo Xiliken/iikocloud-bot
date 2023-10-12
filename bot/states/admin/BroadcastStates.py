@@ -6,3 +6,4 @@ class BroadcastStates(StatesGroup):
     add_button = State()
     button_text = State()
     button_url = State()
+    confirmation = State()

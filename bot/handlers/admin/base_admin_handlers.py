@@ -13,8 +13,10 @@ from aiogram.types import (
 from aiogram.utils.i18n import I18n
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.i18n import lazy_gettext as __
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from bot.database.methods.other import check_table_exist, delete_table
 from bot.database.methods.user import get_admins
 from bot.fitlers import IsAdmin
 from bot.keyboards.admin.inline_admin import admin_users_ikb, get_confirm_button_ikb
@@ -182,7 +184,7 @@ async def add_button_handler(call: CallbackQuery, state: FSMContext, bot: Bot):
         data = await state.get_data()
         message_id = int(data.get("message_id"))
         chat_id = int(data.get("chat_id"))
-        await confirm_broadcast(message=call.message, bot=bot, chat_id=chat_id, message_id=message_id)
+        await confirm_broadcast(message=call.message, bot=bot, chat_id=chat_id, message_id=message_id, state=state)
 
     await call.answer()
 
@@ -203,11 +205,56 @@ async def button_url_handler(msg: Message, state: FSMContext, bot: Bot):
     data = await state.get_data()
     message_id = int(data.get("message_id"))
     chat_id = int(data.get("chat_id"))
-    await confirm_broadcast(message=msg, bot=bot, chat_id=chat_id, message_id=message_id, reply_markup=added_kb)
+    await confirm_broadcast(
+        message=msg,
+        bot=bot,
+        chat_id=chat_id,
+        message_id=message_id,
+        state=state,
+        reply_markup=added_kb,
+    )
+
+
+@router.callback_query(BroadcastStates.confirmation)
+async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, session: AsyncSession):
+    data = await state.get_data()
+    int(data.get("message_id"))
+    int(data.get("chat_id"))
+    data.get("button_text")
+    data.get("button_url")
+    camp_name = data.get("camp_name")
+    data.get("camp_message")
+
+    if call.data == "confirm_broadcast":
+        if not await check_table_exist(camp_name):
+            await session.execute(
+                text(
+                    f"CREATE TABLE {camp_name} (user_id INTEGER,status TEXT,description TEXT,CONSTRAINT users_for_send_PK PRIMARY KEY (user_id));"
+                )
+            )
+
+        await session.execute(
+            text(
+                f"INSERT INTO {camp_name} (user_id, status, description) SELECT user_id, 'waiting', NULL FROM users WHERE users.is_blocked = 0"
+            )
+        )
+        asyncio.sleep(3)
+        await call.message.edit_text(text=_("ℹ️ Начинаю рассылку!"), reply_markup=None)
+        await call.message.answer(_("✅ Рассылка сообщений завершена!"))
+        await delete_table(camp_name)
+    elif call.data == "cancel_broadcast":
+        await call.message.edit_text(text=_("❌ Рассылка отменена!"), reply_markup=None)
+
+    await state.clear()
 
 
 async def confirm_broadcast(
-    message: Message, bot: Bot, message_id: int, chat_id: int, reply_markup: InlineKeyboardMarkup = None
+    message: Message,
+    bot: Bot,
+    message_id: int,
+    chat_id: int,
+    state: FSMContext,
+    reply_markup: InlineKeyboardMarkup = None,
 ):
     await bot.copy_message(chat_id, chat_id, message_id, reply_markup=reply_markup)
     await message.answer(
@@ -224,22 +271,7 @@ async def confirm_broadcast(
         ),
     )
 
-
-async def sender_decide(call: CallbackQuery, bot: Bot, state: FSMContext, session: AsyncSession):
-    data = await state.get_data()
-    int(data.get("message_id"))
-    int(data.get("chat_id"))
-    data.get("button_text")
-    data.get("button_url")
-    data.get("camp_name")
-    data.get("camp_message")
-
-    if call.data == "confirm_broadcast":
-        await call.message.edit_text(text=_("ℹ️ Начинаю рассылку!"), reply_markup=None)
-    elif call.data == "cancel_broadcast":
-        await call.message.edit_text(text=_("❌ Рассылка отменена!"), reply_markup=None)
-
-    await state.clear()
+    await state.set_state(BroadcastStates.confirmation)
 
 
 # endregion
